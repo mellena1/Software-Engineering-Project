@@ -1,1 +1,3 @@
-FROM node
+FROM alpine
+
+RUN apk add nodejs-current

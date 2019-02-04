@@ -1,1 +1,1 @@
-FROM mysql/mysql
+FROM mysql
