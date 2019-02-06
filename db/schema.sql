@@ -3,23 +3,23 @@ CREATE DATABASE IF NOT EXISTS codecamp;
 
 USE codecamp;
 
-DROP TABLE IF EXISTS sessions,
-                     speakers,
-                     rooms;
+DROP TABLE IF EXISTS session,
+                     speaker,
+                     room;
 
-CREATE TABLE 'speakers' (
+CREATE TABLE 'speaker' (
     speakerID   INT           NOT NULL,
     name        VARCHAR(32)   NOT NULL,
     PRIMARY KEY (speakerID)
 );
 
-CREATE TABLE 'rooms' (
+CREATE TABLE 'room' (
     roomID     INT   NOT NULL,
     capacity   INT   NOT NULL,
     PRIMARY KEY (roomID)
 );
 
-CREATE TABLE 'sessions' (
+CREATE TABLE 'session' (
     startTime   TIMESTAMP     NOT NULL,
     endTIme     TIMESTAMP     NOT NUll,
     title       VARCHAR(32)   NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE 'sessions' (
     roomID      INT           NOT NULL,
     KEY (speakerID)
     KEY (roomID),
-    FOREIGN KEY (speakerID) REFERENCES speakers (speakerID) ON DELETE CASCADE,
-    FOREIGN KEY (roomID)    REFERENCES rooms    (roomID)    ON DELETE CASCADE,
+    FOREIGN KEY (speakerID) REFERENCES speaker (speakerID) ON DELETE CASCADE,
+    FOREIGN KEY (roomID)    REFERENCES room    (roomID)    ON DELETE CASCADE,
     PRIMARY KEY (roomID, startTime)
 );
