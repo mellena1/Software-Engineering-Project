@@ -1,8 +1,14 @@
-package entities
+package db
 
 type Speaker struct {
 	ID   int
 	Name string
+}
+
+type SpeakerReaderWriterDeleter interface {
+	SpeakerReader
+	SpeakerWriter
+	SpeakerDeleter
 }
 
 type SpeakerReader interface {

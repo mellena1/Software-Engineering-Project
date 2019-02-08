@@ -1,8 +1,14 @@
-package entities
+package db
 
 type Room struct {
 	ID       int
 	Capacity int
+}
+
+type RoomReaderWriterDeleter interface {
+	RoomReader
+	RoomWriter
+	RoomDeleter
 }
 
 type RoomReader interface {

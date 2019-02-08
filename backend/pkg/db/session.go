@@ -1,4 +1,4 @@
-package entities
+package db
 
 type Session struct {
 	StartTime int
@@ -6,6 +6,12 @@ type Session struct {
 	Title     string
 	Speaker   *Speaker
 	Room      *Room
+}
+
+type SessionReaderWriterDeleter interface {
+	SessionReader
+	SessionWriter
+	SessionDeleter
 }
 
 type SessionReader interface {
