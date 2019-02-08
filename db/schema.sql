@@ -1,5 +1,5 @@
 DROP DATABASE IF EXISTS codecamp;
-CREATE DATABASE IF NOT EXISTS codecamp;
+CREATE DATABASE codecamp;
 
 USE codecamp;
 
