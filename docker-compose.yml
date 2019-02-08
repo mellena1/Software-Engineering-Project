@@ -10,5 +10,8 @@ services:
       - "81:8081"
   db:
     build: db/.
+    environment:
+      MYSQL_DATABASE: codecamp
+      MYSQL_ROOT_PASSWORD: codecamp
     ports:
       - "3306:3306"
