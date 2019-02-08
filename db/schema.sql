@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS session,
 CREATE TABLE speaker (
     speakerID   INT,
     name        VARCHAR(32),
+    email       VARCHAR(32),
     PRIMARY KEY (speakerID)
 );
 
