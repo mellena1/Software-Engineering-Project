@@ -17,7 +17,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.Room"
+                                "$ref": "#/definitions/db.Room"
                             }
                         }
                     },
@@ -43,7 +43,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.Session"
+                                "$ref": "#/definitions/db.Session"
                             }
                         }
                     },
@@ -69,7 +69,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.Speaker"
+                                "$ref": "#/definitions/db.Speaker"
                             }
                         }
                     },
@@ -84,7 +84,7 @@
         }
     },
     "definitions": {
-        "entities.Room": {
+        "db.Room": {
             "type": "object",
             "properties": {
                 "capacity": {
@@ -95,7 +95,7 @@
                 }
             }
         },
-        "entities.Session": {
+        "db.Session": {
             "type": "object",
             "properties": {
                 "endTime": {
@@ -103,11 +103,11 @@
                 },
                 "room": {
                     "type": "object",
-                    "$ref": "#/definitions/entities.Room"
+                    "$ref": "#/definitions/db.Room"
                 },
                 "speaker": {
                     "type": "object",
-                    "$ref": "#/definitions/entities.Speaker"
+                    "$ref": "#/definitions/db.Speaker"
                 },
                 "startTime": {
                     "type": "integer"
@@ -117,7 +117,7 @@
                 }
             }
         },
-        "entities.Speaker": {
+        "db.Speaker": {
             "type": "object",
             "properties": {
                 "id": {

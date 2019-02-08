@@ -1,27 +1,27 @@
 definitions:
-  entities.Room:
+  db.Room:
     properties:
       capacity:
         type: integer
       id:
         type: integer
     type: object
-  entities.Session:
+  db.Session:
     properties:
       endTime:
         type: integer
       room:
-        $ref: '#/definitions/entities.Room'
+        $ref: '#/definitions/db.Room'
         type: object
       speaker:
-        $ref: '#/definitions/entities.Speaker'
+        $ref: '#/definitions/db.Speaker'
         type: object
       startTime:
         type: integer
       title:
         type: string
     type: object
-  entities.Speaker:
+  db.Speaker:
     properties:
       id:
         type: integer
@@ -42,7 +42,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entities.Room'
+              $ref: '#/definitions/db.Room'
             type: array
         "400":
           description: Bad Request
@@ -59,7 +59,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entities.Session'
+              $ref: '#/definitions/db.Session'
             type: array
         "400":
           description: Bad Request
@@ -76,7 +76,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entities.Speaker'
+              $ref: '#/definitions/db.Speaker'
             type: array
         "400":
           description: Bad Request
