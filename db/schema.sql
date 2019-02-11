@@ -8,27 +8,27 @@ DROP TABLE IF EXISTS session,
                      room;
 
 CREATE TABLE speaker (
-    speakerID   INT,
-    name        VARCHAR(32),
+    firstName   VARCHAR(32),
+    lastName    VARCHAR(32),
     email       VARCHAR(32),
-    PRIMARY KEY (speakerID)
+    PRIMARY KEY (email)
 );
 
 CREATE TABLE room (
-    roomID     INT   NOT NULL,
-    capacity   INT   NOT NULL,
-    PRIMARY KEY (roomID)
+    roomName   VARCHAR(32)   NOT NULL,
+    capacity   INT           NOT NULL,
+    PRIMARY KEY (roomName)
 );
 
 CREATE TABLE session (
     startTime       TIMESTAMP     NOT NULL,
     endTime         TIMESTAMP     NOT NUll,
     sessionName     VARCHAR(32)   NOT NULL,
-    speakerID       INT           NOT NULL,
-    roomID          INT           NOT NULL,
-    KEY (speakerID),
-    KEY (roomID),
-    FOREIGN KEY (speakerID) REFERENCES speaker (speakerID) ON DELETE CASCADE,
-    FOREIGN KEY (roomID)    REFERENCES room    (roomID)    ON DELETE CASCADE,
-    PRIMARY KEY (roomID, startTime)
+    email           VARCHAR(32)   NOT NULL,
+    roomName        VARCHAR(32)   NOT NULL,
+    KEY (email),
+    KEY (roomName),
+    FOREIGN KEY (email) REFERENCES speaker (email)  ON DELETE CASCADE,
+    FOREIGN KEY (roomName)    REFERENCES room    (roomName) ON DELETE CASCADE,
+    PRIMARY KEY (roomName, startTime)
 );
