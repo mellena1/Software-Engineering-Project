@@ -28,7 +28,7 @@ CREATE TABLE session (
     roomName        VARCHAR(32)   NOT NULL,
     KEY (email),
     KEY (roomName),
-    FOREIGN KEY (email) REFERENCES speaker (email)  ON DELETE CASCADE,
-    FOREIGN KEY (roomName)    REFERENCES room    (roomName) ON DELETE CASCADE,
+    FOREIGN KEY (email)       REFERENCES speaker (email) ON DELETE CASCADE,
+    FOREIGN KEY (roomName)    REFERENCES room (roomName) ON DELETE CASCADE,
     PRIMARY KEY (roomName, startTime)
 );
