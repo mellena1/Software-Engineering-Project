@@ -11,11 +11,13 @@ import (
 
 var roomReader db.RoomReader
 var roomWriter db.RoomWriter
+var roomUpdater db.RoomUpdater
 var roomDeleter db.RoomDeleter
 
-func AddAllRoomRoutesToRouter(router *mux.Router, roomDBFacade db.RoomReaderWriterDeleter) {
+func AddAllRoomRoutesToRouter(router *mux.Router, roomDBFacade db.RoomReaderWriterUpdaterDeleter) {
 	roomReader = roomDBFacade
 	roomWriter = roomDBFacade
+	roomUpdater = roomDBFacade
 	roomDeleter = roomDBFacade
 
 	router.HandleFunc("/api/v1/room", getAllRooms).Methods("GET")

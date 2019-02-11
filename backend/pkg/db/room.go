@@ -5,9 +5,10 @@ type Room struct {
 	Capacity int
 }
 
-type RoomReaderWriterDeleter interface {
+type RoomReaderWriterUpdaterDeleter interface {
 	RoomReader
 	RoomWriter
+	RoomUpdater
 	RoomDeleter
 }
 
@@ -18,6 +19,10 @@ type RoomReader interface {
 
 type RoomWriter interface {
 	WriteARoom(r Room) error
+}
+
+type RoomUpdater interface {
+	UpdateARoom(oldRoomID int, newRoom Room) error
 }
 
 type RoomDeleter interface {

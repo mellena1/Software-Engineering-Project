@@ -5,9 +5,10 @@ type Speaker struct {
 	Name string
 }
 
-type SpeakerReaderWriterDeleter interface {
+type SpeakerReaderWriterUpdaterDeleter interface {
 	SpeakerReader
 	SpeakerWriter
+	SpeakerUpdater
 	SpeakerDeleter
 }
 
@@ -18,6 +19,10 @@ type SpeakerReader interface {
 
 type SpeakerWriter interface {
 	WriteASpeaker(s Speaker) error
+}
+
+type SpeakerUpdater interface {
+	UpdateASpeaker(id int, newSpeaker Speaker) error
 }
 
 type SpeakerDeleter interface {

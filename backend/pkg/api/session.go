@@ -11,11 +11,13 @@ import (
 
 var sessionReader db.SessionReader
 var sessionWriter db.SessionWriter
+var sessionUpdater db.SessionUpdater
 var sessionDeleter db.SessionDeleter
 
-func AddAllSessionRoutesToRouter(router *mux.Router, sessionDBFacade db.SessionReaderWriterDeleter) {
+func AddAllSessionRoutesToRouter(router *mux.Router, sessionDBFacade db.SessionReaderWriterUpdaterDeleter) {
 	sessionReader = sessionDBFacade
 	sessionWriter = sessionDBFacade
+	sessionUpdater = sessionDBFacade
 	sessionDeleter = sessionDBFacade
 
 	router.HandleFunc("/api/v1/session", getAllSessions).Methods("GET")

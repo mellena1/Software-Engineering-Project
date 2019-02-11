@@ -26,6 +26,10 @@ func (SpeakerSQL) WriteASpeaker(s db.Speaker) error {
 	return nil
 }
 
+func (SpeakerSQL) UpdateASpeaker(id int, newSpeaker db.Speaker) error {
+	return nil
+}
+
 func (SpeakerSQL) DeleteASpeaker(id int) error {
 	return nil
 }

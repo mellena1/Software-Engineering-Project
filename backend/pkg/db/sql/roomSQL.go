@@ -45,6 +45,10 @@ func (r RoomSQL) WriteARoom(room db.Room) error {
 	return nil
 }
 
+func (r RoomSQL) UpdateARoom(oldRoomID int, newRoom db.Room) error {
+	return nil
+}
+
 func (r RoomSQL) DeleteARoom(id int) error {
 	return nil
 }

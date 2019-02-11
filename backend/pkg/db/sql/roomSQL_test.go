@@ -3,7 +3,8 @@ package sql
 import (
 	"testing"
 
-	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db/entities"
+	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
+
 	"github.com/stretchr/testify/assert"
 	sqlmock "gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
@@ -11,18 +12,18 @@ import (
 var columns = []string{"roomID", "capacity"}
 
 func testReadAllRoomsValid(t *testing.T) {
-	db, mock, err := sqlmock.New()
+	mockdb, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("an error occured when opening the stub db connection: %s", err)
 	}
-	defer db.Close()
+	defer mockdb.Close()
 
 	mock.ExpectBegin()
 	mock.ExpectQuery("SELECT * FROM room").
 		WillReturnRows(sqlmock.NewRows(columns).FromCSVString("1,1\n2,2"))
 
 	// Execute ReadAllRooms
-	roomSQL := NewRoomSQL(db)
+	roomSQL := NewRoomSQL(mockdb)
 	actual, err := roomSQL.ReadAllRooms()
 	if err != nil {
 		t.Fatalf("an error occured when running ReadAllRooms(): %s", err)
@@ -34,9 +35,9 @@ func testReadAllRoomsValid(t *testing.T) {
 	}
 
 	// Make sure returned Rooms are correct
-	expected := []entities.Room{
-		entities.Room{ID: 1, Capacity: 1},
-		entities.Room{ID: 2, Capacity: 2},
+	expected := []db.Room{
+		db.Room{ID: 1, Capacity: 1},
+		db.Room{ID: 2, Capacity: 2},
 	}
 	assert.Equal(t, actual, expected)
 }

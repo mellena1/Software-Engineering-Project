@@ -8,9 +8,10 @@ type Session struct {
 	Room      *Room
 }
 
-type SessionReaderWriterDeleter interface {
+type SessionReaderWriterUpdaterDeleter interface {
 	SessionReader
 	SessionWriter
+	SessionUpdater
 	SessionDeleter
 }
 
@@ -21,6 +22,10 @@ type SessionReader interface {
 
 type SessionWriter interface {
 	WriteASession(s Session) error
+}
+
+type SessionUpdater interface {
+	UpdateASession(oldSessionStartTime int, oldSessionRoomId int, newSession Session) error
 }
 
 type SessionDeleter interface {

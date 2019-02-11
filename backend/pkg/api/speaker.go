@@ -11,11 +11,13 @@ import (
 
 var speakerReader db.SpeakerReader
 var speakerWriter db.SpeakerWriter
+var speakerUpdater db.SpeakerUpdater
 var speakerDeleter db.SpeakerDeleter
 
-func AddAllSpeakerRoutesToRouter(router *mux.Router, speakerDBFacade db.SpeakerReaderWriterDeleter) {
+func AddAllSpeakerRoutesToRouter(router *mux.Router, speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) {
 	speakerReader = speakerDBFacade
 	speakerWriter = speakerDBFacade
+	speakerUpdater = speakerDBFacade
 	speakerDeleter = speakerDBFacade
 
 	router.HandleFunc("/api/v1/speaker", getAllSpeakers).Methods("GET")

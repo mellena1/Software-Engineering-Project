@@ -26,6 +26,10 @@ func (SessionSQL) WriteASession(s db.Session) error {
 	return nil
 }
 
+func (SessionSQL) UpdateASession(oldSessionStartTime int, oldSessionRoomId int, newSession db.Session) error {
+	return nil
+}
+
 func (SessionSQL) DeleteASession(startTime int, roomID int) error {
 	return nil
 }
