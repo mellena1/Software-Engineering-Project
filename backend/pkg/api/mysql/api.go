@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/api"
-	sqlEntities "github.com/mellena1/Software-Engineering-Project/backend/pkg/db/sql"
+	mysqlEntities "github.com/mellena1/Software-Engineering-Project/backend/pkg/db/mysql"
 )
 
 // API implements a router using gorilla/mux and a db using the go-sql-driver/mysql lib
@@ -28,9 +28,9 @@ func NewAPI(mySQLConfig mysqlDriver.Config) (*API, error) {
 		db:     db,
 	}
 
-	api.CreateRoomRoutes(apiObj, sqlEntities.NewRoomSQL(apiObj.db))
-	api.CreateSessionRoutes(apiObj, sqlEntities.NewSessionSQL(apiObj.db))
-	api.CreateSpeakerRoutes(apiObj, sqlEntities.NewSpeakerSQL(apiObj.db))
+	api.CreateRoomRoutes(apiObj, mysqlEntities.NewRoomSQL(apiObj.db))
+	api.CreateSessionRoutes(apiObj, mysqlEntities.NewSessionSQL(apiObj.db))
+	api.CreateSpeakerRoutes(apiObj, mysqlEntities.NewSpeakerSQL(apiObj.db))
 
 	return &apiObj, nil
 }
