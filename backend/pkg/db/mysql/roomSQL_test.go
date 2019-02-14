@@ -22,7 +22,7 @@ func TestReadAllRoomsValid(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows(columns).FromCSVString("Room1,1\nRoom2,2"))
 
 	// Execute ReadAllRooms
-	roomSQL := NewRoomSQL(mockdb)
+	roomSQL := NewRoomMySQL(mockdb)
 	actual, err := roomSQL.ReadAllRooms()
 	if err != nil {
 		t.Fatalf("an error occured when running ReadAllRooms(): %s", err)
@@ -42,7 +42,7 @@ func TestReadAllRoomsValid(t *testing.T) {
 }
 
 func TestReadAllRoomsInvalid(t *testing.T) {
-	roomSQL := RoomSQL{}
+	roomSQL := RoomMySQL{}
 	_, err := roomSQL.ReadAllRooms()
 	assert.Equal(t, ErrDBNotSet, err)
 }

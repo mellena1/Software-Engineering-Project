@@ -28,9 +28,9 @@ func NewAPI(mySQLConfig mysqlDriver.Config) (*API, error) {
 		db:     db,
 	}
 
-	api.CreateRoomRoutes(apiObj, mysqlEntities.NewRoomSQL(apiObj.db))
-	api.CreateSessionRoutes(apiObj, mysqlEntities.NewSessionSQL(apiObj.db))
-	api.CreateSpeakerRoutes(apiObj, mysqlEntities.NewSpeakerSQL(apiObj.db))
+	api.CreateRoomRoutes(apiObj, mysqlEntities.NewRoomMySQL(apiObj.db))
+	api.CreateSessionRoutes(apiObj, mysqlEntities.NewSessionMySQL(apiObj.db))
+	api.CreateSpeakerRoutes(apiObj, mysqlEntities.NewSpeakerMySQL(apiObj.db))
 
 	return &apiObj, nil
 }

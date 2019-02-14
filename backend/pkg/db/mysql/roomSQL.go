@@ -6,23 +6,23 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
-// RoomSQL implements RoomReaderWriterUpdaterDeleter
-type RoomSQL struct {
+// RoomMySQL implements RoomReaderWriterUpdaterDeleter
+type RoomMySQL struct {
 	db *sql.DB
 }
 
-// NewRoomSQL makes a new RoomSQL object given a db
-func NewRoomSQL(db *sql.DB) RoomSQL {
-	return RoomSQL{db}
+// NewRoomMySQL makes a new RoomMySQL object given a db
+func NewRoomMySQL(db *sql.DB) RoomMySQL {
+	return RoomMySQL{db}
 }
 
 // ReadARoom reads a room from the db given roomName
-func (r RoomSQL) ReadARoom(roomName string) (db.Room, error) {
+func (r RoomMySQL) ReadARoom(roomName string) (db.Room, error) {
 	return db.Room{}, nil
 }
 
 // ReadAllRooms reads all rooms from the db
-func (r RoomSQL) ReadAllRooms() ([]db.Room, error) {
+func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 	if r.db == nil {
 		return nil, ErrDBNotSet
 	}
@@ -45,16 +45,16 @@ func (r RoomSQL) ReadAllRooms() ([]db.Room, error) {
 }
 
 // WriteARoom writes a room to the db
-func (r RoomSQL) WriteARoom(room db.Room) error {
+func (r RoomMySQL) WriteARoom(room db.Room) error {
 	return nil
 }
 
 // UpdateARoom updates a room in the db given a roomName and the updated room
-func (r RoomSQL) UpdateARoom(roomName string, newRoom db.Room) error {
+func (r RoomMySQL) UpdateARoom(roomName string, newRoom db.Room) error {
 	return nil
 }
 
 // DeleteARoom deletes a room given a roomName
-func (r RoomSQL) DeleteARoom(roomName int) error {
+func (r RoomMySQL) DeleteARoom(roomName int) error {
 	return nil
 }
