@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
@@ -14,13 +13,13 @@ var sessionWriter db.SessionWriter
 var sessionUpdater db.SessionUpdater
 var sessionDeleter db.SessionDeleter
 
-func AddAllSessionRoutesToRouter(router *mux.Router, sessionDBFacade db.SessionReaderWriterUpdaterDeleter) {
+func CreateSessionRoutes(apiObj API, sessionDBFacade db.SessionReaderWriterUpdaterDeleter) {
 	sessionReader = sessionDBFacade
 	sessionWriter = sessionDBFacade
 	sessionUpdater = sessionDBFacade
 	sessionDeleter = sessionDBFacade
 
-	router.HandleFunc("/api/v1/session", getAllSessions).Methods("GET")
+	apiObj.CreateRouteWithMethods("/api/v1/session", getAllSessions, "GET")
 }
 
 // getAllSessions Gets all sessions from the db
@@ -40,6 +39,6 @@ func getAllSessions(w http.ResponseWriter, r *http.Request) {
 	j, err := json.Marshal(sessions)
 	_, err = w.Write(j)
 	if err != nil {
-		log.Fatal("Failed to respond to GetAllSpeakers")
+		log.Fatal("Failed to respond to getAllSessions")
 	}
 }

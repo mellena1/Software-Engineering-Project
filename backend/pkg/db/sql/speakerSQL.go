@@ -14,7 +14,7 @@ func NewSpeakerSQL(db *sql.DB) SpeakerSQL {
 	return SpeakerSQL{db}
 }
 
-func (SpeakerSQL) ReadASpeaker(id int) (db.Speaker, error) {
+func (SpeakerSQL) ReadASpeaker(email string) (db.Speaker, error) {
 	return db.Speaker{}, nil
 }
 
@@ -26,10 +26,10 @@ func (SpeakerSQL) WriteASpeaker(s db.Speaker) error {
 	return nil
 }
 
-func (SpeakerSQL) UpdateASpeaker(id int, newSpeaker db.Speaker) error {
+func (SpeakerSQL) UpdateASpeaker(email string, newSpeaker db.Speaker) error {
 	return nil
 }
 
-func (SpeakerSQL) DeleteASpeaker(id int) error {
+func (SpeakerSQL) DeleteASpeaker(email string) error {
 	return nil
 }

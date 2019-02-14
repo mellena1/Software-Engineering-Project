@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
@@ -14,13 +13,13 @@ var roomWriter db.RoomWriter
 var roomUpdater db.RoomUpdater
 var roomDeleter db.RoomDeleter
 
-func AddAllRoomRoutesToRouter(router *mux.Router, roomDBFacade db.RoomReaderWriterUpdaterDeleter) {
+func CreateRoomRoutes(apiObj API, roomDBFacade db.RoomReaderWriterUpdaterDeleter) {
 	roomReader = roomDBFacade
 	roomWriter = roomDBFacade
 	roomUpdater = roomDBFacade
 	roomDeleter = roomDBFacade
 
-	router.HandleFunc("/api/v1/room", getAllRooms).Methods("GET")
+	apiObj.CreateRouteWithMethods("/api/v1/room", getAllRooms, "GET")
 }
 
 // getAllRooms Gets all rooms from the db
@@ -40,6 +39,6 @@ func getAllRooms(w http.ResponseWriter, r *http.Request) {
 	j, _ := json.Marshal(rooms)
 	_, err = w.Write(j)
 	if err != nil {
-		log.Fatal("Failed to respond to GetAllRooms")
+		log.Fatal("Failed to respond to getAllRooms")
 	}
 }

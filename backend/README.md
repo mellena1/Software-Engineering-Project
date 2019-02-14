@@ -5,6 +5,12 @@ All code is written in [go](https://github.com/golang/go).
 
 This code runs an API server that talks with the backend DB to supply data to the front end.
 
+## Downloading dependencies
+`go mod download`
+
+## Run the server
+`go run main.go`
+
 ## API Docs
 You can access the Swagger docs from `[url]/api/v1/swagger/index.html`.
 

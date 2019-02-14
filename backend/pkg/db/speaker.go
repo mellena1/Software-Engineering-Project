@@ -1,8 +1,9 @@
 package db
 
 type Speaker struct {
-	ID   int
-	Name string
+	Email     string
+	FirstName string
+	LastName  string
 }
 
 type SpeakerReaderWriterUpdaterDeleter interface {
@@ -13,7 +14,7 @@ type SpeakerReaderWriterUpdaterDeleter interface {
 }
 
 type SpeakerReader interface {
-	ReadASpeaker(id int) (Speaker, error)
+	ReadASpeaker(email string) (Speaker, error)
 	ReadAllSpeakers() ([]Speaker, error)
 }
 
@@ -22,9 +23,9 @@ type SpeakerWriter interface {
 }
 
 type SpeakerUpdater interface {
-	UpdateASpeaker(id int, newSpeaker Speaker) error
+	UpdateASpeaker(email string, newSpeaker Speaker) error
 }
 
 type SpeakerDeleter interface {
-	DeleteASpeaker(id int) error
+	DeleteASpeaker(email string) error
 }

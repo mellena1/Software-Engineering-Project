@@ -1,8 +1,11 @@
 package db
 
+import "time"
+
 type Session struct {
-	StartTime int
-	EndTime   int
+	ID        int
+	StartTime time.Time
+	EndTime   time.Time
 	Title     string
 	Speaker   *Speaker
 	Room      *Room
@@ -16,7 +19,7 @@ type SessionReaderWriterUpdaterDeleter interface {
 }
 
 type SessionReader interface {
-	ReadASession(startTime int, roomID int) (Session, error)
+	ReadASession(sessionID int) (Session, error)
 	ReadAllSessions() ([]Session, error)
 }
 
@@ -25,9 +28,9 @@ type SessionWriter interface {
 }
 
 type SessionUpdater interface {
-	UpdateASession(oldSessionStartTime int, oldSessionRoomId int, newSession Session) error
+	UpdateASession(sessionID int, newSession Session) error
 }
 
 type SessionDeleter interface {
-	DeleteASession(startTime int, roomID int) error
+	DeleteASession(sessionID int) error
 }

@@ -5,22 +5,21 @@ import (
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 
+	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
-	sqlmock "gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
 
 var columns = []string{"roomID", "capacity"}
 
-func testReadAllRoomsValid(t *testing.T) {
-	mockdb, mock, err := sqlmock.New()
+func TestReadAllRoomsValid(t *testing.T) {
+	mockdb, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {
 		t.Fatalf("an error occured when opening the stub db connection: %s", err)
 	}
 	defer mockdb.Close()
 
-	mock.ExpectBegin()
-	mock.ExpectQuery("SELECT * FROM room").
-		WillReturnRows(sqlmock.NewRows(columns).FromCSVString("1,1\n2,2"))
+	mock.ExpectQuery("SELECT * FROM room;").
+		WillReturnRows(sqlmock.NewRows(columns).FromCSVString("Room1,1\nRoom2,2"))
 
 	// Execute ReadAllRooms
 	roomSQL := NewRoomSQL(mockdb)
@@ -36,14 +35,14 @@ func testReadAllRoomsValid(t *testing.T) {
 
 	// Make sure returned Rooms are correct
 	expected := []db.Room{
-		db.Room{ID: 1, Capacity: 1},
-		db.Room{ID: 2, Capacity: 2},
+		db.Room{RoomName: "Room1", Capacity: 1},
+		db.Room{RoomName: "Room2", Capacity: 2},
 	}
-	assert.Equal(t, actual, expected)
+	assert.Equal(t, expected, actual)
 }
 
-func testReadAllRoomsInvalid(t *testing.T) {
+func TestReadAllRoomsInvalid(t *testing.T) {
 	roomSQL := RoomSQL{}
 	_, err := roomSQL.ReadAllRooms()
-	assert.Equal(t, err, ErrDBNotSet)
+	assert.Equal(t, ErrDBNotSet, err)
 }

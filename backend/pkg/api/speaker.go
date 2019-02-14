@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
@@ -14,13 +13,13 @@ var speakerWriter db.SpeakerWriter
 var speakerUpdater db.SpeakerUpdater
 var speakerDeleter db.SpeakerDeleter
 
-func AddAllSpeakerRoutesToRouter(router *mux.Router, speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) {
+func CreateSpeakerRoutes(apiObj API, speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) {
 	speakerReader = speakerDBFacade
 	speakerWriter = speakerDBFacade
 	speakerUpdater = speakerDBFacade
 	speakerDeleter = speakerDBFacade
 
-	router.HandleFunc("/api/v1/speaker", getAllSpeakers).Methods("GET")
+	apiObj.CreateRouteWithMethods("/api/v1/speaker", getAllSpeakers, "GET")
 }
 
 // getAllSpeakers Gets all speakers from the db
@@ -40,6 +39,6 @@ func getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 	j, err := json.Marshal(speakers)
 	_, err = w.Write(j)
 	if err != nil {
-		log.Fatal("Failed to respond to GetAllSpeakers")
+		log.Fatal("Failed to respond to getAllSpeakers")
 	}
 }

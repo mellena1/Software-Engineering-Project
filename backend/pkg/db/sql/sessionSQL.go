@@ -14,7 +14,7 @@ func NewSessionSQL(db *sql.DB) SessionSQL {
 	return SessionSQL{db}
 }
 
-func (SessionSQL) ReadASession(startTime int, roomID int) (db.Session, error) {
+func (SessionSQL) ReadASession(sessionID int) (db.Session, error) {
 	return db.Session{}, nil
 }
 
@@ -26,10 +26,10 @@ func (SessionSQL) WriteASession(s db.Session) error {
 	return nil
 }
 
-func (SessionSQL) UpdateASession(oldSessionStartTime int, oldSessionRoomId int, newSession db.Session) error {
+func (SessionSQL) UpdateASession(sessionID int, newSession db.Session) error {
 	return nil
 }
 
-func (SessionSQL) DeleteASession(startTime int, roomID int) error {
+func (SessionSQL) DeleteASession(sessionID int) error {
 	return nil
 }

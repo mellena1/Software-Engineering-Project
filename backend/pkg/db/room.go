@@ -1,7 +1,7 @@
 package db
 
 type Room struct {
-	ID       int
+	RoomName string
 	Capacity int
 }
 
@@ -13,7 +13,7 @@ type RoomReaderWriterUpdaterDeleter interface {
 }
 
 type RoomReader interface {
-	ReadARoom(id int) (Room, error)
+	ReadARoom(roomName string) (Room, error)
 	ReadAllRooms() ([]Room, error)
 }
 
@@ -22,9 +22,9 @@ type RoomWriter interface {
 }
 
 type RoomUpdater interface {
-	UpdateARoom(oldRoomID int, newRoom Room) error
+	UpdateARoom(roomName string, newRoom Room) error
 }
 
 type RoomDeleter interface {
-	DeleteARoom(id int) error
+	DeleteARoom(roomName int) error
 }
