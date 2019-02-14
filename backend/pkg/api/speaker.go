@@ -8,19 +8,28 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
-var speakerReader db.SpeakerReader
-var speakerWriter db.SpeakerWriter
-var speakerUpdater db.SpeakerUpdater
-var speakerDeleter db.SpeakerDeleter
+// speakerAPI holds all of the api functions related to Speaker and all of the variables needed to access the backend
+type speakerAPI struct {
+	speakerReader  db.SpeakerReader
+	speakerWriter  db.SpeakerWriter
+	speakerUpdater db.SpeakerUpdater
+	speakerDeleter db.SpeakerDeleter
+}
 
 // CreateSpeakerRoutes makes all of the routes for speaker related calls
-func CreateSpeakerRoutes(apiObj API, speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) {
-	speakerReader = speakerDBFacade
-	speakerWriter = speakerDBFacade
-	speakerUpdater = speakerDBFacade
-	speakerDeleter = speakerDBFacade
+func CreateSpeakerRoutes(speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) []Route {
+	speakAPI := speakerAPI{
+		speakerReader:  speakerDBFacade,
+		speakerWriter:  speakerDBFacade,
+		speakerUpdater: speakerDBFacade,
+		speakerDeleter: speakerDBFacade,
+	}
 
-	apiObj.CreateRouteWithMethods("/api/v1/speaker", getAllSpeakers, "GET")
+	routes := []Route{
+		NewRoute("/api/v1/speaker", speakAPI.getAllSpeakers, "GET"),
+	}
+
+	return routes
 }
 
 // getAllSpeakers Gets all speakers from the db
@@ -30,8 +39,8 @@ func CreateSpeakerRoutes(apiObj API, speakerDBFacade db.SpeakerReaderWriterUpdat
 // @Success 200 {array} db.Speaker
 // @Failure 400 {} nil
 // @Router /api/v1/speaker [get]
-func getAllSpeakers(w http.ResponseWriter, r *http.Request) {
-	speakers, err := speakerReader.ReadAllSpeakers()
+func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
+	speakers, err := a.speakerReader.ReadAllSpeakers()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(nil)

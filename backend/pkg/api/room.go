@@ -8,19 +8,29 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
-var roomReader db.RoomReader
-var roomWriter db.RoomWriter
-var roomUpdater db.RoomUpdater
-var roomDeleter db.RoomDeleter
+// roomAPI holds all of the api functions related to Rooms and all of the variables needed to access the backend
+type roomAPI struct {
+	roomReader  db.RoomReader
+	roomWriter  db.RoomWriter
+	roomUpdater db.RoomUpdater
+	roomDeleter db.RoomDeleter
+}
 
 // CreateRoomRoutes makes all of the routes for room related calls
-func CreateRoomRoutes(apiObj API, roomDBFacade db.RoomReaderWriterUpdaterDeleter) {
-	roomReader = roomDBFacade
-	roomWriter = roomDBFacade
-	roomUpdater = roomDBFacade
-	roomDeleter = roomDBFacade
+func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
+	roomAPI := roomAPI{
+		roomReader:  roomDBFacade,
+		roomWriter:  roomDBFacade,
+		roomUpdater: roomDBFacade,
+		roomDeleter: roomDBFacade,
+	}
 
-	apiObj.CreateRouteWithMethods("/api/v1/room", getAllRooms, "GET")
+	routes := []Route{
+		NewRoute("/api/v1/room", roomAPI.getAllRooms, "GET"),
+	}
+
+	return routes
+	// apiObj.CreateRouteWithMethods("/api/v1/room", getAllRooms, "GET")
 }
 
 // getAllRooms Gets all rooms from the db
@@ -30,8 +40,8 @@ func CreateRoomRoutes(apiObj API, roomDBFacade db.RoomReaderWriterUpdaterDeleter
 // @Success 200 {array} db.Room
 // @Failure 400 {} nil
 // @Router /api/v1/room [get]
-func getAllRooms(w http.ResponseWriter, r *http.Request) {
-	rooms, err := roomReader.ReadAllRooms()
+func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
+	rooms, err := a.roomReader.ReadAllRooms()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(nil)

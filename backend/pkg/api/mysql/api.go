@@ -28,9 +28,20 @@ func NewAPI(mySQLConfig mysqlDriver.Config) (*API, error) {
 		db:     db,
 	}
 
-	api.CreateRoomRoutes(apiObj, mysqlEntities.NewRoomMySQL(apiObj.db))
-	api.CreateSessionRoutes(apiObj, mysqlEntities.NewSessionMySQL(apiObj.db))
-	api.CreateSpeakerRoutes(apiObj, mysqlEntities.NewSpeakerMySQL(apiObj.db))
+	// Room
+	roomDBFacade := mysqlEntities.NewRoomMySQL(apiObj.db)
+	roomRoutes := api.CreateRoomRoutes(roomDBFacade)
+	apiObj.CreateRoutes(roomRoutes...)
+
+	// Session
+	sessionDBFacade := mysqlEntities.NewSessionMySQL(apiObj.db)
+	sessionRoutes := api.CreateSessionRoutes(sessionDBFacade)
+	apiObj.CreateRoutes(sessionRoutes...)
+
+	// Speaker
+	speakerDBFacade := mysqlEntities.NewSpeakerMySQL(apiObj.db)
+	speakerRoutes := api.CreateSpeakerRoutes(speakerDBFacade)
+	apiObj.CreateRoutes(speakerRoutes...)
 
 	return &apiObj, nil
 }
@@ -40,24 +51,26 @@ func (a API) ListenAndServe(addr string) error {
 	return http.ListenAndServe(addr, a.router)
 }
 
-// CreateRoute adds a route to the router
-func (a API) CreateRoute(path string, handlerFunc func(w http.ResponseWriter, r *http.Request)) {
-	a.router.HandleFunc(path, handlerFunc)
+// CreateRoutes adds a route(s) to the router
+func (a API) CreateRoutes(route ...api.Route) {
+	for _, r := range route {
+		if len(r.Methods) > 0 {
+			a.router.HandleFunc(r.Path, r.Handler).Methods(r.Methods...)
+		} else {
+			a.router.HandleFunc(r.Path, r.Handler)
+		}
+	}
 }
 
-// CreateRouteWithMethods adds a route to the router for specific http request methods (GET, POST, etc)
-func (a API) CreateRouteWithMethods(path string, handlerFunc func(w http.ResponseWriter, r *http.Request), methods ...string) {
-	a.router.HandleFunc(path, handlerFunc).Methods(methods...)
-}
-
-// CreatePrefixedRoute adds a route for a prefix to the router
-func (a API) CreatePrefixedRoute(path string, handler http.Handler) {
-	a.router.PathPrefix(path).Handler(handler)
-}
-
-// CreatePrefixedRouteWithMethods adds a route for a prefix to the router for specific http request methods (GET, POST, etc)
-func (a API) CreatePrefixedRouteWithMethods(path string, handler http.Handler, methods ...string) {
-	a.router.PathPrefix(path).Handler(handler).Methods(methods...)
+// CreatePrefixedRoutes adds route(s) for a prefix to the router
+func (a API) CreatePrefixedRoutes(route ...api.PrefixedRoute) {
+	for _, r := range route {
+		if len(r.Methods) > 0 {
+			a.router.PathPrefix(r.Path).Handler(r.Handler).Methods(r.Methods...)
+		} else {
+			a.router.PathPrefix(r.Path).Handler(r.Handler)
+		}
+	}
 }
 
 // Close closes the API's db

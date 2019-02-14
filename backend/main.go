@@ -29,7 +29,8 @@ func main() {
 	}
 	defer app.Close()
 
-	app.CreatePrefixedRoute("/api/v1/swagger/", httpSwagger.WrapHandler)
+	swaggerRoute := api.NewPrefixedRoute("/api/v1/swagger/", httpSwagger.WrapHandler)
+	app.CreatePrefixedRoutes(swaggerRoute)
 
 	log.Println("Starting the server...")
 	log.Fatal(app.ListenAndServe(":8081"))

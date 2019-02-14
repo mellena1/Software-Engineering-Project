@@ -8,19 +8,28 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
-var sessionReader db.SessionReader
-var sessionWriter db.SessionWriter
-var sessionUpdater db.SessionUpdater
-var sessionDeleter db.SessionDeleter
+// sessionAPI holds all of the api functions related to Sessions and all of the variables needed to access the backend
+type sessionAPI struct {
+	sessionReader  db.SessionReader
+	sessionWriter  db.SessionWriter
+	sessionUpdater db.SessionUpdater
+	sessionDeleter db.SessionDeleter
+}
 
 // CreateSessionRoutes makes all of the routes for session related calls
-func CreateSessionRoutes(apiObj API, sessionDBFacade db.SessionReaderWriterUpdaterDeleter) {
-	sessionReader = sessionDBFacade
-	sessionWriter = sessionDBFacade
-	sessionUpdater = sessionDBFacade
-	sessionDeleter = sessionDBFacade
+func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) []Route {
+	sessAPI := sessionAPI{
+		sessionReader:  sessionDBFacade,
+		sessionWriter:  sessionDBFacade,
+		sessionUpdater: sessionDBFacade,
+		sessionDeleter: sessionDBFacade,
+	}
 
-	apiObj.CreateRouteWithMethods("/api/v1/session", getAllSessions, "GET")
+	routes := []Route{
+		NewRoute("/api/v1/session", sessAPI.getAllSessions, "GET"),
+	}
+
+	return routes
 }
 
 // getAllSessions Gets all sessions from the db
@@ -30,8 +39,8 @@ func CreateSessionRoutes(apiObj API, sessionDBFacade db.SessionReaderWriterUpdat
 // @Success 200 {array} db.Session
 // @Failure 400 {} nil
 // @Router /api/v1/session [get]
-func getAllSessions(w http.ResponseWriter, r *http.Request) {
-	sessions, err := sessionReader.ReadAllSessions()
+func (a sessionAPI) getAllSessions(w http.ResponseWriter, r *http.Request) {
+	sessions, err := a.sessionReader.ReadAllSessions()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(nil)
