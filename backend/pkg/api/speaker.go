@@ -13,6 +13,7 @@ var speakerWriter db.SpeakerWriter
 var speakerUpdater db.SpeakerUpdater
 var speakerDeleter db.SpeakerDeleter
 
+// CreateSpeakerRoutes makes all of the routes for speaker related calls
 func CreateSpeakerRoutes(apiObj API, speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) {
 	speakerReader = speakerDBFacade
 	speakerWriter = speakerDBFacade

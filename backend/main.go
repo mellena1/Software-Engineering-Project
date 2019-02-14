@@ -17,7 +17,7 @@ import (
 // @description The API for the code camp counting program.
 func main() {
 	var app api.API
-	app, err := mysql.NewMySQLApi(mysqlDriver.Config{
+	app, err := mysql.NewAPI(mysqlDriver.Config{
 		User:      "",
 		Passwd:    "",
 		Addr:      "",

@@ -13,6 +13,7 @@ var roomWriter db.RoomWriter
 var roomUpdater db.RoomUpdater
 var roomDeleter db.RoomDeleter
 
+// CreateRoomRoutes makes all of the routes for room related calls
 func CreateRoomRoutes(apiObj API, roomDBFacade db.RoomReaderWriterUpdaterDeleter) {
 	roomReader = roomDBFacade
 	roomWriter = roomDBFacade

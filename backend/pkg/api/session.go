@@ -13,6 +13,7 @@ var sessionWriter db.SessionWriter
 var sessionUpdater db.SessionUpdater
 var sessionDeleter db.SessionDeleter
 
+// CreateSessionRoutes makes all of the routes for session related calls
 func CreateSessionRoutes(apiObj API, sessionDBFacade db.SessionReaderWriterUpdaterDeleter) {
 	sessionReader = sessionDBFacade
 	sessionWriter = sessionDBFacade

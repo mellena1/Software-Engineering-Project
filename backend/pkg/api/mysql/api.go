@@ -11,17 +11,19 @@ import (
 	sqlEntities "github.com/mellena1/Software-Engineering-Project/backend/pkg/db/sql"
 )
 
-type MySQLApi struct {
+// API implements a router using gorilla/mux and a db using the go-sql-driver/mysql lib
+type API struct {
 	router *mux.Router
 	db     *sql.DB
 }
 
-func NewMySQLApi(mySQLConfig mysqlDriver.Config) (*MySQLApi, error) {
+// NewAPI returns a new API given a mysqlDriver.Config
+func NewAPI(mySQLConfig mysqlDriver.Config) (*API, error) {
 	db, err := sql.Open("mysql", mySQLConfig.FormatDSN())
 	if err != nil {
 		return nil, err
 	}
-	apiObj := MySQLApi{
+	apiObj := API{
 		router: mux.NewRouter(),
 		db:     db,
 	}
@@ -33,26 +35,32 @@ func NewMySQLApi(mySQLConfig mysqlDriver.Config) (*MySQLApi, error) {
 	return &apiObj, nil
 }
 
-func (a MySQLApi) ListenAndServe(addr string) error {
+// ListenAndServe basically runs http.ListenAndServe
+func (a API) ListenAndServe(addr string) error {
 	return http.ListenAndServe(addr, a.router)
 }
 
-func (a MySQLApi) CreateRoute(path string, handlerFunc func(w http.ResponseWriter, r *http.Request)) {
+// CreateRoute adds a route to the router
+func (a API) CreateRoute(path string, handlerFunc func(w http.ResponseWriter, r *http.Request)) {
 	a.router.HandleFunc(path, handlerFunc)
 }
 
-func (a MySQLApi) CreateRouteWithMethods(path string, handlerFunc func(w http.ResponseWriter, r *http.Request), methods ...string) {
+// CreateRouteWithMethods adds a route to the router for specific http request methods (GET, POST, etc)
+func (a API) CreateRouteWithMethods(path string, handlerFunc func(w http.ResponseWriter, r *http.Request), methods ...string) {
 	a.router.HandleFunc(path, handlerFunc).Methods(methods...)
 }
 
-func (a MySQLApi) CreatePrefixedRoute(path string, handler http.Handler) {
+// CreatePrefixedRoute adds a route for a prefix to the router
+func (a API) CreatePrefixedRoute(path string, handler http.Handler) {
 	a.router.PathPrefix(path).Handler(handler)
 }
 
-func (a MySQLApi) CreatePrefixedRouteWithMethods(path string, handler http.Handler, methods ...string) {
+// CreatePrefixedRouteWithMethods adds a route for a prefix to the router for specific http request methods (GET, POST, etc)
+func (a API) CreatePrefixedRouteWithMethods(path string, handler http.Handler, methods ...string) {
 	a.router.PathPrefix(path).Handler(handler).Methods(methods...)
 }
 
-func (a MySQLApi) Close() error {
+// Close closes the API's db
+func (a API) Close() error {
 	return a.db.Close()
 }
