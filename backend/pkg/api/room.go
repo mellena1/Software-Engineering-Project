@@ -30,7 +30,6 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 	}
 
 	return routes
-	// apiObj.CreateRouteWithMethods("/api/v1/room", getAllRooms, "GET")
 }
 
 // getAllRooms Gets all rooms from the db
