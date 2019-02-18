@@ -1,0 +1,91 @@
+basePath: '{{.BasePath}}'
+definitions:
+  db.Room:
+    properties:
+      capacity:
+        type: integer
+      id:
+        type: integer
+    type: object
+  db.Session:
+    properties:
+      endTime:
+        type: integer
+      room:
+        $ref: '#/definitions/db.Room'
+        type: object
+      speaker:
+        $ref: '#/definitions/db.Speaker'
+        type: object
+      startTime:
+        type: integer
+      title:
+        type: string
+    type: object
+  db.Speaker:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+host: '{{.Host}}'
+info:
+  contact: {}
+  description: The API for the code camp counting program.
+  license: {}
+  title: Code Camp Counter API
+  version: "1.0"
+paths:
+  /api/v1/room:
+    get:
+      description: Return a list of all rooms
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.Room'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: ""
+      summary: Get all rooms
+  /api/v1/session:
+    get:
+      description: Return a list of all sessions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.Session'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: ""
+      summary: Get all sessions
+  /api/v1/speaker:
+    get:
+      description: Return a list of all speakers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.Speaker'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: ""
+      summary: Get all speakers
+swagger: "2.0"
