@@ -21,9 +21,9 @@ CREATE TABLE room (
 );
 
 CREATE TABLE session (
-    sessionID       INT      NOT NULL,
-    startTime       TIMESTAMP,
-    endTime         TIMESTAMP,
+    sessionID       INT      AUTO_INCREMENT NOT NULL,
+    startTime       DATETIME,
+    endTime         DATETIME,
     sessionName     VARCHAR(32),
     email           VARCHAR(32),
     roomName        VARCHAR(32),
