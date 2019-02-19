@@ -2,13 +2,13 @@ kind: pipeline
 name: default
 
 steps:
-- name: (Backend) Run go tests
+- name: Backend-Run-go-tests
   image: golang:1.11.5
   commands:
   - cd backend
   - go test -v ./...
 
-- name: (Backend) Make sure swagger docs are up to date
+- name: Backend-Make-sure-swagger-docs-are-up-to-date
   image: golang:1.11.5
   commands:
   - go get -u github.com/swaggo/swag/cmd/swag
