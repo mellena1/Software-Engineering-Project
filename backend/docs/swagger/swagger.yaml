@@ -4,12 +4,14 @@ definitions:
     properties:
       capacity:
         type: integer
-      id:
-        type: integer
+      roomName:
+        type: string
     type: object
   db.Session:
     properties:
       endTime:
+        type: string
+      id:
         type: integer
       room:
         $ref: '#/definitions/db.Room'
@@ -18,15 +20,17 @@ definitions:
         $ref: '#/definitions/db.Speaker'
         type: object
       startTime:
-        type: integer
+        type: string
       title:
         type: string
     type: object
   db.Speaker:
     properties:
-      id:
-        type: integer
-      name:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
         type: string
     type: object
 host: '{{.Host}}'
