@@ -8,7 +8,7 @@ steps:
   - cd backend
   - go test -v ./...
 
-- name: Backend-Make-sure-swagger-docs-are-up-to-date
+- name: Backend-swag-docs
   image: golang:1.11.5
   commands:
   - go get -u github.com/swaggo/swag/cmd/swag
