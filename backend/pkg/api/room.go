@@ -43,7 +43,7 @@ func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 	rooms, err := a.roomReader.ReadAllRooms()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write(nil)
+		w.Write([]byte(err.Error()))
 		return
 	}
 	j, _ := json.Marshal(rooms)
