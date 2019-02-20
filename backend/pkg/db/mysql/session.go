@@ -91,8 +91,19 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 
 // WriteASession writes a session to the db
 func (s SessionMySQL) WriteASession(session db.Session) error {
-	q := "INSERT INTO session (`startTime`, `endTime`, `sessionName`, `email`, `roomName`) VALUES\n"
-	q += "('" + session.StartTime.Format("") + "','" + session.EndTime.Format("") + "','" + session.Title + "','" + session.Speaker.Email + "','" + session.Room.RoomName + "');"
+	if s.db == nil {
+		return ErrDBNotSet
+	}
+
+	q := "INSERT INTO session (`startTime`, `endTime`, `sessionName`, `email`, `roomName`) VALUES\n" +
+		"('" + session.StartTime.Format("") + "','" + session.EndTime.Format("") + "','" + session.Title +
+		"','" + session.Speaker.Email + "','" + session.Room.RoomName + "');"
+
+	_, err := s.db.Query(q)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
