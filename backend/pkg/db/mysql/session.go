@@ -22,7 +22,10 @@ func (s SessionMySQL) ReadASession(sessionID int) (db.Session, error) {
 		return db.Session{}, ErrDBNotSet
 	}
 
-	q := "SELECT * FROM session WHERE sessionID = " + string(sessionID) + ";"
+	q := `SELECT session.sessionID, session.startTime, session.endTime, session.sessionName, speaker.*, room.* FROM session 
+	INNER JOIN speaker ON session.email = speaker.email
+	INNER JOIN room ON session.roomName = room.roomName
+	WHERE session.sessionID = ` + string(sessionID) + ";"
 
 	rows, err := s.db.Query(q)
 	if err != nil {
@@ -34,7 +37,9 @@ func (s SessionMySQL) ReadASession(sessionID int) (db.Session, error) {
 	hasNext := rows.Next()
 
 	if hasNext == true {
-		rows.Scan(&session.ID, &session.StartTime, &session.EndTime, &session.Title, &session.Speaker, &session.Room)
+		rows.Scan(&session.ID, &session.StartTime, &session.EndTime, &session.Title,
+			&session.Speaker.Email, &session.Speaker.FirstName, &session.Speaker.LastName,
+			&session.Room.RoomName, session.Room.Capacity)
 	} else {
 		err = rows.Err()
 		if err != nil {
@@ -57,7 +62,9 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 		return nil, ErrDBNotSet
 	}
 
-	q := "SELECT * FROM session;"
+	q := `SELECT session.sessionID, session.startTime, session.endTime, session.sessionName, speaker.*, room.* FROM session 
+	INNER JOIN speaker ON session.email = speaker.email
+	INNER JOIN room ON session.roomName = room.roomName;`
 
 	rows, err := s.db.Query(q)
 	if err != nil {
@@ -68,7 +75,9 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 	sessions := []db.Session{}
 	for rows.Next() {
 		session := db.Session{}
-		rows.Scan(&session.ID, &session.StartTime, &session.EndTime, &session.Title, &session.Speaker, &session.Room)
+		rows.Scan(&session.ID, &session.StartTime, &session.EndTime, &session.Title,
+			&session.Speaker.Email, &session.Speaker.FirstName, &session.Speaker.LastName,
+			&session.Room.RoomName, session.Room.Capacity)
 		sessions = append(sessions, session)
 	}
 
@@ -81,7 +90,9 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 }
 
 // WriteASession writes a session to the db
-func (SessionMySQL) WriteASession(s db.Session) error {
+func (s SessionMySQL) WriteASession(session db.Session) error {
+	q := "INSERT INTO session (`startTime`, `endTime`, `sessionName`, `email`, `roomName`) VALUES\n"
+	q += "('" + session.StartTime.Format("") + "','" + session.EndTime.Format("") + "','" + session.Title + "','" + session.Speaker.Email + "','" + session.Room.RoomName + "');"
 	return nil
 }
 
