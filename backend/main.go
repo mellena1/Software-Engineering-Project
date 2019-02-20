@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/api"
@@ -27,6 +28,7 @@ func main() {
 		app.CreatePrefixedRoutes(swaggerRoute)
 	}
 
-	log.Println("Starting the server...")
-	log.Fatal(app.ListenAndServe(":8081"))
+	addr := fmt.Sprintf(":%d", config.Values.Port)
+	log.Printf("Starting the server at %s...", addr)
+	log.Fatal(app.ListenAndServe(addr))
 }

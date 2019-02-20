@@ -14,6 +14,7 @@ type values struct {
 	RunSwagger  bool
 	MySQLConfig *mysqlDriver.Config
 	LogWriter   io.Writer
+	Port        int
 }
 
 // Values the config values returned from viper
@@ -32,6 +33,8 @@ func init() {
 	flag.StringP("dbname", "n", "", "mysql db name")
 	flag.String("dbnet", "", "mysql db net")
 	flag.String("dbaddr", "", "mysql db addr")
+	// app settings
+	flag.Int("port", 8081, "port to run the api on")
 
 	flag.Parse()
 
@@ -57,6 +60,9 @@ func init() {
 	Values.MySQLConfig.DBName = viper.GetString("dbname")
 	Values.MySQLConfig.Net = viper.GetString("dbnet")
 	Values.MySQLConfig.Addr = viper.GetString("dbaddr")
+
+	// App settings
+	Values.Port = viper.GetInt("port")
 }
 
 func getFileWriter(fileName string) *os.File {
