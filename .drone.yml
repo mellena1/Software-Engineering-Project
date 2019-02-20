@@ -8,6 +8,12 @@ steps:
   - cd backend
   - go test -v ./...
 
+- name: Backend-gofmt
+  image: golang:1.11.5
+  commands:
+  - cd backend
+  - go fmt ./... | [ $(wc -l) -eq 0 ]
+
 - name: Backend-swag-docs
   image: golang:1.11.5
   commands:
