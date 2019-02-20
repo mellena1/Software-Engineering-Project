@@ -1,4 +1,6 @@
 # Software-Engineering-Project
+[![Build Status](https://ci.andrewmellen.org/api/badges/mellena1/Software-Engineering-Project/status.svg)](https://ci.andrewmellen.org/mellena1/Software-Engineering-Project)
+
 Our final project for Software Engineering to count people in a room.
 
 ## Local Development

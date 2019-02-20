@@ -1,0 +1,29 @@
+kind: pipeline
+name: default
+
+steps:
+- name: Backend-Run-go-tests
+  image: golang:1.11.5
+  commands:
+  - cd backend
+  - go test -v ./...
+
+- name: Backend-gofmt
+  image: golang:1.11.5
+  commands:
+  - cd backend
+  - go fmt ./... | [ $(wc -l) -eq 0 ]
+
+- name: Backend-swag-docs
+  image: golang:1.11.5
+  commands:
+  - go get -u github.com/swaggo/swag/cmd/swag
+  - cd backend
+  - swag init -s /tmp/docs-new
+  - diff docs/swagger /tmp/docs-new
+
+trigger:
+  event:
+    include:
+    - pull_request
+    
