@@ -17,13 +17,80 @@ func NewSpeakerMySQL(db *sql.DB) SpeakerMySQL {
 }
 
 // ReadASpeaker reads a speaker from the db given email
-func (SpeakerMySQL) ReadASpeaker(email string) (db.Speaker, error) {
-	return db.Speaker{}, nil
+func (s SpeakerMySQL) ReadASpeaker(emailID string) (db.Speaker, error) {
+	query := `SELECT * FROM speaker where email = ?;`
+	speaker := db.Speaker{}
+	var (
+		email string
+		firstName string
+		lastName string
+	)
+
+	rows, err := s.db.Query(query, emailID)
+	if err != nil {
+		return speaker, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&email, &firstName, &lastName)
+		if err != nil {
+			return speaker, err
+		}
+		speaker = db.Speaker{
+			Email: email,
+			FirstName: firstName,
+			LastName: lastName,
+		}	
+		
+	}
+	err = rows.Err()
+	if err != nil {
+		return speaker, err
+	}
+
+	return speaker, nil
 }
 
+
 // ReadAllSpeakers reads all speakers from the db
-func (SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
-	return []db.Speaker{}, nil
+func (s SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
+	query := `SELECT * FROM speaker;`
+	var speakers = []db.Speaker{}
+
+	var (
+		email string
+		firstName string
+		lastName string
+	)
+
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return []db.Speaker{}, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&email, &firstName, &lastName)
+		if err != nil {
+			return []db.Speaker{}, err
+		}
+		speaker := db.Speaker{
+			Email: email,
+			FirstName: firstName,
+			LastName: lastName,
+		}	
+		
+		speakers = append(speakers, speaker)
+	}
+	err = rows.Err()
+	if err != nil {
+		return []db.Speaker{}, err
+	}
+
+	return speakers, nil
 }
 
 // WriteASpeaker writes a speaker to the db

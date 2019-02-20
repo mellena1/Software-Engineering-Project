@@ -62,7 +62,33 @@
                 }
             }
         },
-        "/api/v1/speaker": {
+        "/api/v1/speaker/{email}": {
+            "get": {
+                "description": "Return a speaker with the specified email",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a speaker by email",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Speaker"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": ""
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/speakers": {
             "get": {
                 "description": "Return a list of all speakers",
                 "produces": [
