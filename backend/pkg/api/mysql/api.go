@@ -2,9 +2,11 @@ package mysql
 
 import (
 	"database/sql"
+	"io"
 	"net/http"
 
 	mysqlDriver "github.com/go-sql-driver/mysql" // mysql driver for database/sql
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/api"
@@ -13,19 +15,23 @@ import (
 
 // API implements a router using gorilla/mux and a db using the go-sql-driver/mysql lib
 type API struct {
-	router *mux.Router
-	db     *sql.DB
+	router    *mux.Router
+	logWriter io.Writer
+	db        *sql.DB
 }
 
 // NewAPI returns a new API given a mysqlDriver.Config
-func NewAPI(mySQLConfig mysqlDriver.Config) (*API, error) {
+// passing nil to logWriter means no logging
+func NewAPI(mySQLConfig mysqlDriver.Config, logWriter io.Writer) (*API, error) {
 	db, err := sql.Open("mysql", mySQLConfig.FormatDSN())
 	if err != nil {
 		return nil, err
 	}
+
 	apiObj := API{
-		router: mux.NewRouter(),
-		db:     db,
+		router:    mux.NewRouter(),
+		db:        db,
+		logWriter: logWriter,
 	}
 
 	// Room
@@ -48,7 +54,11 @@ func NewAPI(mySQLConfig mysqlDriver.Config) (*API, error) {
 
 // ListenAndServe basically runs http.ListenAndServe
 func (a API) ListenAndServe(addr string) error {
-	return http.ListenAndServe(addr, a.router)
+	var handler http.Handler = a.router
+	if a.logWriter != nil {
+		handler = handlers.LoggingHandler(a.logWriter, a.router)
+	}
+	return http.ListenAndServe(addr, handler)
 }
 
 // CreateRoutes adds a route(s) to the router
