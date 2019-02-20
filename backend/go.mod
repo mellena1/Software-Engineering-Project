@@ -8,8 +8,12 @@ require (
 	github.com/go-openapi/spec v0.18.0 // indirect
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/google/pprof v0.0.0-20190208070709-b421f19a5c07 // indirect
+	github.com/gorilla/handlers v1.4.0
 	github.com/gorilla/mux v1.7.0
+	github.com/ogier/pflag v0.0.1
 	github.com/pkg/errors v0.8.1 // indirect
+	github.com/spf13/pflag v1.0.3
+	github.com/spf13/viper v1.3.1
 	github.com/stretchr/testify v1.3.0
 	github.com/swaggo/files v0.0.0-20190110041405-30649e0721f8 // indirect
 	github.com/swaggo/http-swagger v0.0.0-20190108015318-d870181109f4

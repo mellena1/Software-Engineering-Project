@@ -6,6 +6,13 @@ services:
       - "80:8080"
   backend:
     build: backend/.
+    environment:
+      CODECAMP_SWAGGER: "true"
+      CODECAMP_DBUSER: root
+      CODECAMP_DBPASS: codecamp
+      CODECAMP_DBNAME: codecamp
+      CODECAMP_DBADDR: db
+      CODECAMP_DBNET: tcp
     ports:
       - "81:8081"
   db:

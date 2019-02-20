@@ -96,8 +96,8 @@
                 "capacity": {
                     "type": "integer"
                 },
-                "id": {
-                    "type": "integer"
+                "roomName": {
+                    "type": "string"
                 }
             }
         },
@@ -105,6 +105,9 @@
             "type": "object",
             "properties": {
                 "endTime": {
+                    "type": "string"
+                },
+                "id": {
                     "type": "integer"
                 },
                 "room": {
@@ -116,7 +119,7 @@
                     "$ref": "#/definitions/db.Speaker"
                 },
                 "startTime": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "title": {
                     "type": "string"
@@ -126,10 +129,13 @@
         "db.Speaker": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
+                "email": {
+                    "type": "string"
                 },
-                "name": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
                     "type": "string"
                 }
             }
