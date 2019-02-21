@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
@@ -62,7 +63,7 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} nil
 // @Router /api/v1/speaker/{email} [get]
 func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
-	email := "audrey.kirlin@example.org" //placeholder email to test functionalilty until we figure out retrieving the {email} from the path
+	email := strings.TrimPrefix(r.RequestURI, "/api/v1/speaker/")
 	speakers, err := a.speakerReader.ReadASpeaker(email)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
