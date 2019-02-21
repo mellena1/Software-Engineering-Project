@@ -4,32 +4,40 @@ CREATE DATABASE codecamp;
 USE codecamp;
 
 DROP TABLE IF EXISTS session,
-                     speaker,
-                     room;
+                     timeslot,
+                     room,
+                     speaker;
 
 CREATE TABLE speaker (
+    speakerID   INT          AUTO_INCREMENT NOT NULL,
     email       VARCHAR(32)  NOT NULL,
     firstName   VARCHAR(32),
     lastName    VARCHAR(32),
-    PRIMARY KEY (email)
+    PRIMARY KEY (speakerID)
 );
 
 CREATE TABLE room (
+    roomID     INT           AUTO_INCREMENT NOT NULL,
     roomName   VARCHAR(32)   NOT NULL,
     capacity   INT,
-    PRIMARY KEY (roomName)
+    PRIMARY KEY (roomID)
+);
+
+CREATE TABLE timeslot (
+    timeslotID  INT     AUTO_INCREMENT NOT NULL,
+    startTime   DATETIME,
+    endTime     DATETIME,
+    PRIMARY KEY (timeslotID)
 );
 
 CREATE TABLE session (
     sessionID       INT      AUTO_INCREMENT NOT NULL,
-    startTime       DATETIME,
-    endTime         DATETIME,
+    speakerID       INT,
+    roomID          INT,
+    timeslotID      INT,
     sessionName     VARCHAR(32),
-    email           VARCHAR(32),
-    roomName        VARCHAR(32),
-    KEY (email),
-    KEY (roomName),
-    FOREIGN KEY (email)       REFERENCES speaker (email),
-    FOREIGN KEY (roomName)    REFERENCES room (roomName),
+    FOREIGN KEY (speakerID)  REFERENCES speaker (speakerID),
+    FOREIGN KEY (roomID)     REFERENCES room (roomID),
+    FOREIGN KEY (timeslotID) REFERENCES timeslot (timeslotID),
     PRIMARY KEY (sessionID)
 );
