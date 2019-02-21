@@ -104,11 +104,11 @@
         "db.Session": {
             "type": "object",
             "properties": {
-                "endTime": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 },
                 "room": {
                     "type": "object",
@@ -118,11 +118,9 @@
                     "type": "object",
                     "$ref": "#/definitions/db.Speaker"
                 },
-                "startTime": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
+                "timeslot": {
+                    "type": "object",
+                    "$ref": "#/definitions/db.Timeslot"
                 }
             }
         },
@@ -136,6 +134,20 @@
                     "type": "string"
                 },
                 "lastName": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.Timeslot": {
+            "type": "object",
+            "properties": {
+                "endTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "startTime": {
                     "type": "string"
                 }
             }
