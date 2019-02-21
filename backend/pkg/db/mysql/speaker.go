@@ -45,6 +45,7 @@ func (s SpeakerMySQL) ReadASpeaker(emailID string) (db.Speaker, error) {
 		}	
 		
 	}
+	
 	err = rows.Err()
 	if err != nil {
 		return speaker, err

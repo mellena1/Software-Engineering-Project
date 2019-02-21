@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
@@ -45,7 +44,7 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 	speakers, err := a.speakerReader.ReadAllSpeakers()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
+		w.Write(nil)
 		return
 	}
 	j, err := json.Marshal(speakers)
@@ -63,11 +62,11 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} nil
 // @Router /api/v1/speaker/{email} [get]
 func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
-	email := strings.TrimPrefix(r.RequestURI, "/api/v1/speaker/")
+	email := getParamsFromRequest(r)
 	speakers, err := a.speakerReader.ReadASpeaker(email)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
+		w.Write(nil)
 		return
 	}
 	j, err := json.Marshal(speakers)
