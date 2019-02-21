@@ -9,20 +9,19 @@ definitions:
     type: object
   db.Session:
     properties:
-      endTime:
-        type: string
       id:
         type: integer
+      name:
+        type: string
       room:
         $ref: '#/definitions/db.Room'
         type: object
       speaker:
         $ref: '#/definitions/db.Speaker'
         type: object
-      startTime:
-        type: string
-      title:
-        type: string
+      timeslot:
+        $ref: '#/definitions/db.Timeslot'
+        type: object
     type: object
   db.Speaker:
     properties:
@@ -31,6 +30,15 @@ definitions:
       firstName:
         type: string
       lastName:
+        type: string
+    type: object
+  db.Timeslot:
+    properties:
+      endTime:
+        type: string
+      id:
+        type: integer
+      startTime:
         type: string
     type: object
 host: '{{.Host}}'
