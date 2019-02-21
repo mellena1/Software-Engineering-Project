@@ -95,11 +95,13 @@ func (s SessionMySQL) WriteASession(session db.Session) error {
 		return ErrDBNotSet
 	}
 
-	q := "INSERT INTO session (`startTime`, `endTime`, `sessionName`, `email`, `roomName`) VALUES\n" +
-		"('" + session.StartTime.Format("") + "','" + session.EndTime.Format("") + "','" + session.Title +
-		"','" + session.Speaker.Email + "','" + session.Room.RoomName + "');"
+	stmt, err := s.db.Prepare("INSERT INTO session VALUES (?, ?, ?, ?, ?)")
+	if err != nil {
+		return err
+	}
 
-	_, err := s.db.Query(q)
+	_, err = stmt.Exec(session.StartTime.Format("2019-02-18T21:00:00"), session.EndTime.Format("2019-02-18T21:00:00"),
+		session.Title, session.Speaker.Email, session.Room.RoomName)
 	if err != nil {
 		return err
 	}
