@@ -2,9 +2,18 @@ package db
 
 // Speaker holds all data about a speaker
 type Speaker struct {
-	Email     string
-	FirstName string
-	LastName  string
+	Email     *string
+	FirstName *string
+	LastName  *string
+}
+
+// NewSpeaker makes a new Speaker with default values
+func NewSpeaker() Speaker {
+	return Speaker{
+		Email:     StringPtr(""),
+		FirstName: StringPtr(""),
+		LastName:  StringPtr(""),
+	}
 }
 
 // SpeakerReaderWriterUpdaterDeleter implements everything that a facade for a Speaker would need

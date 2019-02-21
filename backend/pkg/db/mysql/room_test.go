@@ -35,8 +35,8 @@ func TestReadAllRoomsValid(t *testing.T) {
 
 	// Make sure returned Rooms are correct
 	expected := []db.Room{
-		db.Room{RoomName: "Room1", Capacity: 1},
-		db.Room{RoomName: "Room2", Capacity: 2},
+		db.Room{RoomName: db.StringPtr("Room1"), Capacity: db.IntPtr(1)},
+		db.Room{RoomName: db.StringPtr("Room2"), Capacity: db.IntPtr(2)},
 	}
 	assert.Equal(t, expected, actual)
 }
