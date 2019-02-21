@@ -36,8 +36,6 @@ CREATE TABLE session (
     roomID          INT,
     timeslotID      INT,
     sessionName     VARCHAR(32),
-    email           VARCHAR(32),
-    roomName        VARCHAR(32),
     FOREIGN KEY (speakerID)  REFERENCES speaker (speakerID),
     FOREIGN KEY (roomID)     REFERENCES room (roomID),
     FOREIGN KEY (timeslotID) REFERENCES timeslot (timeslotID),
