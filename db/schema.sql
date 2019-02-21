@@ -8,16 +8,18 @@ DROP TABLE IF EXISTS session,
                      room;
 
 CREATE TABLE speaker (
+    speakerID   INT          AUTO_INCREMENT NOT NULL,
     email       VARCHAR(32)  NOT NULL,
     firstName   VARCHAR(32),
     lastName    VARCHAR(32),
-    PRIMARY KEY (email)
+    PRIMARY KEY (speakerID)
 );
 
 CREATE TABLE room (
+    roomID     INT           AUTO_INCREMENT NOT NULL,
     roomName   VARCHAR(32)   NOT NULL,
     capacity   INT,
-    PRIMARY KEY (roomName)
+    PRIMARY KEY (roomID)
 );
 
 CREATE TABLE session (
@@ -27,9 +29,9 @@ CREATE TABLE session (
     sessionName     VARCHAR(32),
     email           VARCHAR(32),
     roomName        VARCHAR(32),
-    KEY (email),
-    KEY (roomName),
-    FOREIGN KEY (email)       REFERENCES speaker (email),
-    FOREIGN KEY (roomName)    REFERENCES room (roomName),
+    KEY (speakerID),
+    KEY (roomID),
+    FOREIGN KEY (speakerID) REFERENCES speaker (speakerID),
+    FOREIGN KEY (roomID)    REFERENCES room (roomID),
     PRIMARY KEY (sessionID)
 );
