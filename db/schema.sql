@@ -24,13 +24,13 @@ CREATE TABLE room (
 
 CREATE TABLE session (
     sessionID       INT      AUTO_INCREMENT NOT NULL,
+    speakerID       INT,
+    roomID          INT,
     startTime       DATETIME,
     endTime         DATETIME,
     sessionName     VARCHAR(32),
     email           VARCHAR(32),
     roomName        VARCHAR(32),
-    KEY (speakerID),
-    KEY (roomID),
     FOREIGN KEY (speakerID) REFERENCES speaker (speakerID),
     FOREIGN KEY (roomID)    REFERENCES room (roomID),
     PRIMARY KEY (sessionID)
