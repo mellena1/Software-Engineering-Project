@@ -21,9 +21,9 @@ func (s SpeakerMySQL) ReadASpeaker(emailID string) (db.Speaker, error) {
 	query := `SELECT * FROM speaker where email = ?;`
 	speaker := db.Speaker{}
 	var (
-		email string
+		email     string
 		firstName string
-		lastName string
+		lastName  string
 	)
 
 	rows, err := s.db.Query(query, emailID)
@@ -39,13 +39,13 @@ func (s SpeakerMySQL) ReadASpeaker(emailID string) (db.Speaker, error) {
 			return speaker, err
 		}
 		speaker = db.Speaker{
-			Email: email,
+			Email:     email,
 			FirstName: firstName,
-			LastName: lastName,
-		}	
-		
+			LastName:  lastName,
+		}
+
 	}
-	
+
 	err = rows.Err()
 	if err != nil {
 		return speaker, err
@@ -54,16 +54,15 @@ func (s SpeakerMySQL) ReadASpeaker(emailID string) (db.Speaker, error) {
 	return speaker, nil
 }
 
-
 // ReadAllSpeakers reads all speakers from the db
 func (s SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
 	query := `SELECT * FROM speaker;`
 	var speakers = []db.Speaker{}
 
 	var (
-		email string
+		email     string
 		firstName string
-		lastName string
+		lastName  string
 	)
 
 	rows, err := s.db.Query(query)
@@ -79,11 +78,11 @@ func (s SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
 			return []db.Speaker{}, err
 		}
 		speaker := db.Speaker{
-			Email: email,
+			Email:     email,
 			FirstName: firstName,
-			LastName: lastName,
-		}	
-		
+			LastName:  lastName,
+		}
+
 		speakers = append(speakers, speaker)
 	}
 	err = rows.Err()
