@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Room } from '../data_models/room'
+import { Timeslot } from '../data_models/timeslot'
 
 @Injectable({
   providedIn: 'root'
 })
-export class RoomService {
+export class TimeslotService {
 
   constructor(private http: HttpClient) { }
 
-  getAllRooms() {
+  getAllTimeslots() {
 
   }
 
-  getRoom(id: number) {
+  getTimeslot(id: number) {
     
   }
 }

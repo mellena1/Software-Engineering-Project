@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Room } from '../data_models/room'
+import { Session } from '../data_models/session'
 
 @Injectable({
   providedIn: 'root'
 })
-export class RoomService {
+export class SessionService {
 
   constructor(private http: HttpClient) { }
 
-  getAllRooms() {
+  getAllSessions() {
 
   }
 
-  getRoom(id: number) {
+  getSession(id: number) {
     
   }
 }
