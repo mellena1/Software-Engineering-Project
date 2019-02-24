@@ -57,6 +57,7 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 // getAllSpeakers Gets a speaker with the specified email from the db
 // @Summary Get a speaker by email
 // @Description Return a speaker with the specified email
+// @Param email body string true "Email of the requested speaker" 
 // @Produce json
 // @Success 200 {array} db.Speaker
 // @Failure 400 {} nil

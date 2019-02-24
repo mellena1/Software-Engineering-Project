@@ -29,6 +29,8 @@ definitions:
         type: string
       firstName:
         type: string
+      id:
+        type: string
       lastName:
         type: string
     type: object
@@ -86,6 +88,13 @@ paths:
   /api/v1/speaker:
     get:
       description: Return a speaker with the specified email
+      parameters:
+      - description: Email of the requested speaker
+        in: body
+        name: email
+        required: true
+        schema:
+          type: object
       produces:
       - application/json
       responses:

@@ -69,6 +69,17 @@
                     "application/json"
                 ],
                 "summary": "Get a speaker by email",
+                "parameters": [
+                    {
+                        "description": "Email of the requested speaker",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -157,6 +168,9 @@
                     "type": "string"
                 },
                 "firstName": {
+                    "type": "string"
+                },
+                "id": {
                     "type": "string"
                 },
                 "lastName": {
