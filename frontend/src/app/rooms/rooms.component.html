@@ -1,7 +1,5 @@
-<h2>Rooms</h2>
-
 <ul class="rooms">
-
-
-
+    <li *ngFor="let room of rooms">
+        <span class="badge">{{ room.roomName }}</span>
+    </li>
 </ul>
