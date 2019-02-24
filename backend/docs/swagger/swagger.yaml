@@ -83,7 +83,7 @@ paths:
           schema:
             type: ""
       summary: Get all sessions
-  /api/v1/speaker/{email}:
+  /api/v1/speaker:
     get:
       description: Return a speaker with the specified email
       produces:

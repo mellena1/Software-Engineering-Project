@@ -26,7 +26,7 @@ func CreateSpeakerRoutes(speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) [
 	}
 
 	routes := []Route{
-		NewRoute("/api/v1/speaker/{email}", speakAPI.getASpeaker, "GET"),
+		NewRoute("/api/v1/speaker", speakAPI.getASpeaker, "GET"),
 		NewRoute("/api/v1/speakers", speakAPI.getAllSpeakers, "GET"),
 	}
 
@@ -60,7 +60,7 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Success 200 {array} db.Speaker
 // @Failure 400 {} nil
-// @Router /api/v1/speaker/{email} [get]
+// @Router /api/v1/speaker [get]
 func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
 	email := getParamsFromRequest(r)
 	speakers, err := a.speakerReader.ReadASpeaker(email)

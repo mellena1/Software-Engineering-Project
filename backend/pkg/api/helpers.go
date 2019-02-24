@@ -2,23 +2,25 @@ package api
 
 import (
 	"net/http"
-	"strings"
+	"encoding/json"
 )
 
 type Helper interface {
 }
 
-func getParamsFromRequest(req *http.Request) string {
-	uri := req.RequestURI
+type BodyData struct{
+	Email string
+}
 
-	if strings.Contains(uri, "/speaker/") {
-		return strings.TrimPrefix(uri, "/api/v1/speaker/")
-	} else if strings.Contains(uri, "/room/") {
-		return strings.TrimPrefix(uri, "/api/v1/room/")
-	} else if strings.Contains(uri, "/session/") {
-		return strings.TrimPrefix(uri, "/api/v1/session/")
-	} else {
-		//this uri should not have parameters
-		return ""
+func getParamsFromRequest(req *http.Request) string {
+	reader := json.NewDecoder(req.Body)
+
+	var data BodyData
+	err := reader.Decode(&data)
+	if err != nil {
+		return("")
 	}
+
+	email := data.Email
+	return email;
 }
