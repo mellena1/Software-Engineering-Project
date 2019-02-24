@@ -2,6 +2,7 @@ package db
 
 // Speaker holds all data about a speaker
 type Speaker struct {
+	UID		  *string
 	Email     *string
 	FirstName *string
 	LastName  *string
@@ -10,6 +11,7 @@ type Speaker struct {
 // NewSpeaker makes a new Speaker with default values
 func NewSpeaker() Speaker {
 	return Speaker{
+		UID: 	   StringPtr(""),
 		Email:     StringPtr(""),
 		FirstName: StringPtr(""),
 		LastName:  StringPtr(""),
