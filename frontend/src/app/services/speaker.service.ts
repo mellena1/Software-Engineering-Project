@@ -20,4 +20,16 @@ export class SpeakerService {
   getSpeaker(id: number) {
     
   }
+
+  writeRoom() {
+
+  }
+
+  updateRoom() {
+
+  }
+
+  deleteRoom() {
+
+  }
 }

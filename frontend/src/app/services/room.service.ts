@@ -20,8 +20,20 @@ export class RoomService {
       .pipe(map(data => data), catchError(this.handleError));
   }
 
-  getRoom(id: number) {
+  getARoom(id: number) {
     
+  }
+
+  writeRoom() {
+
+  }
+
+  updateRoom() {
+
+  }
+
+  deleteRoom() {
+
   }
 
   private handleError(res: HttpErrorResponse | any) {

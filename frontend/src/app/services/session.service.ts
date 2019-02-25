@@ -18,6 +18,19 @@ export class SessionService {
   }
 
   getSession(id: number) {
-    
+
   }
+
+  writeSession() {
+
+  }
+
+  updateSession() {
+
+  }
+
+  deleteSession() {
+
+  }
+
 }

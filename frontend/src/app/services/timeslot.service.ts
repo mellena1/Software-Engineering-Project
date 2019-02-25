@@ -20,4 +20,16 @@ export class TimeslotService {
   getTimeslot(id: number) {
     
   }
+
+  writeTimeslot() {
+
+  }
+
+  updateTimeslot() {
+
+  }
+
+  deleteTimeslot() {
+
+  }
 }
