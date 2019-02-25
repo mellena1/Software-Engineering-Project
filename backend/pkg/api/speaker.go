@@ -43,8 +43,9 @@ func CreateSpeakerRoutes(speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) [
 func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 	speakers, err := a.speakerReader.ReadAllSpeakers()
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(nil)
+		w.WriteHeader(http.StatusServiceUnavailable)
+		log.Printf("Failed to read speakers from the db: %v", err)
+		w.Write([]byte("Read from the backend failed"))
 		return
 	}
 	j, err := json.Marshal(speakers)
@@ -66,13 +67,14 @@ func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
 	email := getParamsFromRequest(r)
 	speakers, err := a.speakerReader.ReadASpeaker(email)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(nil)
+		w.WriteHeader(http.StatusServiceUnavailable)
+		log.Printf("Failed to read speaker (%v) from the db: %v", email, err)
+		w.Write([]byte("Read from the backend failed"))
 		return
 	}
 	j, err := json.Marshal(speakers)
 	_, err = w.Write(j)
 	if err != nil {
-		log.Fatal("Failed to respond to getAllSpeakers")
+		log.Fatal("Failed to respond to getASpeaker")
 	}
 }
