@@ -26,7 +26,7 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 	}
 
 	routes := []Route{
-		NewRoute("/api/v1/getAllRooms", roomAPI.getAllRooms, "GET"),
+		NewRoute("/api/v1/rooms", roomAPI.getAllRooms, "GET"),
 	}
 
 	return routes
@@ -38,7 +38,7 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 // @Produce json
 // @Success 200 {array} db.Room
 // @Failure 400 {} nil
-// @Router /api/v1/room [get]
+// @Router /api/v1/rooms [get]
 func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 	rooms, err := a.roomReader.ReadAllRooms()
 	if err != nil {
@@ -49,7 +49,6 @@ func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 	}
 	j, _ := json.Marshal(rooms)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.WriteHeader(200)
 	_, err = w.Write(j)
 	if err != nil {
 		log.Println("Failed to respond to getAllRooms")
