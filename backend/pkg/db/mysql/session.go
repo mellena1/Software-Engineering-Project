@@ -22,10 +22,11 @@ func (s SessionMySQL) ReadASession(sessionID int) (db.Session, error) {
 		return db.Session{}, ErrDBNotSet
 	}
 
-	q := `SELECT session.sessionID, session.startTime, session.endTime, session.sessionName, speaker.*, room.* FROM session 
-	INNER JOIN speaker ON session.email = speaker.email
-	INNER JOIN room ON session.roomName = room.roomName
-	WHERE session.sessionID = ` + string(sessionID) + ";"
+	q := `SELECT session.sessionID, speaker.*, room.*, timeslot.*, session.sessionName FROM session
+		INNER JOIN speaker ON session.speakerID = speaker.speakerID
+		INNER JOIN room ON session.roomID = room.roomID
+		INNER JOIN timeslot ON session.timeslotID = timeslot.timeslotID
+		WHERE session.sessionID = ` + string(sessionID) + ";"
 
 	rows, err := s.db.Query(q)
 	if err != nil {
@@ -37,9 +38,10 @@ func (s SessionMySQL) ReadASession(sessionID int) (db.Session, error) {
 	hasNext := rows.Next()
 
 	if hasNext == true {
-		rows.Scan(&session.ID, &session.StartTime, &session.EndTime, &session.Title,
-			&session.Speaker.Email, &session.Speaker.FirstName, &session.Speaker.LastName,
-			&session.Room.RoomName, session.Room.Capacity)
+		rows.Scan(session.ID, session.Speaker.Email, session.Speaker.FirstName,
+			session.Speaker.LastName, session.Room.ID, session.Room.RoomName,
+			session.Room.Capacity, session.Timeslot.ID, session.Timeslot.StartTime,
+			session.Timeslot.EndTime, session.Name)
 	} else {
 		err = rows.Err()
 		if err != nil {
@@ -48,6 +50,7 @@ func (s SessionMySQL) ReadASession(sessionID int) (db.Session, error) {
 		return session, ErrNoRowsFound
 	}
 
+	// check if the session ID returned multiple rows, if so error
 	hasNext = rows.Next()
 	if hasNext == true {
 		return session, ErrTooManyRows
@@ -62,9 +65,10 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 		return nil, ErrDBNotSet
 	}
 
-	q := `SELECT session.sessionID, session.startTime, session.endTime, session.sessionName, speaker.*, room.* FROM session 
-	INNER JOIN speaker ON session.email = speaker.email
-	INNER JOIN room ON session.roomName = room.roomName;`
+	q := `SELECT session.sessionID, speaker.*, room.*, timeslot.*, session.sessionName FROM session
+		INNER JOIN speaker ON session.speakerID = speaker.speakerID
+		INNER JOIN room ON session.roomID = room.roomID
+		INNER JOIN timeslot ON session.timeslotID = timeslot.timeslotID;`
 
 	rows, err := s.db.Query(q)
 	if err != nil {
@@ -75,9 +79,10 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 	sessions := []db.Session{}
 	for rows.Next() {
 		session := db.Session{}
-		rows.Scan(&session.ID, &session.StartTime, &session.EndTime, &session.Title,
-			&session.Speaker.Email, &session.Speaker.FirstName, &session.Speaker.LastName,
-			&session.Room.RoomName, session.Room.Capacity)
+		rows.Scan(session.ID, session.Speaker.Email, session.Speaker.FirstName,
+			session.Speaker.LastName, session.Room.ID, session.Room.RoomName,
+			session.Room.Capacity, session.Timeslot.ID, session.Timeslot.StartTime,
+			session.Timeslot.EndTime, session.Name)
 		sessions = append(sessions, session)
 	}
 
