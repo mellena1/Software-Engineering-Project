@@ -26,7 +26,7 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 	}
 
 	routes := []Route{
-		NewRoute("/api/v1/room", roomAPI.getAllRooms, "GET"),
+		NewRoute("/api/v1/getAllRooms", roomAPI.getAllRooms, "GET"),
 	}
 
 	return routes
