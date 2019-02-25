@@ -30,7 +30,7 @@ definitions:
       firstName:
         type: string
       id:
-        type: string
+        type: integer
       lastName:
         type: string
     type: object
