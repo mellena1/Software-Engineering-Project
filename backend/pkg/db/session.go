@@ -1,15 +1,26 @@
 package db
 
-import "time"
-
 // Session holds all data about a session
 type Session struct {
-	ID        int
-	StartTime time.Time
-	EndTime   time.Time
-	Title     string
-	Speaker   *Speaker
-	Room      *Room
+	ID       *int
+	Timeslot *Timeslot
+	Name     *string
+	Speaker  *Speaker
+	Room     *Room
+}
+
+// NewSession makes a new Session with default values
+func NewSession() Session {
+	room := NewRoom()
+	speaker := NewSpeaker()
+	timeslot := NewTimeslot()
+	return Session{
+		ID:       IntPtr(0),
+		Timeslot: &timeslot,
+		Name:     StringPtr(""),
+		Speaker:  &speaker,
+		Room:     &room,
+	}
 }
 
 // SessionReaderWriterUpdaterDeleter implements everything that a facade for a Session would need

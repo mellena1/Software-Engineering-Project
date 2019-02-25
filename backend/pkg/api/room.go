@@ -42,13 +42,14 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 	rooms, err := a.roomReader.ReadAllRooms()
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(nil)
+		w.WriteHeader(http.StatusServiceUnavailable)
+		log.Printf("Failed to read rooms from the db: %v", err)
+		w.Write([]byte("Read from the backend failed"))
 		return
 	}
 	j, _ := json.Marshal(rooms)
 	_, err = w.Write(j)
 	if err != nil {
-		log.Fatal("Failed to respond to getAllRooms")
+		log.Println("Failed to respond to getAllRooms")
 	}
 }

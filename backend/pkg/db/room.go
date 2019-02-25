@@ -2,8 +2,16 @@ package db
 
 // Room holds all data about a room
 type Room struct {
-	RoomName string
-	Capacity int
+	RoomName *string
+	Capacity *int
+}
+
+// NewRoom makes a new Room with default values
+func NewRoom() Room {
+	return Room{
+		RoomName: StringPtr(""),
+		Capacity: IntPtr(0),
+	}
 }
 
 // RoomReaderWriterUpdaterDeleter implements everything that a facade for a Room would need

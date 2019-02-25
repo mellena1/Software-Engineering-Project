@@ -96,16 +96,19 @@
                 "capacity": {
                     "type": "integer"
                 },
-                "id": {
-                    "type": "integer"
+                "roomName": {
+                    "type": "string"
                 }
             }
         },
         "db.Session": {
             "type": "object",
             "properties": {
-                "endTime": {
+                "id": {
                     "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 },
                 "room": {
                     "type": "object",
@@ -115,21 +118,36 @@
                     "type": "object",
                     "$ref": "#/definitions/db.Speaker"
                 },
-                "startTime": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
+                "timeslot": {
+                    "type": "object",
+                    "$ref": "#/definitions/db.Timeslot"
                 }
             }
         },
         "db.Speaker": {
             "type": "object",
             "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.Timeslot": {
+            "type": "object",
+            "properties": {
+                "endTime": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
-                "name": {
+                "startTime": {
                     "type": "string"
                 }
             }
