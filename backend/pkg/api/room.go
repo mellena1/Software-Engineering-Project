@@ -48,6 +48,8 @@ func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	j, _ := json.Marshal(rooms)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.WriteHeader(200)
 	_, err = w.Write(j)
 	if err != nil {
 		log.Println("Failed to respond to getAllRooms")
