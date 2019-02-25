@@ -14,8 +14,9 @@ export class RoomService {
   constructor(private http: HttpClient) { }
 
   getAllRooms() {
+    // endpoint will change to getAllRooms
     return this.http
-      .get<Room[]>(this.apiUrl + '/api/v1/getAllRooms')
+      .get<Room[]>(this.apiUrl + '/api/v1/room')
       .pipe(map(data => data));
   }
 

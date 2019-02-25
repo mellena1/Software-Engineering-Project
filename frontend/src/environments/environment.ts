@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'backend:81'
+  apiUrl: 'backend:8081'
 };
 
 /*
