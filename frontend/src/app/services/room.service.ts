@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { map } from 'rxjs/operators'
+import { Observable, throwError as observableThrowError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators'
 
 import { Room } from '../data_models/room'
 
@@ -14,13 +15,17 @@ export class RoomService {
   constructor(private http: HttpClient) { }
 
   getAllRooms() {
-    // endpoint will change to getAllRooms
     return this.http
-      .get<Room[]>(this.apiUrl + '/api/v1/room')
-      .pipe(map(data => data));
+      .get<Room[]>(this.apiUrl)
+      .pipe(map(data => data), catchError(this.handleError));
   }
 
   getRoom(id: number) {
     
+  }
+
+  private handleError(res: HttpErrorResponse | any) {
+    console.error(res.error || res.body.error);
+    return observableThrowError(res.error || 'Server error');
   }
 }

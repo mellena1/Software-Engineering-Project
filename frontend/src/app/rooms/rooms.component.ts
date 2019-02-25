@@ -9,13 +9,8 @@ import { Room } from '../data_models/room';
   styleUrls: ['./rooms.component.css']
 })
 export class RoomsComponent implements OnInit {
-  // rooms: Room[] = [
-  //   { id: 1, capacity: 10, roomName: "test" },
-  //   { id: 1, capacity: 10, roomName: "dog" },
-  //   { id: 1, capacity: 10, roomName: "ayyy" }
-  // ];
-
-  rooms: Room[]
+  rooms: Room[];
+  error: any;
   constructor(private roomService: RoomService ) { }
   
   ngOnInit() {
@@ -23,7 +18,11 @@ export class RoomsComponent implements OnInit {
   }
 
   getAllRooms(): void {
-    this.roomService.getAllRooms()
-    .subscribe(rooms => (this.rooms = rooms))
+    this.roomService
+      .getAllRooms()
+      .subscribe(
+        rooms => (this.rooms = rooms),
+        error => (this.error = error)
+      )
   }
 }
