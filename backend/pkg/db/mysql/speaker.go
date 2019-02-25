@@ -21,7 +21,7 @@ func (s SpeakerMySQL) ReadASpeaker(emailID string) (db.Speaker, error) {
 	query := `SELECT * FROM speaker where email = ?;`
 	speaker := db.Speaker{}
 	var (
-		id        *string
+		id        *int
 		email     *string
 		firstName *string
 		lastName  *string
@@ -62,7 +62,7 @@ func (s SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
 	var speakers = []db.Speaker{}
 
 	var (
-		id        *string
+		id        *int
 		email     *string
 		firstName *string
 		lastName  *string
