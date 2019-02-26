@@ -18,7 +18,7 @@ type speakerAPI struct {
 }
 
 type bodyData struct {
-	Email string
+	ID int
 }
 
 // CreateSpeakerRoutes makes all of the routes for speaker related calls
@@ -63,7 +63,7 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 // getAllSpeakers Gets a speaker with the specified email from the db
 // @Summary Get a speaker by email
 // @Description Return a speaker with the specified email
-// @Param email body string true "Email of the requested speaker"
+// @Param speakerID body bodyData true "ID of the requested speaker"
 // @Produce json
 // @Success 200 {array} db.Speaker
 // @Failure 400 {} nil
@@ -78,12 +78,12 @@ func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	email := data.Email
+	speakerID := data.ID
 
-	speakers, err := a.speakerReader.ReadASpeaker(email)
+	speakers, err := a.speakerReader.ReadASpeaker(speakerID)
 	if err != nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
-		log.Printf("Failed to read speaker (%v) from the db: %v", email, err)
+		log.Printf("Failed to read speaker (%v) from the db: %v", speakerID, err)
 		w.Write([]byte("Read from the backend failed"))
 		return
 	}

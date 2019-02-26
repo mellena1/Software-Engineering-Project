@@ -28,7 +28,7 @@ type SpeakerReaderWriterUpdaterDeleter interface {
 
 // SpeakerReader implements all read related methods
 type SpeakerReader interface {
-	ReadASpeaker(email string) (Speaker, error)
+	ReadASpeaker(speakerID int) (Speaker, error)
 	ReadAllSpeakers() ([]Speaker, error)
 }
 

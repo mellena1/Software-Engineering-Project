@@ -91,9 +91,9 @@ paths:
     get:
       description: Return a speaker with the specified email
       parameters:
-      - description: Email of the requested speaker
+      - description: ID of the requested speaker
         in: body
-        name: email
+        name: speakerID
         required: true
         schema:
           type: object

@@ -17,14 +17,14 @@ func NewSpeakerMySQL(db *sql.DB) SpeakerMySQL {
 }
 
 // ReadASpeaker reads a speaker from the db given email
-func (s SpeakerMySQL) ReadASpeaker(emailID string) (db.Speaker, error) {
+func (s SpeakerMySQL) ReadASpeaker(speakerID int) (db.Speaker, error) {
 	if s.db == nil {
 		return db.Speaker{}, ErrDBNotSet
 	}
 
-	query := `SELECT * FROM speaker where email = ?;`
+	query := `SELECT * FROM speaker where speakerID = ?;`
 
-	rows, err := s.db.Query(query, emailID)
+	rows, err := s.db.Query(query, speakerID)
 	if err != nil {
 		return db.Speaker{}, err
 	}
@@ -33,7 +33,7 @@ func (s SpeakerMySQL) ReadASpeaker(emailID string) (db.Speaker, error) {
 
 	speaker := db.NewSpeaker()
 	for rows.Next() {
-		rows.Scan(speaker.Email, speaker.FirstName, speaker.LastName)
+		rows.Scan(speaker.ID, speaker.Email, speaker.FirstName, speaker.LastName)
 	}
 
 	return speaker, nil
@@ -56,7 +56,7 @@ func (s SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
 	speakers := []db.Speaker{}
 	for rows.Next() {
 		newSpeaker := db.NewSpeaker()
-		rows.Scan(newSpeaker.Email, newSpeaker.FirstName, newSpeaker.LastName)
+		rows.Scan(newSpeaker.ID, newSpeaker.Email, newSpeaker.FirstName, newSpeaker.LastName)
 		speakers = append(speakers, newSpeaker)
 	}
 	return speakers, nil

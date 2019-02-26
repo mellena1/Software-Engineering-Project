@@ -71,8 +71,8 @@
                 "summary": "Get a speaker by email",
                 "parameters": [
                     {
-                        "description": "Email of the requested speaker",
-                        "name": "email",
+                        "description": "ID of the requested speaker",
+                        "name": "speakerID",
                         "in": "body",
                         "required": true,
                         "schema": {
