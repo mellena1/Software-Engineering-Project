@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
@@ -42,13 +41,14 @@ func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) [
 func (a sessionAPI) getAllSessions(w http.ResponseWriter, r *http.Request) {
 	sessions, err := a.sessionReader.ReadAllSessions()
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(nil)
+		ReportError(err, "Failed to get all sessions", http.StatusBadRequest, w)
 		return
 	}
+
 	j, err := json.Marshal(sessions)
-	_, err = w.Write(j)
 	if err != nil {
-		log.Fatal("Failed to respond to getAllSessions")
+		ReportError(err, "Failed to create sessions json", http.StatusBadRequest, w)
 	}
+
+	w.Write(j)
 }
