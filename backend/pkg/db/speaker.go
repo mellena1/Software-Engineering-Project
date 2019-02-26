@@ -32,7 +32,7 @@ type SpeakerReader interface {
 
 // SpeakerWriter implements all write related methods
 type SpeakerWriter interface {
-	WriteASpeaker(s Speaker) error
+	WriteASpeaker(speaker Speaker) error
 }
 
 // SpeakerUpdater implements all update related methods

@@ -2,9 +2,14 @@ package db
 
 import "time"
 
+const (
+	// TimeFormat to use to parse time strings with
+	TimeFormat = "2006-01-02 15:04:05"
+)
+
 // Timeslot holds all data about a timeslot
 type Timeslot struct {
-	ID        *int
+	ID        *int64
 	StartTime *time.Time
 	EndTime   *time.Time
 }
@@ -12,7 +17,7 @@ type Timeslot struct {
 // NewTimeslot makes a new Timeslot with default values
 func NewTimeslot() Timeslot {
 	return Timeslot{
-		ID:        IntPtr(0),
+		ID:        Int64Ptr(0),
 		StartTime: &time.Time{},
 		EndTime:   &time.Time{},
 	}
@@ -28,21 +33,21 @@ type TimeslotReaderWriterUpdaterDeleter interface {
 
 // TimeslotReader implements all read related methods
 type TimeslotReader interface {
-	ReadATimeslot(id int) (Timeslot, error)
+	ReadATimeslot(id int64) (Timeslot, error)
 	ReadAllTimeslots() ([]Timeslot, error)
 }
 
 // TimeslotWriter implements all write related methods
 type TimeslotWriter interface {
-	WriteATimeslot(t Timeslot) error
+	WriteATimeslot(timeslot Timeslot) (int64, error)
 }
 
 // TimeslotUpdater implements all update related methods
 type TimeslotUpdater interface {
-	UpdateATimeslot(id int, newTimeslot Timeslot) error
+	UpdateATimeslot(timeslot Timeslot) error
 }
 
 // TimeslotDeleter implements all delete related methods
 type TimeslotDeleter interface {
-	DeleteATimeslot(id int) error
+	DeleteATimeslot(id int64) error
 }

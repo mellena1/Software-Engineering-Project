@@ -39,7 +39,7 @@ type SessionReader interface {
 
 // SessionWriter implements all write related methods
 type SessionWriter interface {
-	WriteASession(s Session) error
+	WriteASession(session Session) error
 }
 
 // SessionUpdater implements all update related methods
