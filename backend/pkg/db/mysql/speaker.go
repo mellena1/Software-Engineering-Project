@@ -18,39 +18,22 @@ func NewSpeakerMySQL(db *sql.DB) SpeakerMySQL {
 
 // ReadASpeaker reads a speaker from the db given email
 func (s SpeakerMySQL) ReadASpeaker(emailID string) (db.Speaker, error) {
+	if s.db == nil {
+		return db.Speaker{}, ErrDBNotSet
+	}
+
 	query := `SELECT * FROM speaker where email = ?;`
-	speaker := db.Speaker{}
-	var (
-		id        *int
-		email     *string
-		firstName *string
-		lastName  *string
-	)
 
 	rows, err := s.db.Query(query, emailID)
 	if err != nil {
-		return speaker, err
+		return db.Speaker{}, err
 	}
 
 	defer rows.Close()
 
+	speaker := db.NewSpeaker()
 	for rows.Next() {
-		err := rows.Scan(&email, &firstName, &lastName)
-		if err != nil {
-			return speaker, err
-		}
-		speaker = db.Speaker{
-			ID:        id,
-			Email:     email,
-			FirstName: firstName,
-			LastName:  lastName,
-		}
-
-	}
-
-	err = rows.Err()
-	if err != nil {
-		return speaker, err
+		rows.Scan(speaker.Email, speaker.FirstName, speaker.LastName)
 	}
 
 	return speaker, nil
@@ -58,42 +41,24 @@ func (s SpeakerMySQL) ReadASpeaker(emailID string) (db.Speaker, error) {
 
 // ReadAllSpeakers reads all speakers from the db
 func (s SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
-	query := `SELECT * FROM speaker;`
-	var speakers = []db.Speaker{}
+	if s.db == nil {
+		return nil, ErrDBNotSet
+	}
 
-	var (
-		id        *int
-		email     *string
-		firstName *string
-		lastName  *string
-	)
+	query := "SELECT * FROM speaker;"
 
 	rows, err := s.db.Query(query)
 	if err != nil {
-		return []db.Speaker{}, err
+		return nil, err
 	}
-
 	defer rows.Close()
 
+	speakers := []db.Speaker{}
 	for rows.Next() {
-		err := rows.Scan(&email, &firstName, &lastName)
-		if err != nil {
-			return []db.Speaker{}, err
-		}
-		speaker := db.Speaker{
-			ID:        id,
-			Email:     email,
-			FirstName: firstName,
-			LastName:  lastName,
-		}
-
-		speakers = append(speakers, speaker)
+		newSpeaker := db.NewSpeaker()
+		rows.Scan(newSpeaker.Email, newSpeaker.FirstName, newSpeaker.LastName)
+		speakers = append(speakers, newSpeaker)
 	}
-	err = rows.Err()
-	if err != nil {
-		return []db.Speaker{}, err
-	}
-
 	return speakers, nil
 }
 

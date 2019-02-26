@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -14,6 +15,10 @@ type speakerAPI struct {
 	speakerWriter  db.SpeakerWriter
 	speakerUpdater db.SpeakerUpdater
 	speakerDeleter db.SpeakerDeleter
+}
+
+type bodyData struct {
+	Email string
 }
 
 // CreateSpeakerRoutes makes all of the routes for speaker related calls
@@ -64,7 +69,17 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} nil
 // @Router /api/v1/speaker [get]
 func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
-	email := getParamsFromRequest(r)
+
+	var data bodyData
+	body, _ := ioutil.ReadAll(r.Body)
+	err := json.Unmarshal(body, &data)
+
+	if err != nil {
+		return
+	}
+
+	email := data.Email
+
 	speakers, err := a.speakerReader.ReadASpeaker(email)
 	if err != nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
