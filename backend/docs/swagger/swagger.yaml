@@ -4,6 +4,8 @@ definitions:
     properties:
       capacity:
         type: integer
+      id:
+        type: integer
       roomName:
         type: string
     type: object
@@ -51,7 +53,7 @@ info:
   title: Code Camp Counter API
   version: "1.0"
 paths:
-  /api/v1/room:
+  /api/v1/rooms:
     get:
       description: Return a list of all rooms
       produces:
