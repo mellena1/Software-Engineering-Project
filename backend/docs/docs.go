@@ -109,6 +109,9 @@ var doc = `{
                 "capacity": {
                     "type": "integer"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "roomName": {
                     "type": "string"
                 }
