@@ -23,7 +23,7 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/room": {
+        "/api/v1/rooms": {
             "get": {
                 "description": "Return a list of all rooms",
                 "produces": [
@@ -268,6 +268,9 @@ var doc = `{
             "type": "object",
             "properties": {
                 "capacity": {
+                    "type": "integer"
+                },
+                "id": {
                     "type": "integer"
                 },
                 "roomName": {

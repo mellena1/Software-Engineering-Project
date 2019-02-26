@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var roomColumns = []string{"roomID", "capacity"}
+var roomColumns = []string{"ID", "roomName", "capacity"}
 
 func TestReadAllRoomsValid(t *testing.T) {
 	mockdb, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
@@ -19,7 +19,7 @@ func TestReadAllRoomsValid(t *testing.T) {
 	defer mockdb.Close()
 
 	mock.ExpectQuery("SELECT * FROM room;").
-		WillReturnRows(sqlmock.NewRows(roomColumns).FromCSVString("Room1,1\nRoom2,2"))
+	  WillReturnRows(sqlmock.NewRows(roomColumns).FromCSVString("10,Room1,1\n20,Room2,2"))
 
 	// Execute ReadAllRooms
 	roomSQL := NewRoomMySQL(mockdb)
@@ -35,8 +35,8 @@ func TestReadAllRoomsValid(t *testing.T) {
 
 	// Make sure returned Rooms are correct
 	expected := []db.Room{
-		db.Room{RoomName: db.StringPtr("Room1"), Capacity: db.IntPtr(1)},
-		db.Room{RoomName: db.StringPtr("Room2"), Capacity: db.IntPtr(2)},
+		db.Room{ID: db.IntPtr(10), RoomName: db.StringPtr("Room1"), Capacity: db.IntPtr(1)},
+		db.Room{ID: db.IntPtr(20), RoomName: db.StringPtr("Room2"), Capacity: db.IntPtr(2)},
 	}
 	assert.Equal(t, expected, actual)
 }
