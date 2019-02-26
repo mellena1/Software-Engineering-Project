@@ -54,6 +54,7 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	j, err := json.Marshal(speakers)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(j)
 	if err != nil {
 		log.Fatal("Failed to respond to getAllSpeakers")
@@ -88,6 +89,7 @@ func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	j, err := json.Marshal(speakers)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(j)
 	if err != nil {
 		log.Fatal("Failed to respond to getASpeaker")
