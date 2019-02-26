@@ -22,24 +22,19 @@ func (r RoomMySQL) ReadARoom(roomName string) (db.Room, error) {
 		return nil, ErrDBNotSet
 	}
 
-	q := "SELECT * FROM room WHERE roomName = ?;"
-	selectedRooms := db.Room{}
+	q := r.db.prepare("SELECT * FROM room WHERE roomName = ?;")
 
-	rows, err := r.db.Query(q, roomName)
-	if err != nil {
-		return selectedRooms, err
+	row := r.db.QueryRow(q, roomName)
+	switch err := row.Scan(&id, &email); err {
+	case sql.ErrNoRows:
+	  fmt.Println("No rows were returned!")
+	case nil:
+	  fmt.Println(roomName)
+	default:
+	  panic(err)
 	}
 
-	defer rows.Close()
-
-	for rows.next() {
-		selectedRooms = db.Room{
-			roomID: roomID;
-			roomName: roomName;
-			Capacity: Capacity;
-		}
-	}
-	return selectedRooms, nil
+	return row, nil
 }
 
 // ReadAllRooms reads all rooms from the db
@@ -48,7 +43,7 @@ func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 		return nil, ErrDBNotSet
 	}
 
-	q := "SELECT * FROM room;"
+	q := r.db.prepare("SELECT * FROM room;")
 
 	rows, err := r.db.Query(q)
 	if err != nil {
@@ -71,14 +66,11 @@ func (r RoomMySQL) WriteARoom(room db.Room) error {
 		return nil, ErrDBNotSet
 	}
 
-	q := "" //I am not sure how to insert here based on what is being passed
-
 	return nil
 }
 
 // UpdateARoom updates a room in the db given a roomName and the updated room
 func (r RoomMySQL) UpdateARoom(roomName string, newRoom db.Room) error {
-	//Are we adding more parameters here as well?
 	return nil
 }
 
@@ -88,7 +80,7 @@ func (r RoomMySQL) DeleteARoom(roomName int) error {
 		return nil, ErrDBNotSet
 	}
 
-	q := "DELETE FROM room WHERE roomName = ?"
+	q := r.db.prepare("DELETE FROM room WHERE roomName = ?;") //r.db.prepare necessary?
 	rows, err := r.db.Query(q, roomName)
 	if err != nil {
 		return nil, err

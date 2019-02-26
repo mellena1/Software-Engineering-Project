@@ -12,11 +12,11 @@
     "paths": {
         "/api/v1/room": {
             "get": {
-                "description": "Return a list of all rooms",
+                "description": "Return a row of the room",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get all rooms",
+                "summary": "Get a room",
                 "responses": {
                     "200": {
                         "description": "OK",
