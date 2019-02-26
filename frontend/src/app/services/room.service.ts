@@ -16,7 +16,7 @@ export class RoomService {
 
   getAllRooms() {
     return this.http
-      .get<Room[]>(this.apiUrl + '/room')
+      .get<Room[]>(this.apiUrl + '/rooms')
       .pipe(map(data => data), catchError(this.handleError));
   }
 
