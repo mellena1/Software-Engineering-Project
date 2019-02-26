@@ -8,7 +8,7 @@ definitions:
       id:
         example: 1
         type: integer
-      roomName:
+      name:
         example: My Room Name
         type: string
     type: object
