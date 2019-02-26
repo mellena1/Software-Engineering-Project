@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -27,6 +28,7 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 
 	routes := []Route{
 		NewRoute("/api/v1/rooms", roomAPI.getAllRooms, "GET"),
+		NewRoute("/api/v1/room", roomAPI.writeARoom, "PUT"),
 	}
 
 	return routes
@@ -52,5 +54,42 @@ func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 	_, err = w.Write(j)
 	if err != nil {
 		log.Println("Failed to respond to getAllRooms")
+	}
+}
+
+// writeRoom Writes a room to the room table
+// @Summary Write a room to the db
+// @Description Write a room to the db
+// @Accept json
+// @Produce json
+// @Success 200 {boolean} nil
+// @Failure 400 {boolean} nil
+// @Router /api/v1/room [put]
+func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	var room db.Room
+	err = json.Unmarshal(body, room)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	_, err = a.roomWriter.WriteARoom(room)
+	if err != nil {
+		log.Fatal("Failed to write a room")
+		return
+	}
+
+	json, _ := json.Marshal(true)
+	_, err = w.Write(json)
+	if err != nil {
+		log.Fatal("Failed to respond")
 	}
 }

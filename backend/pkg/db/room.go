@@ -32,7 +32,7 @@ type RoomReader interface {
 
 // RoomWriter implements all write related methods
 type RoomWriter interface {
-	WriteARoom(r Room) error
+	WriteARoom(r Room) (int64, error)
 }
 
 // RoomUpdater implements all update related methods

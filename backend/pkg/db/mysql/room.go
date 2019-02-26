@@ -45,8 +45,20 @@ func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 }
 
 // WriteARoom writes a room to the db
-func (r RoomMySQL) WriteARoom(room db.Room) error {
-	return nil
+func (r RoomMySQL) WriteARoom(room db.Room) (int64, error) {
+	if r.db == nil {
+		return 0, ErrDBNotSet
+	}
+
+	insert, _ := r.db.Prepare("INSERT INTO room VALUES (?, ?)")
+	defer insert.Close()
+
+	result, err := insert.Exec(room.RoomName, room.Capacity)
+	if err != nil {
+		return 0, ErrDBNotSet
+	}
+
+	return result.LastInsertId()
 }
 
 // UpdateARoom updates a room in the db given a roomName and the updated room
