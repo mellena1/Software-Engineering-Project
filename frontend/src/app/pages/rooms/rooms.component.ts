@@ -10,6 +10,7 @@ import { Room } from '../../data_models/room';
 })
 export class RoomsComponent implements OnInit {
   rooms: Room[];
+  selectedRoom: Room;
   error: any;
   constructor(private roomService: RoomService ) { }
   
@@ -25,4 +26,10 @@ export class RoomsComponent implements OnInit {
         error => (this.error = error)
       )
   }
+  
+  onSelect(room: Room): void {
+    this.selectedRoom = room;
+  }
+
+
 }

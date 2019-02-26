@@ -1,7 +1,18 @@
-<ul class="rooms">
-    <li *ngFor="let room of rooms">
-        <span class="hero-element">
-            <span class="badge">{{ room.id }}</span> {{room.name}}
-        </span>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>List of Rooms</title>
+    </head>
+    <body>
+        <h1>Rooms</h1>
+        <h2>List of Rooms</h2>
+        <ul class="rooms">
+            <li *ngFor="let room of rooms"
+            [class.selected]="room == selectedRoom"
+            (click)="onSelect(room)">
+            <span class="badge">{{ room.id }} </span> {{room.name}}
     </li>
 </ul>
+    </body>
+</html>
