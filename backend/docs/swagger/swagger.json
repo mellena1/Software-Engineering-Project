@@ -94,13 +94,16 @@
             "type": "object",
             "properties": {
                 "capacity": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 50
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "roomName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "My Room Name"
                 }
             }
         },
@@ -108,10 +111,12 @@
             "type": "object",
             "properties": {
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Session Name"
                 },
                 "room": {
                     "type": "object",
@@ -131,13 +136,16 @@
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "firstname.lastname@gmail.com"
                 },
                 "firstName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Bob"
                 },
                 "lastName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Smith"
                 }
             }
         },
@@ -145,13 +153,16 @@
             "type": "object",
             "properties": {
                 "endTime": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2019-10-01 23:00:00"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "startTime": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2019-02-18 21:00:00"
                 }
             }
         }
