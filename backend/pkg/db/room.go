@@ -2,6 +2,7 @@ package db
 
 // Room holds all data about a room
 type Room struct {
+	ID       *int
 	RoomName *string
 	Capacity *int
 }
@@ -9,6 +10,7 @@ type Room struct {
 // NewRoom makes a new Room with default values
 func NewRoom() Room {
 	return Room{
+		ID:       IntPtr(0),
 		RoomName: StringPtr(""),
 		Capacity: IntPtr(0),
 	}
