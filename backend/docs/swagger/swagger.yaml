@@ -1,5 +1,10 @@
 basePath: '{{.BasePath}}'
 definitions:
+  api.roomRequest:
+    properties:
+      id:
+        type: integer
+    type: object
   db.Room:
     properties:
       capacity:
@@ -62,9 +67,32 @@ info:
   title: Code Camp Counter API
   version: "1.0"
 paths:
+  /api/v1/room:
+    get:
+      description: Returns a room
+      parameters:
+      - description: ID of the requested Room
+        in: body
+        name: roomID
+        required: true
+        schema:
+          $ref: '#/definitions/api.roomRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: ""
+        "400":
+          description: Bad Request
+          schema:
+            type: ""
+      summary: Get a room
   /api/v1/rooms:
     get:
-      description: Return a row of the room
+      description: Return a list of all rooms
       produces:
       - application/json
       responses:
@@ -78,7 +106,7 @@ paths:
           description: Bad Request
           schema:
             type: ""
-      summary: Get a room
+      summary: Get all rooms
   /api/v1/session:
     get:
       description: Return a list of all sessions

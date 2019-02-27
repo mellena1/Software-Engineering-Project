@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -74,7 +75,7 @@ func (a roomAPI) getRoom(w http.ResponseWriter, r *http.Request) {
 	//Going off of what Kenny did here
 	var data roomRequest
 	body,_ := ioutil.ReadAll(r.Body)
-	err := json.Unmarchal(body, &data)
+	err := json.Unmarshal(body, &data)
 
 	if err != nil {
 		return

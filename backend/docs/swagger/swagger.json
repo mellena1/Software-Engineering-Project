@@ -10,13 +10,48 @@
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/rooms": {
+        "/api/v1/room": {
             "get": {
-                "description": "Return a row of the room",
+                "description": "Returns a room",
                 "produces": [
                     "application/json"
                 ],
                 "summary": "Get a room",
+                "parameters": [
+                    {
+                        "description": "ID of the requested Room",
+                        "name": "roomID",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.roomRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": ""
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": ""
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rooms": {
+            "get": {
+                "description": "Return a list of all rooms",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all rooms",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -90,6 +125,14 @@
         }
     },
     "definitions": {
+        "api.roomRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "db.Room": {
             "type": "object",
             "properties": {

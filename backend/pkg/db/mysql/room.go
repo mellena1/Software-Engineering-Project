@@ -16,20 +16,20 @@ func NewRoomMySQL(db *sql.DB) RoomMySQL {
 	return RoomMySQL{db}
 }
 
-// ReadARoom reads a room from the db given roomName
-func (r RoomMySQL) ReadARoom(roomName string) (db.Room, error) {
+// ReadARoom reads a room from the db given roomID
+func (r RoomMySQL) ReadARoom(roomID int) (db.Room, error) {
 	if r.db == nil {
-		return nil, ErrDBNotSet
+		return db.Room{}, ErrDBNotSet
 	}
 
 	newRoom := db.NewRoom()
 
-	q := ("SELECT * FROM room WHERE roomName = ?;")
+	q := ("SELECT * FROM room WHERE roomID = ?;")
 
 	row := r.db.QueryRow(q, roomName)
 	switch err := row.Scan(newRoom.ID, newRoom.Name, newRoom.Capacity); err {
 	case sql.ErrNoRows:
-	  Println("No rows were returned!")
+	  return("No rows were returned!")
 	case nil:
 	  return newRoom, nil
 	default:
@@ -68,18 +68,18 @@ func (r RoomMySQL) WriteARoom(room db.Room) error {
 }
 
 // UpdateARoom updates a room in the db given a roomName and the updated room
-func (r RoomMySQL) UpdateARoom(roomName string, newRoom db.Room) error {
+func (r RoomMySQL) UpdateARoom(roomID int, newRoom db.Room) error {
 	return nil
 }
 
 // DeleteARoom deletes a room given a roomName
-func (r RoomMySQL) DeleteARoom(roomName int) error {
+func (r RoomMySQL) DeleteARoom(roomID int) error {
 	if r.db == nil {
 		return ErrDBNotSet
 	}
 
-	q := ("DELETE FROM room WHERE roomName = ?;")
-	result, err := r.db.Exec(q, roomName)
+	q := ("DELETE FROM room WHERE roomID = ?;")
+	result, err := r.db.Exec(q, roomID)
 	if err != nil {
 		return err
 	}
