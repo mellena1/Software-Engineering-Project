@@ -26,8 +26,8 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 	}
 
 	routes := []Route{
-		NewRoute("/api/v1/rooms", roomAPI.Rooms, "GET"),
-		NewRoute("/api/v1/room", roomAPI.Room, "GET"),
+		NewRoute("/api/v1/rooms", roomAPI.getAllRooms, "GET"),
+		NewRoute("/api/v1/room", roomAPI.getRoom, "GET"),
 	}
 
 	return routes
@@ -40,7 +40,7 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 // @Success 200 {array} db.Room
 // @Failure 400 {} nil
 // @Router /api/v1/room [get]
-func (a roomAPI) Rooms(w http.ResponseWriter, r *http.Request) {
+func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 	rooms, err := a.roomReader.ReadAllRooms()
 	if err != nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
@@ -49,6 +49,7 @@ func (a roomAPI) Rooms(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	j, _ := json.Marshal(rooms)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(j)
 	if err != nil {
 		log.Println("Failed to respond to Rooms")
@@ -62,7 +63,7 @@ func (a roomAPI) Rooms(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {array} db.Room
 // @Failure 400 {} nil
 // @Router /api/v1/room [get]
-func (a roomAPI) Room(w http.ResponseWriter, r *http.Request) {
+func (a roomAPI) getRoom(w http.ResponseWriter, r *http.Request) {
 	room, err := a.roomReader.ReadARoom()
 	if err != nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
@@ -71,6 +72,7 @@ func (a roomAPI) Room(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	j, _ := json.Marshal(room)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(j)
 	if err != nil {
 		log.Println("Failed to respond to Room")

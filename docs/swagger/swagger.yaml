@@ -1,0 +1,97 @@
+definitions:
+  db.Room:
+    properties:
+      capacity:
+        type: integer
+      roomName:
+        type: string
+    type: object
+  db.Session:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      room:
+        $ref: '#/definitions/db.Room'
+        type: object
+      speaker:
+        $ref: '#/definitions/db.Speaker'
+        type: object
+      timeslot:
+        $ref: '#/definitions/db.Timeslot'
+        type: object
+    type: object
+  db.Speaker:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+    type: object
+  db.Timeslot:
+    properties:
+      endTime:
+        type: string
+      id:
+        type: integer
+      startTime:
+        type: string
+    type: object
+info:
+  contact: {}
+  license: {}
+paths:
+  /api/v1/room:
+    get:
+      description: Return a row of the room
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.Room'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: ""
+      summary: Get a room
+  /api/v1/session:
+    get:
+      description: Return a list of all sessions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.Session'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: ""
+      summary: Get all sessions
+  /api/v1/speaker:
+    get:
+      description: Return a list of all speakers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.Speaker'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: ""
+      summary: Get all speakers

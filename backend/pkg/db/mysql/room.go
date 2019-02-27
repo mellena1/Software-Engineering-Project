@@ -80,7 +80,7 @@ func (r RoomMySQL) DeleteARoom(roomName int) error {
 		return nil, ErrDBNotSet
 	}
 
-	q := r.db.prepare("DELETE FROM room WHERE roomName = ?;") //r.db.prepare necessary?
+	q := r.db.prepare("DELETE FROM room WHERE roomName = ?;")
 	rows, err := r.db.Query(q, roomName)
 	if err != nil {
 		return nil, err
