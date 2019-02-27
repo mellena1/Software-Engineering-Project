@@ -1,0 +1,22 @@
+<html>
+  <div class="container-fluid">
+
+    <h2>Create Timeslot</h2>
+    
+    <form #userForm="ngForm">
+
+      {{ userForm.value | json}}
+
+      <div class="form-group">
+        <label>Start Time: </label>
+        <input type="time" class="form-control" name="starttime" ngModel>
+        <label>End Time: </label>
+        <input type="time" class="form-control" name="endtime" ngModel>
+      </div>
+
+    </form>
+
+  </div>
+    <button class="btn btn-primary">Submit</button>
+</html>
+

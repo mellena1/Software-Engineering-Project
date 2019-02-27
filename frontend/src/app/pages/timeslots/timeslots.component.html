@@ -1,3 +1,16 @@
-<p>
-  timeslots works!
-</p>
+<html>
+  <body>
+
+    <h2>List of Timeslots</h2>
+
+    <ul class="Timeslots">
+      <li *ngFor="let timeslot of Timeslots"
+      [class.selected]="timeslot == selectedTimeslot">
+      <span>{{ timeslot.starttime }} - {{timeslot.endtime}} </span>
+      </li>
+    </ul>
+
+    <button routerLink="/timeform">Add</button>
+    
+  </body>
+</html>
