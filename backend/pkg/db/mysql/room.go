@@ -22,16 +22,16 @@ func (r RoomMySQL) ReadARoom(roomName string) (db.Room, error) {
 		return nil, ErrDBNotSet
 	}
 
-	q := r.db.prepare("SELECT * FROM room WHERE roomName = ?;")
+	q := r.db.Prepare("SELECT * FROM room WHERE roomName = ?;")
 
-	row := r.db.QueryRow(q, roomName)
+	row := q.QueryRow(qroomName)
 	switch err := row.Scan(&id, &email); err {
-	case sql.ErrNoRows:
+	case db.ErrNoData:
 	  fmt.Println("No rows were returned!")
 	case nil:
 	  fmt.Println(roomName)
 	default:
-	  panic(err)
+	  return err
 	}
 
 	return row, nil
@@ -43,7 +43,7 @@ func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 		return nil, ErrDBNotSet
 	}
 
-	q := r.db.prepare("SELECT * FROM room;")
+	q := "SELECT * FROM room;"
 
 	rows, err := r.db.Query(q)
 	if err != nil {
@@ -80,8 +80,8 @@ func (r RoomMySQL) DeleteARoom(roomName int) error {
 		return nil, ErrDBNotSet
 	}
 
-	q := r.db.prepare("DELETE FROM room WHERE roomName = ?;")
-	_, err := r.db.Query(q, roomName)
+	q := r.db.Prepare("DELETE FROM room WHERE roomName = ?;")
+	result, err := r.Exec(q, roomName)
 	if err != nil {
 		return nil, err
 	}

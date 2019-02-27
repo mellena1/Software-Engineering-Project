@@ -33,7 +33,7 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 	return routes
 }
 
-// Rooms Gets all rooms from the db
+// getAllRooms Gets all rooms from the db
 // @Summary Get all rooms
 // @Description Return a list of all rooms
 // @Produce json
@@ -56,11 +56,11 @@ func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Room Gets all rooms from the db
+// getRoom Gets all rooms from the db
 // @Summary Get a room
-// @Description Return a row of the room
+// @Description Returns a room
 // @Produce json
-// @Success 200 {array} db.Room
+// @Success 200 {} db.Room
 // @Failure 400 {} nil
 // @Router /api/v1/room [get]
 func (a roomAPI) getRoom(w http.ResponseWriter, r *http.Request) {
