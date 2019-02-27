@@ -17,6 +17,8 @@ export class RoomsComponent implements OnInit {
     this.getAllRooms();
   }
 
+  x: Room = { id: 1, name: "test", capacity: 1 };
+
   getAllRooms(): void {
     this.roomService
       .getAllRooms()
