@@ -54,7 +54,7 @@ func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 	rooms := []db.Room{}
 	for rows.Next() {
 		newRoom := db.NewRoom()
-		rows.Scan(newRoom.ID, newRoom.RoomName, newRoom.Capacity)
+		rows.Scan(newRoom.ID, newRoom.Name, newRoom.Capacity)
 		rooms = append(rooms, newRoom)
 	}
 	return rooms, nil
