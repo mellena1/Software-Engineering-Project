@@ -10,7 +10,7 @@
                 <li *ngFor="let session of sessions"
                 [class.selected]="session == selectedSession"
                 (click)="onSelect(session)">
-                <span class="badge">{{ session.id }} </span> {{session.name}} - {{ room.name }} - {{speaker.name}} - {{timeslot.name}}
+                <span class="badge">{{ session.id }} </span> {{session.name}} -- {{ room.name }} -- {{speaker.name}} -- {{timeslot.name}}
               </li>
         </ul>
 
