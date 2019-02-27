@@ -171,6 +171,14 @@
                 }
             }
         },
+        "api.roomRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "db.Room": {
             "type": "object",
             "properties": {

@@ -5,6 +5,11 @@ definitions:
       id:
         type: integer
     type: object
+  api.roomRequest:
+    properties:
+      id:
+        type: integer
+    type: object
   db.Room:
     properties:
       capacity:
