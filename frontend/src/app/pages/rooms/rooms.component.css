@@ -9,6 +9,7 @@
     padding: 0;
     width: 15em;
   }
+    
   .rooms li {
     cursor: pointer;
     position: relative;

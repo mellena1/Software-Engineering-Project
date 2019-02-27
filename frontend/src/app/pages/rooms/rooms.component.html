@@ -6,7 +6,14 @@
     </head>
     <body>
         <h1>Rooms</h1>
-        <h2>List of Rooms</h2>
+        <h2>Add a Room</h2>
+        <div><span>Room Name:    </span> <input [(ngModel)]="selectedRoom.name" placeholder="Room Name"> </div>
+        <br>
+        <div><span>Room Capacity:  </span> <input [(ngModel)]="selectedRoom.capacity" placeholder="Room Capacity (eg. 25)"> </div>
+        <br>
+        <button ng-click="addRoom"> Add </button>
+
+        <h2>List of Rooms</h2> 
         <ul class="rooms">
             <li *ngFor="let room of rooms"
             [class.selected]="room == selectedRoom"
@@ -18,14 +25,9 @@
 
     <div *ngIf="selectedRoom">
 
-        <h2>Edit</h2>
-        <div><span>Room Name: </span>{{selectedRoom.name}}</div>
-        <div><span>Room Capacity:</span>{{selectedRoom.capacity}}</div>
-        <div>
-          <label> Update:
-            <input [(ngModel)]="selectedRoom.name" placeholder="name">
-            <input [(ngModel)]="selectedRoom.capacity" placeholder="capacity">
-          </label>
-        </div>
+        <h2>Edit Room:</h2>
+        <div><span>Room Name: </span> <input [(ngModel)]="selectedRoom.name" placeholder="name"> </div>
+        <div><span>Room Capacity:</span> <input [(ngModel)]="selectedRoom.capacity" placeholder="capacity"> </div>
     </div>
+
 </html>

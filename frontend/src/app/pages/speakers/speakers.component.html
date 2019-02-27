@@ -5,6 +5,16 @@
         <title>List of Speakers</title>
     </head>
     <body>
+            <h1>Speakers</h1>
+            <h2>Add a Speaker</h2>
+            <div><span>First Name:    </span> <input [(ngModel)]="selectedRoom.name" placeholder="Room Name"> </div>
+            <br>
+            <div><span>Last Name:  </span> <input [(ngModel)]="selectedRoom.capacity" placeholder="Room Capacity (eg. 25)"> </div>
+            <br>
+            <div><span>Email:  </span> <input [(ngModel)]="selectedRoom.capacity" placeholder="Room Capacity (eg. 25)"> </div>
+            <br>
+            <button ng-click="addRoom"> Add </button>
+    
         <h1>Speakers</h1>
         <h2>List of Speakers</h2>
         <ul class="speakers">
