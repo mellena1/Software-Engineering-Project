@@ -161,7 +161,7 @@ var doc = `{
                     "type": "integer",
                     "example": 1
                 },
-                "roomName": {
+                "name": {
                     "type": "string",
                     "example": "My Room Name"
                 }
