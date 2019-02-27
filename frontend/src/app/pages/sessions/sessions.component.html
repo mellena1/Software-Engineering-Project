@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <title>List of Sessions</title>
     </head>
     <body>
-        <title>Session Manager</title>
-        <h1>Welcome</h1>
+        <h1>Session Manager</h1>
+        <h2>List of Sessions</h2>
+        <ul class="sessions">
+                <li *ngFor="let session of sessions"
+                [class.selected]="session == selectedSession"
+                (click)="onSelect(session)">
+                <span class="badge">{{ session.id }} </span> {{session.name}} - {{ room.name }} - {{speaker.name}} - {{timeslot.name}}
+              </li>
+        </ul>
 
+       
 
     </body>
 </html>
