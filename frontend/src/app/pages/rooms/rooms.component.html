@@ -6,13 +6,6 @@
     </head>
     <body>
         <h1>Rooms</h1>
-        <h2>Add a Room</h2>
-        <div><span>Room Name:    </span> <input [(ngModel)]="selectedRoom.name" placeholder="Room Name"> </div>
-        <br>
-        <div><span>Room Capacity:  </span> <input [(ngModel)]="selectedRoom.capacity" placeholder="Room Capacity (eg. 25)"> </div>
-        <br>
-        <button ng-click="addRoom"> Add </button>
-
         <h2>List of Rooms</h2> 
         <ul class="rooms">
             <li *ngFor="let room of rooms"
@@ -21,6 +14,13 @@
             <span class="badge">{{ room.roomName }} </span> {{ room.capacity }}
           </li>
          </ul>
+
+        <h2>Add a Room</h2>
+        <div><span>Room Name:    </span> <input [(ngModel)]="selectedRoom.name" placeholder="Room Name"> </div>
+        <br>
+        <div><span>Room Capacity:  </span> <input [(ngModel)]="selectedRoom.capacity" placeholder="Room Capacity (eg. 25)"> </div>
+        <br>
+        <button ng-click="addRoom"> Add </button>
          
     </body>
 
