@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 
@@ -58,60 +57,39 @@ func (t timeslotAPI) writeATimeslot(w http.ResponseWriter, r *http.Request) {
 
 	j, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		msg := "unable to read body"
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusBadRequest)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+		ReportError(err, "unable to read body", http.StatusBadRequest, w)
 		return
 	}
 
 	timeslotRequest := writeATimeslotRequest{}
 	json.Unmarshal(j, &timeslotRequest)
 
-	log.Println(timeslotRequest.StartTime)
 	startTime, err := time.Parse(db.TimeFormat, timeslotRequest.StartTime)
 	if err != nil {
 		msg := fmt.Sprintf("start time invalid. please use the format %s", db.TimeFormat)
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusBadRequest)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+		ReportError(err, msg, http.StatusBadRequest, w)
 		return
 	}
 
 	endTime, err := time.Parse(db.TimeFormat, timeslotRequest.EndTime)
 	if err != nil {
 		msg := fmt.Sprintf("end time invalid. please use the format %s", db.TimeFormat)
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusBadRequest)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+		ReportError(err, msg, http.StatusBadRequest, w)
 		return
 	}
 
-	timeslot := db.Timeslot{
-		StartTime: &startTime,
-		EndTime:   &endTime,
-	}
-
-	id, err := t.timeslotWriter.WriteATimeslot(timeslot)
+	id, err := t.timeslotWriter.WriteATimeslot(startTime, endTime)
 	if err != nil {
-		msg := "failed to access the db"
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusServiceUnavailable)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
 		return
 	}
 
 	response := map[string]int64{"id": id}
 	responseJSON, _ := json.Marshal(response)
-
 	w.Write(responseJSON)
 }
 
-// writeATimeslotRequest request for updateATimeslot
+// updateATimeslotRequest request for updateATimeslot
 type updateATimeslotRequest struct {
 	ID        int64  `json:"id" example:"1"`
 	StartTime string `json:"startTime" example:"2019-02-18 21:00:00"`
@@ -133,11 +111,7 @@ func (t timeslotAPI) updateATimeslot(w http.ResponseWriter, r *http.Request) {
 
 	j, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		msg := "unable to read body"
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusBadRequest)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+		ReportError(err, "unable to read body", http.StatusBadRequest, w)
 		return
 	}
 
@@ -147,50 +121,38 @@ func (t timeslotAPI) updateATimeslot(w http.ResponseWriter, r *http.Request) {
 	startTime, err := time.Parse(db.TimeFormat, timeslotRequest.StartTime)
 	if err != nil {
 		msg := fmt.Sprintf("start time invalid. please use the format %s", db.TimeFormat)
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusBadRequest)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+		ReportError(err, msg, http.StatusBadRequest, w)
 		return
 	}
 
 	endTime, err := time.Parse(db.TimeFormat, timeslotRequest.EndTime)
 	if err != nil {
 		msg := fmt.Sprintf("end time invalid. please use the format %s", db.TimeFormat)
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusBadRequest)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+		ReportError(err, msg, http.StatusBadRequest, w)
 		return
 	}
 
-	timeslot := db.Timeslot{
-		ID:        &timeslotRequest.ID,
-		StartTime: &startTime,
-		EndTime:   &endTime,
-	}
-
-	err = t.timeslotUpdater.UpdateATimeslot(timeslot)
+	err = t.timeslotUpdater.UpdateATimeslot(timeslotRequest.ID, startTime, endTime)
 	if err != nil {
-		msg := ""
+		var msg string
+		var status int
 		switch err {
 		case db.ErrNothingChanged:
 			msg = "nothing in the db was changed. id probably does not exist"
-			w.WriteHeader(http.StatusBadRequest)
+			status = http.StatusBadRequest
 		default:
 			msg = "failed to access the db"
-			w.WriteHeader(http.StatusServiceUnavailable)
+			status = http.StatusServiceUnavailable
 		}
-		log.Printf("%s: %v", msg, err)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+
+		ReportError(err, msg, status, w)
 		return
 	}
 
 	w.Write(nil)
 }
 
-// writeATimeslotRequest request for deleteATimeslot
+// deleteATimeslotRequest request for deleteATimeslot
 type deleteATimeslotRequest struct {
 	ID int64 `json:"id" example:"1"`
 }
@@ -210,11 +172,7 @@ func (t timeslotAPI) deleteATimeslot(w http.ResponseWriter, r *http.Request) {
 
 	j, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		msg := "unable to read body"
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusBadRequest)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+		ReportError(err, "unable to read body", http.StatusBadRequest, w)
 		return
 	}
 
@@ -223,18 +181,18 @@ func (t timeslotAPI) deleteATimeslot(w http.ResponseWriter, r *http.Request) {
 
 	err = t.timeslotDeleter.DeleteATimeslot(timeslotRequest.ID)
 	if err != nil {
-		msg := ""
+		var msg string
+		var status int
 		switch err {
 		case db.ErrNothingChanged:
 			msg = "nothing in the db was changed. id probably does not exist"
-			w.WriteHeader(http.StatusBadRequest)
+			status = http.StatusBadRequest
 		default:
 			msg = "failed to access the db"
-			w.WriteHeader(http.StatusServiceUnavailable)
+			status = http.StatusServiceUnavailable
 		}
-		log.Printf("%s: %v", msg, err)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+
+		ReportError(err, msg, status, w)
 		return
 	}
 

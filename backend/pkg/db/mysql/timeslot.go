@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
@@ -27,7 +28,7 @@ func (t TimeslotMySQL) ReadAllTimeslots() ([]db.Timeslot, error) {
 }
 
 // WriteATimeslot writes a timeslot to the db
-func (t TimeslotMySQL) WriteATimeslot(timeslot db.Timeslot) (int64, error) {
+func (t TimeslotMySQL) WriteATimeslot(startTime, endTime time.Time) (int64, error) {
 	if t.db == nil {
 		return 0, ErrDBNotSet
 	}
@@ -38,7 +39,7 @@ func (t TimeslotMySQL) WriteATimeslot(timeslot db.Timeslot) (int64, error) {
 	}
 	defer statement.Close()
 
-	result, err := statement.Exec(timeslot.StartTime.Format(db.TimeFormat), timeslot.EndTime.Format(db.TimeFormat))
+	result, err := statement.Exec(startTime.Format(db.TimeFormat), endTime.Format(db.TimeFormat))
 	if err != nil {
 		return 0, err
 	}
@@ -47,7 +48,7 @@ func (t TimeslotMySQL) WriteATimeslot(timeslot db.Timeslot) (int64, error) {
 }
 
 // UpdateATimeslot updates a timeslot in the db given an id and the updated timeslot
-func (t TimeslotMySQL) UpdateATimeslot(timeslot db.Timeslot) error {
+func (t TimeslotMySQL) UpdateATimeslot(id int64, startTime, endTime time.Time) error {
 	if t.db == nil {
 		return ErrDBNotSet
 	}
@@ -58,7 +59,7 @@ func (t TimeslotMySQL) UpdateATimeslot(timeslot db.Timeslot) error {
 	}
 	defer statement.Close()
 
-	result, err := statement.Exec(timeslot.StartTime.Format(db.TimeFormat), timeslot.EndTime.Format(db.TimeFormat), timeslot.ID)
+	result, err := statement.Exec(startTime.Format(db.TimeFormat), endTime.Format(db.TimeFormat), id)
 	if err != nil {
 		return err
 	}

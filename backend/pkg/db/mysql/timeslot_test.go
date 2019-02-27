@@ -15,18 +15,18 @@ var (
 	startTime             = "2019-02-18 21:00:00"
 	endTime               = "2019-10-01 23:00:00"
 	testTimeslot          = db.Timeslot{
-		ID:        &timeslotID,
+		ID:        timeslotID,
 		StartTime: parseTime(db.TimeFormat, startTime),
 		EndTime:   parseTime(db.TimeFormat, endTime),
 	}
 )
 
-func parseTime(format, value string) *time.Time {
+func parseTime(format, value string) time.Time {
 	t, err := time.Parse(format, value)
 	if err != nil {
 		panic(err)
 	}
-	return &t
+	return t
 }
 
 func TestWriteATimeslotValid(t *testing.T) {
@@ -42,7 +42,7 @@ func TestWriteATimeslotValid(t *testing.T) {
 
 	// Execute WriteATimeslot
 	timeslotSQL := NewTimeslotMySQL(mockdb)
-	id, err := timeslotSQL.WriteATimeslot(testTimeslot)
+	id, err := timeslotSQL.WriteATimeslot(testTimeslot.StartTime, testTimeslot.EndTime)
 	if err != nil {
 		t.Fatalf("an error occured when running WriteATimeslot: %s", err)
 	}
@@ -57,7 +57,7 @@ func TestWriteATimeslotValid(t *testing.T) {
 
 func TestWriteATimeslotInvalid(t *testing.T) {
 	timeslotSQL := TimeslotMySQL{}
-	_, err := timeslotSQL.WriteATimeslot(testTimeslot)
+	_, err := timeslotSQL.WriteATimeslot(testTimeslot.StartTime, testTimeslot.EndTime)
 	assert.Equal(t, ErrDBNotSet, err)
 }
 
@@ -74,7 +74,7 @@ func TestUpdateATimeslotValid(t *testing.T) {
 
 	// Execute UpdateATimeslot
 	timeslotSQL := NewTimeslotMySQL(mockdb)
-	err = timeslotSQL.UpdateATimeslot(testTimeslot)
+	err = timeslotSQL.UpdateATimeslot(testTimeslot.ID, testTimeslot.StartTime, testTimeslot.EndTime)
 	if err != nil {
 		t.Fatalf("an error occured when running UpdateATimeslot: %s", err)
 	}
@@ -87,7 +87,7 @@ func TestUpdateATimeslotValid(t *testing.T) {
 
 func TestUpdateATimeslotInvalid(t *testing.T) {
 	timeslotSQL := TimeslotMySQL{}
-	err := timeslotSQL.UpdateATimeslot(testTimeslot)
+	err := timeslotSQL.UpdateATimeslot(testTimeslot.ID, testTimeslot.StartTime, testTimeslot.EndTime)
 	assert.Equal(t, ErrDBNotSet, err)
 }
 
