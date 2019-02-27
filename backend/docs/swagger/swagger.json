@@ -76,7 +76,8 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object"
+                            "type": "object",
+                            "$ref": "#/definitions/api.getASpeakerRequest"
                         }
                     }
                 ],
@@ -127,6 +128,14 @@
         }
     },
     "definitions": {
+        "api.getASpeakerRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "db.Room": {
             "type": "object",
             "properties": {

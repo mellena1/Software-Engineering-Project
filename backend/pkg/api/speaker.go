@@ -17,7 +17,7 @@ type speakerAPI struct {
 	speakerDeleter db.SpeakerDeleter
 }
 
-type bodyData struct {
+type getASpeakerRequest struct {
 	ID int
 }
 
@@ -64,14 +64,14 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 // getAllSpeakers Gets a speaker with the specified email from the db
 // @Summary Get a speaker by email
 // @Description Return a speaker with the specified email
-// @Param speakerID body bodyData true "ID of the requested speaker"
+// @Param speakerID body api.getASpeakerRequest true "ID of the requested speaker"
 // @Produce json
 // @Success 200 {array} db.Speaker
 // @Failure 400 {} nil
 // @Router /api/v1/speaker [get]
 func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
 
-	var data bodyData
+	var data getASpeakerRequest
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &data)
 

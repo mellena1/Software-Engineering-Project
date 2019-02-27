@@ -1,5 +1,10 @@
 basePath: '{{.BasePath}}'
 definitions:
+  api.getASpeakerRequest:
+    properties:
+      id:
+        type: integer
+    type: object
   db.Room:
     properties:
       capacity:
@@ -96,6 +101,7 @@ paths:
         name: speakerID
         required: true
         schema:
+          $ref: '#/definitions/api.getASpeakerRequest'
           type: object
       produces:
       - application/json
