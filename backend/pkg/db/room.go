@@ -3,7 +3,7 @@ package db
 // Room holds all data about a room
 type Room struct {
 	ID       *int    `json:"id" example:"1"`
-	RoomName *string `json:"roomName" example:"My Room Name"`
+	Name     *string `json:"name" example:"My Room Name"`
 	Capacity *int    `json:"capacity" example:"50"`
 }
 
@@ -11,7 +11,7 @@ type Room struct {
 func NewRoom() Room {
 	return Room{
 		ID:       IntPtr(0),
-		RoomName: StringPtr(""),
+		Name:     StringPtr(""),
 		Capacity: IntPtr(0),
 	}
 }
