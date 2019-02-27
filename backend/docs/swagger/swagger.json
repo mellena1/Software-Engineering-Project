@@ -64,6 +64,44 @@
         },
         "/api/v1/speaker": {
             "get": {
+                "description": "Return a speaker with the specified email",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a speaker by email",
+                "parameters": [
+                    {
+                        "description": "ID of the requested speaker",
+                        "name": "speakerID",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.getASpeakerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Speaker"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": ""
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/speakers": {
+            "get": {
                 "description": "Return a list of all speakers",
                 "produces": [
                     "application/json"
@@ -221,6 +259,14 @@
                 }
             }
         },
+        "api.getASpeakerRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.updateATimeslotRequest": {
             "type": "object",
             "properties": {
@@ -255,13 +301,16 @@
             "type": "object",
             "properties": {
                 "capacity": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 50
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
-                "roomName": {
-                    "type": "string"
+                "name": {
+                    "type": "string",
+                    "example": "My Room Name"
                 }
             }
         },
@@ -269,10 +318,12 @@
             "type": "object",
             "properties": {
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Session Name"
                 },
                 "room": {
                     "type": "object",
@@ -292,13 +343,19 @@
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "firstname.lastname@gmail.com"
                 },
                 "firstName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Bob"
+                },
+                "id": {
+                    "type": "integer"
                 },
                 "lastName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Smith"
                 }
             }
         },
@@ -306,13 +363,16 @@
             "type": "object",
             "properties": {
                 "endTime": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2019-10-01 23:00:00"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "startTime": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2019-02-18 21:00:00"
                 }
             }
         }

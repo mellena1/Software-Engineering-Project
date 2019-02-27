@@ -9,9 +9,9 @@ const (
 
 // Timeslot holds all data about a timeslot
 type Timeslot struct {
-	ID        *int64
-	StartTime *time.Time
-	EndTime   *time.Time
+	ID        *int64     `json:"id" example:"1"`
+	StartTime *time.Time `json:"startTime" example:"2019-02-18 21:00:00"`
+	EndTime   *time.Time `json:"endTime" example:"2019-10-01 23:00:00"`
 }
 
 // NewTimeslot makes a new Timeslot with default values
