@@ -64,7 +64,7 @@ func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} nil
 // @Router /api/v1/room [get]
 func (a roomAPI) getRoom(w http.ResponseWriter, r *http.Request) {
-	room, err := a.roomReader.ReadARoom()
+	room, err := a.roomReader.ReadARoom() //This wants a string
 	if err != nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
 		log.Printf("Failed to read room from the db: %v", err)
