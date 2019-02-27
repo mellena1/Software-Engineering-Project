@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
@@ -25,10 +26,15 @@ func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) [
 	}
 
 	routes := []Route{
-		NewRoute("/api/v1/session", sessAPI.getAllSessions, "GET"),
+		NewRoute("/api/v1/session", sessAPI.getASession, "GET"),
+		NewRoute("/api/v1/sessions", sessAPI.getAllSessions, "GET"),
 	}
 
 	return routes
+}
+
+type getASessionRequest struct {
+	ID int `json:"id" example:"1"`
 }
 
 // getAllSessions Gets all sessions from the db
@@ -38,6 +44,31 @@ func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) [
 // @Success 200 {array} db.Session
 // @Failure 400 {} nil
 // @Router /api/v1/session [get]
+func (a sessionAPI) getASession(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	sessionRequest := getASessionRequest{}
+	json.Unmarshal(body, &sessionRequest)
+	session, err := a.sessionReader.ReadASession(sessionRequest.ID)
+	if err != nil {
+		ReportError(err, "Failed to get a session", http.StatusBadRequest, w)
+		return
+	}
+
+	j, err := json.Marshal(session)
+	if err != nil {
+		ReportError(err, "Failed to create session json", http.StatusBadRequest, w)
+	}
+
+	w.Write(j)
+}
+
+// getAllSessions Gets all sessions from the db
+// @Summary Get all sessions
+// @Description Return a list of all sessions
+// @Produce json
+// @Success 200 {array} db.Session
+// @Failure 400 {} nil
+// @Router /api/v1/sessions [get]
 func (a sessionAPI) getAllSessions(w http.ResponseWriter, r *http.Request) {
 	sessions, err := a.sessionReader.ReadAllSessions()
 	if err != nil {

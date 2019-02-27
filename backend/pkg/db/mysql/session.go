@@ -96,21 +96,6 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 
 // WriteASession writes a session to the db
 func (s SessionMySQL) WriteASession(session db.Session) error {
-	if s.db == nil {
-		return ErrDBNotSet
-	}
-
-	stmt, err := s.db.Prepare("INSERT INTO session VALUES (?, ?, ?, ?, ?)")
-	if err != nil {
-		return err
-	}
-
-	_, err = stmt.Exec(session.StartTime.Format("2019-02-18T21:00:00"), session.EndTime.Format("2019-02-18T21:00:00"),
-		session.Title, session.Speaker.Email, session.Room.RoomName)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
