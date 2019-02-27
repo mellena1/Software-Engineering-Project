@@ -87,7 +87,7 @@ func (a roomAPI) getRoom(w http.ResponseWriter, r *http.Request) {
 	room, err := a.roomReader.ReadARoom(roomID) //This needs a string
 	if err != nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
-		log.Printf("Failed to read room from the db: %v", roomID, err)
+		log.Printf("Failed to read room (%v) from the db: %v", roomID, err)
 		w.Write([]byte("Read from the backend failed"))
 		return
 	}

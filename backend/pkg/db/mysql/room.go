@@ -29,7 +29,7 @@ func (r RoomMySQL) ReadARoom(roomID int) (db.Room, error) {
 	row := r.db.QueryRow(q, roomID)
 	switch err := row.Scan(newRoom.ID, newRoom.Name, newRoom.Capacity); err {
 	case sql.ErrNoRows:
-	  return db.Room{}, err("No rows were returned!")
+	  return db.Room{}, err
 	case nil:
 	  return newRoom, nil
 	default:
