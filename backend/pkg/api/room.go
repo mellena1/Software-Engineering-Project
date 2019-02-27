@@ -39,7 +39,7 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 // @Produce json
 // @Success 200 {array} db.Room
 // @Failure 400 {} nil
-// @Router /api/v1/room [get]
+// @Router /api/v1/rooms [get]
 func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 	rooms, err := a.roomReader.ReadAllRooms()
 	if err != nil {

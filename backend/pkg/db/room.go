@@ -2,13 +2,15 @@ package db
 
 // Room holds all data about a room
 type Room struct {
-	RoomName *string
-	Capacity *int
+	ID       *int    `json:"id" example:"1"`
+	RoomName *string `json:"roomName" example:"My Room Name"`
+	Capacity *int    `json:"capacity" example:"50"`
 }
 
 // NewRoom makes a new Room with default values
 func NewRoom() Room {
 	return Room{
+		ID:       IntPtr(0),
 		RoomName: StringPtr(""),
 		Capacity: IntPtr(0),
 	}
