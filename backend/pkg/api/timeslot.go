@@ -39,8 +39,8 @@ func CreateTimeslotRoutes(timeslotDBFacade db.TimeslotReaderWriterUpdaterDeleter
 
 // writeATimeslotRequest request for writeATimeslot
 type writeATimeslotRequest struct {
-	StartTime string `example:"2019-02-18 21:00:00"`
-	EndTime   string `example:"2019-10-01 23:00:00"`
+	StartTime string `json:"startTime" example:"2019-02-18 21:00:00"`
+	EndTime   string `json:"endTime" example:"2019-10-01 23:00:00"`
 }
 
 // writeATimeslot Add a timeslot to the db
@@ -113,9 +113,9 @@ func (t timeslotAPI) writeATimeslot(w http.ResponseWriter, r *http.Request) {
 
 // writeATimeslotRequest request for updateATimeslot
 type updateATimeslotRequest struct {
-	ID        int64  `example:"1"`
-	StartTime string `example:"2019-02-18 21:00:00"`
-	EndTime   string `example:"2019-10-01 23:00:00"`
+	ID        int64  `json:"id" example:"1"`
+	StartTime string `json:"startTime" example:"2019-02-18 21:00:00"`
+	EndTime   string `json:"endTime" example:"2019-10-01 23:00:00"`
 }
 
 // updateATimeslot Update an existing timeslot in the db
@@ -192,7 +192,7 @@ func (t timeslotAPI) updateATimeslot(w http.ResponseWriter, r *http.Request) {
 
 // writeATimeslotRequest request for deleteATimeslot
 type deleteATimeslotRequest struct {
-	ID int64 `example:"1"`
+	ID int64 `json:"id" example:"1"`
 }
 
 // deleteATimeslot Delete an existing timeslot in the db
