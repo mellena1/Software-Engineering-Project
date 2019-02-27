@@ -18,7 +18,7 @@
             <li *ngFor="let room of rooms"
             [class.selected]="room == selectedRoom"
             (click)="onSelect(room)">
-            <span class="badge">{{ room.name }} </span> {{ room.capacity }}
+            <span class="badge">{{ room.roomName }} </span> {{ room.capacity }}
           </li>
          </ul>
     </body>
