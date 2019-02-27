@@ -12,7 +12,19 @@
             [class.selected]="room == selectedRoom"
             (click)="onSelect(room)">
             <span class="badge">{{ room.id }} </span> {{ room.roomName }}
-    </li>
-</ul>
+          </li>
+         </ul>
     </body>
+
+    <div *ngIf="selectedRoom">
+
+        <h2>{{selectedRoom.name | uppercase}} Details</h2>
+        <div><span>id: </span>{{selectedHero.id}}</div>
+        <div>
+          <label>Room Name:
+            <input [(ngModel)]="selectedRoom.name" placeholder="name">
+          </label>
+        </div>
+    </div>
+
 </html>
