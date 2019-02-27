@@ -3,9 +3,9 @@ package db
 // Speaker holds all data about a speaker
 type Speaker struct {
 	ID        *int
-	Email     *string
-	FirstName *string
-	LastName  *string
+	Email     *string `json:"email" example:"firstname.lastname@gmail.com"`
+	FirstName *string `json:"firstName" example:"Bob"`
+	LastName  *string `json:"lastName" example:"Smith"`
 }
 
 // NewSpeaker makes a new Speaker with default values

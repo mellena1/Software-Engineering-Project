@@ -8,17 +8,22 @@ definitions:
   db.Room:
     properties:
       capacity:
+        example: 50
         type: integer
       id:
+        example: 1
         type: integer
       roomName:
+        example: My Room Name
         type: string
     type: object
   db.Session:
     properties:
       id:
+        example: 1
         type: integer
       name:
+        example: Session Name
         type: string
       room:
         $ref: '#/definitions/db.Room'
@@ -33,21 +38,27 @@ definitions:
   db.Speaker:
     properties:
       email:
+        example: firstname.lastname@gmail.com
         type: string
       firstName:
+        example: Bob
         type: string
       id:
         type: integer
       lastName:
+        example: Smith
         type: string
     type: object
   db.Timeslot:
     properties:
       endTime:
+        example: "2019-10-01 23:00:00"
         type: string
       id:
+        example: 1
         type: integer
       startTime:
+        example: "2019-02-18 21:00:00"
         type: string
     type: object
 host: '{{.Host}}'
