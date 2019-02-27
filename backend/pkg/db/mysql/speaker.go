@@ -63,16 +63,59 @@ func (s SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
 }
 
 // WriteASpeaker writes a speaker to the db
-func (SpeakerMySQL) WriteASpeaker(s db.Speaker) error {
+func (s SpeakerMySQL) WriteASpeaker(speaker db.Speaker) error {
+	if s.db == nil {
+		return ErrDBNotSet
+	}
+
+	stmt, err := s.db.Prepare("INSERT INTO speaker (`email`, `firstName`, `lastName`) VALUES (?, ?, ?)")
+
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(speaker.Email, speaker.FirstName, speaker.LastName)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // UpdateASpeaker updates a speaker in the db given an email and the updated speaker
-func (SpeakerMySQL) UpdateASpeaker(email string, newSpeaker db.Speaker) error {
+func (s SpeakerMySQL) UpdateASpeaker(id int, newSpeaker db.Speaker) error {
+	if s.db == nil {
+		return ErrDBNotSet
+	}
+
+	oldSpeaker, err := s.ReadASpeaker(id)
+
+	if err != nil {
+		return err
+	}
+
+	speakerID := oldSpeaker.ID
+	_, err = s.db.Exec(`UPDATE speaker SET email = ?, firstName = ?, lastName = ? WHERE id = ?`, newSpeaker.Email, newSpeaker.FirstName, newSpeaker.LastName, speakerID)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // DeleteASpeaker deletes a speaker given an email
-func (SpeakerMySQL) DeleteASpeaker(email string) error {
+func (s SpeakerMySQL) DeleteASpeaker(email string) error {
+	if s.db == nil {
+		return ErrDBNotSet
+	}
+
+	_, err := s.db.Exec(`DELETE FROM speaker WHERE email = ?`, email)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

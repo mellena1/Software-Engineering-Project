@@ -39,10 +39,10 @@ type SpeakerWriter interface {
 
 // SpeakerUpdater implements all update related methods
 type SpeakerUpdater interface {
-	UpdateASpeaker(email string, newSpeaker Speaker) error
+	UpdateASpeaker(id int, newSpeaker Speaker) error
 }
 
 // SpeakerDeleter implements all delete related methods
 type SpeakerDeleter interface {
-	DeleteASpeaker(email string) error
+	DeleteASpeaker(id string) error
 }
