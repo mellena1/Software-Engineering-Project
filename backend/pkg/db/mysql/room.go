@@ -79,7 +79,7 @@ func (r RoomMySQL) DeleteARoom(roomID int) error {
 	}
 
 	q := ("DELETE FROM room WHERE roomID = ?;")
-	result, err := r.db.Exec(q, roomID)
+	_, err := r.db.Exec(q, roomID)
 	if err != nil {
 		return err
 	}
