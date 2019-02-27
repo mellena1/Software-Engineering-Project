@@ -16,6 +16,10 @@ type roomAPI struct {
 	roomDeleter db.RoomDeleter
 }
 
+type roomRequest struct {
+	ID int
+}
+
 // CreateRoomRoutes makes all of the routes for room related calls
 func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 	roomAPI := roomAPI{
@@ -59,15 +63,30 @@ func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 // getRoom Gets all rooms from the db
 // @Summary Get a room
 // @Description Returns a room
+// @Param roomID body api.roomRequest true "ID of the requested Room"
 // @Produce json
 // @Success 200 {} db.Room
 // @Failure 400 {} nil
 // @Router /api/v1/room [get]
 func (a roomAPI) getRoom(w http.ResponseWriter, r *http.Request) {
-	room, err := a.roomReader.ReadARoom() //This wants a string
+
+
+	//Going off of what Kenny did here
+	var data roomRequest
+	body,_ := ioutil.ReadAll(r.Body)
+	err := json.Unmarchal(body, &data)
+
+	if err != nil {
+		return
+	}
+
+
+	roomID := data.ID
+
+	room, err := a.roomReader.ReadARoom(roomID) //This needs a string
 	if err != nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
-		log.Printf("Failed to read room from the db: %v", err)
+		log.Printf("Failed to read room from the db: %v", roomID. err)
 		w.Write([]byte("Read from the backend failed"))
 		return
 	}
