@@ -81,11 +81,10 @@ func (r RoomMySQL) DeleteARoom(roomName int) error {
 	}
 
 	q := r.db.prepare("DELETE FROM room WHERE roomName = ?;")
-	rows, err := r.db.Query(q, roomName)
+	_, err := r.db.Query(q, roomName)
 	if err != nil {
 		return nil, err
 	}
 
-	defer rows.Close()
 	return nil
 }
