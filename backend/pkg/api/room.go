@@ -73,8 +73,8 @@ func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var room db.Room
-	err = json.Unmarshal(body, room)
+	room := db.Room{}
+	err = json.Unmarshal(body, &room)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))

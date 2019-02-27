@@ -38,7 +38,7 @@ func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 	rooms := []db.Room{}
 	for rows.Next() {
 		newRoom := db.NewRoom()
-		rows.Scan(newRoom.ID, newRoom.RoomName, newRoom.Capacity)
+		rows.Scan(newRoom.ID, newRoom.Name, newRoom.Capacity)
 		rooms = append(rooms, newRoom)
 	}
 	return rooms, nil
@@ -49,11 +49,9 @@ func (r RoomMySQL) WriteARoom(room db.Room) (int64, error) {
 	if r.db == nil {
 		return 0, ErrDBNotSet
 	}
-
-	insert, _ := r.db.Prepare("INSERT INTO room VALUES (?, ?)")
+	insert, _ := r.db.Prepare("INSERT INTO room(`roomName`, `capacity`) VALUES (?, ?)")
 	defer insert.Close()
-
-	result, err := insert.Exec(room.RoomName, room.Capacity)
+	result, err := insert.Exec(*room.Name, *room.Capacity)
 	if err != nil {
 		return 0, ErrDBNotSet
 	}
