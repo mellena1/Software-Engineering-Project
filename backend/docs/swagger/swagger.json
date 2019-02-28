@@ -270,6 +270,49 @@
             }
         },
         "/api/v1/timeslot": {
+            "get": {
+                "description": "Get a timeslot from the db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a timeslot from the db",
+                "parameters": [
+                    {
+                        "description": "the timeslot to retrieve",
+                        "name": "timeslot",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.getATimeslotRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "the requested timeslot",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/db.Timeslot"
+                        }
+                    },
+                    "400": {
+                        "description": "the request was bad",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "failed to access the db",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "put": {
                 "description": "Update an existing timeslot in the db",
                 "consumes": [
@@ -298,13 +341,13 @@
                     "400": {
                         "description": "the request was bad",
                         "schema": {
-                            "type": ""
+                            "type": "string"
                         }
                     },
                     "503": {
                         "description": "failed to access the db",
                         "schema": {
-                            "type": ""
+                            "type": "string"
                         }
                     }
                 }
@@ -334,19 +377,19 @@
                     "200": {
                         "description": "the id of the timeslot added",
                         "schema": {
-                            "type": ""
+                            "type": "integer"
                         }
                     },
                     "400": {
                         "description": "the request was bad",
                         "schema": {
-                            "type": ""
+                            "type": "string"
                         }
                     },
                     "503": {
                         "description": "failed to access the db",
                         "schema": {
-                            "type": ""
+                            "type": "string"
                         }
                     }
                 }
@@ -379,13 +422,45 @@
                     "400": {
                         "description": "the request was bad",
                         "schema": {
-                            "type": ""
+                            "type": "string"
                         }
                     },
                     "503": {
                         "description": "failed to access the db",
                         "schema": {
-                            "type": ""
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/timeslots": {
+            "get": {
+                "description": "Get all timeslots from the db",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all timeslots from the db",
+                "responses": {
+                    "200": {
+                        "description": "all timeslots in the db",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Timeslot"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "the request was bad",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "failed to access the db",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -415,6 +490,15 @@
             "properties": {
                 "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "api.getATimeslotRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
