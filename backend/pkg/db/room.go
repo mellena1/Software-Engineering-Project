@@ -26,21 +26,21 @@ type RoomReaderWriterUpdaterDeleter interface {
 
 // RoomReader implements all read related methods
 type RoomReader interface {
-	ReadARoom(roomName string) (Room, error)
+	ReadARoom(roomID int) (Room, error)
 	ReadAllRooms() ([]Room, error)
 }
 
 // RoomWriter implements all write related methods
 type RoomWriter interface {
-	WriteARoom(r Room) error
+	WriteARoom(name *string, capacity *int) (int64, error)
 }
 
 // RoomUpdater implements all update related methods
 type RoomUpdater interface {
-	UpdateARoom(roomName string, newRoom Room) error
+	UpdateARoom(id *int, name *string, capacity *int) error
 }
 
 // RoomDeleter implements all delete related methods
 type RoomDeleter interface {
-	DeleteARoom(roomName int) error
+	DeleteARoom(id *int) error
 }
