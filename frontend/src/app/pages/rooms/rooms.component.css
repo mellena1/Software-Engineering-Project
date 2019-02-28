@@ -47,6 +47,44 @@
   border-radius: 4px 0 0 4px;
 }
 
+button {
+  font-family: Arial;
+  background-color: #eee;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  cursor: hand;
+}
+
+button:hover {
+  background-color: #cfd8dc;
+}
+
+button:disabled {
+  background-color: #eee;
+  color: #aaa;
+  cursor: auto;
+}
+
+/* everywhere else */
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.wrapper {
+  border: 1px dashed #95a5a6;
+  height: 56px;
+  margin-top: 16px;
+  border-radius: 4px;
+  position: relative;
+  font-size: 12px;
+}
+
+.wrapper p {
+  line-height: 31px;
+}
+
 
 /*
 Copyright Google LLC. All Rights Reserved.

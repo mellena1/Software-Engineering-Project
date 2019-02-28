@@ -6,7 +6,6 @@
     </head>
     <body>
         <h1>Rooms</h1>
-        <h2>List of Rooms</h2>
         <ul class="room">
             <li *ngFor="let room of rooms"
             [class.selected]="room == selectedRoom"
@@ -17,10 +16,12 @@
     </body>
 
     <div *ngIf="selectedRoom">
-
-        <h2>Edit</h2>
+        <h2>Edit or Delete Room </h2>
         <div><span>RoomName: </span>{{selectedRoom.roomName}}</div>
         <div><span>Room Capacity:</span>{{selectedRoom.capacity}}</div>
+        <br>
+        <button (click)="deleteRoom()">Delete this Room</button>
+        <br>
         <div>
           <label> Update:
             <input [(ngModel)]="selectedRoom.roomName" placeholder="roomName">
@@ -28,5 +29,27 @@
           </label>
         </div>
     </div>
+
+    <button (click)="toggle()" id="bt">Add a Room</button>
+
+    <ng-container *ngIf="show">
+        <div>
+            <div>
+                <br>
+                <label>Room Name: </label><input id="roomName" placeholder="eg. BEATTY401" />
+                <br>
+            </div>
+            <div>
+                <br>
+                <label>Room Capacity: </label><input name="roomCapacity" placeholder="eg. 1-999" />
+                <br>
+            </div>
+            <div>
+              <br>
+              <button (click)="addRoom()">Submit</button>
+            </div>
+        </div>
+    </ng-container>
+
 
 </html>
