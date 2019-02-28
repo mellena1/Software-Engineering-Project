@@ -1,5 +1,7 @@
 export class Timeslot {
-    id: number;
-    startTime: string;
-    endTime: string;
+    constructor(
+        id: number,
+        startTime: string,
+        endTime: string
+    ){}
 }

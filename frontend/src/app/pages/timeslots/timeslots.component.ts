@@ -9,7 +9,7 @@ import { TimeslotService } from 'src/app/services/timeslot.service';
 })
 export class TimeslotsComponent implements OnInit {
   timeslots: Timeslot[];
-  selectedTimeslot: Timeslot;
+  selectedTimeslot = new Timeslot(1, "", "");
   error: any;
 
   constructor(private timeslotService: TimeslotService) { }
@@ -25,6 +25,21 @@ export class TimeslotsComponent implements OnInit {
         timeslots => (this.timeslots = timeslots),
         error => (this.error = error)
       )
+  }
+
+  addTimeslot(timeslot: Timeslot): void {
+    this.timeslotService
+    .writeTimeslot(timeslot)
+  }
+
+  updateTimeslot(): void {
+    this.timeslotService
+    .updateTimeslot()
+  }
+
+  onSelect(timeslot: Timeslot): void {
+    this.selectedTimeslot = timeslot;
+    this.addTimeslot(this.selectedTimeslot);
   }
 
 }
