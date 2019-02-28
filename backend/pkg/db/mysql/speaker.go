@@ -17,13 +17,49 @@ func NewSpeakerMySQL(db *sql.DB) SpeakerMySQL {
 }
 
 // ReadASpeaker reads a speaker from the db given email
-func (SpeakerMySQL) ReadASpeaker(email string) (db.Speaker, error) {
-	return db.Speaker{}, nil
+func (s SpeakerMySQL) ReadASpeaker(speakerID int) (db.Speaker, error) {
+	if s.db == nil {
+		return db.Speaker{}, ErrDBNotSet
+	}
+
+	query := `SELECT * FROM speaker where speakerID = ?;`
+
+	rows, err := s.db.Query(query, speakerID)
+	if err != nil {
+		return db.Speaker{}, err
+	}
+
+	defer rows.Close()
+
+	speaker := db.NewSpeaker()
+	for rows.Next() {
+		rows.Scan(speaker.ID, speaker.Email, speaker.FirstName, speaker.LastName)
+	}
+
+	return speaker, nil
 }
 
 // ReadAllSpeakers reads all speakers from the db
-func (SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
-	return []db.Speaker{}, nil
+func (s SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
+	if s.db == nil {
+		return nil, ErrDBNotSet
+	}
+
+	query := "SELECT * FROM speaker;"
+
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	speakers := []db.Speaker{}
+	for rows.Next() {
+		newSpeaker := db.NewSpeaker()
+		rows.Scan(newSpeaker.ID, newSpeaker.Email, newSpeaker.FirstName, newSpeaker.LastName)
+		speakers = append(speakers, newSpeaker)
+	}
+	return speakers, nil
 }
 
 // WriteASpeaker writes a speaker to the db

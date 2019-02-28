@@ -2,11 +2,11 @@ package db
 
 // Session holds all data about a session
 type Session struct {
-	ID       *int
-	Timeslot *Timeslot
-	Name     *string
-	Speaker  *Speaker
-	Room     *Room
+	ID       *int      `json:"id" example:"1"`
+	Timeslot *Timeslot `json:"timeslot"`
+	Name     *string   `json:"name" example:"Session Name"`
+	Speaker  *Speaker  `json:"speaker"`
+	Room     *Room     `json:"room"`
 }
 
 // NewSession makes a new Session with default values

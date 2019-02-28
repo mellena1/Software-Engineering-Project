@@ -16,9 +16,27 @@ func NewRoomMySQL(db *sql.DB) RoomMySQL {
 	return RoomMySQL{db}
 }
 
-// ReadARoom reads a room from the db given roomName
-func (r RoomMySQL) ReadARoom(roomName string) (db.Room, error) {
-	return db.Room{}, nil
+// ReadARoom reads a room from the db given roomID
+func (r RoomMySQL) ReadARoom(roomID int) (db.Room, error) {
+	if r.db == nil {
+		return db.Room{}, ErrDBNotSet
+	}
+
+	newRoom := db.NewRoom()
+
+	q := ("SELECT * FROM room WHERE roomID = ?;")
+
+	row := r.db.QueryRow(q, roomID)
+	switch err := row.Scan(newRoom.ID, newRoom.Name, newRoom.Capacity); err {
+	case sql.ErrNoRows:
+		return db.Room{}, err
+	case nil:
+		return newRoom, nil
+	default:
+		return db.Room{}, err
+	}
+
+	return newRoom, nil
 }
 
 // ReadAllRooms reads all rooms from the db
@@ -38,7 +56,7 @@ func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 	rooms := []db.Room{}
 	for rows.Next() {
 		newRoom := db.NewRoom()
-		rows.Scan(newRoom.ID, newRoom.RoomName, newRoom.Capacity)
+		rows.Scan(newRoom.ID, newRoom.Name, newRoom.Capacity)
 		rooms = append(rooms, newRoom)
 	}
 	return rooms, nil
@@ -50,11 +68,21 @@ func (r RoomMySQL) WriteARoom(room db.Room) error {
 }
 
 // UpdateARoom updates a room in the db given a roomName and the updated room
-func (r RoomMySQL) UpdateARoom(roomName string, newRoom db.Room) error {
+func (r RoomMySQL) UpdateARoom(roomID int, newRoom db.Room) error {
 	return nil
 }
 
 // DeleteARoom deletes a room given a roomName
-func (r RoomMySQL) DeleteARoom(roomName int) error {
+func (r RoomMySQL) DeleteARoom(roomID int) error {
+	if r.db == nil {
+		return ErrDBNotSet
+	}
+
+	q := ("DELETE FROM room WHERE roomID = ?;")
+	_, err := r.db.Exec(q, roomID)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
