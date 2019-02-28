@@ -17,7 +17,7 @@ func NewSessionMySQL(db *sql.DB) SessionMySQL {
 }
 
 // ReadASession reads a session from the db given sessionID
-func (SessionMySQL) ReadASession(sessionID int) (db.Session, error) {
+func (SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
 	return db.Session{}, nil
 }
 
@@ -27,7 +27,7 @@ func (SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 }
 
 // WriteASession writes a session to the db
-func (s SessionMySQL) WriteASession(speakerID *int, roomID *int, timeslotID *int, name *string) (int64, error) {
+func (s SessionMySQL) WriteASession(speakerID *int, roomID *int, timeslotID *int64, name *string) (int64, error) {
 	if s.db == nil {
 		return 0, ErrDBNotSet
 	}
@@ -47,7 +47,7 @@ func (s SessionMySQL) WriteASession(speakerID *int, roomID *int, timeslotID *int
 }
 
 // UpdateASession updates a session in the db given a sessionID and the updated session
-func (s SessionMySQL) UpdateASession(sessionID int, speakerID *int, roomID *int, timeslotID *int, name *string) error {
+func (s SessionMySQL) UpdateASession(sessionID int64, speakerID *int, roomID *int, timeslotID *int64, name *string) error {
 	if s.db == nil {
 		return ErrDBNotSet
 	}
@@ -66,7 +66,7 @@ func (s SessionMySQL) UpdateASession(sessionID int, speakerID *int, roomID *int,
 	if rows, err := result.RowsAffected(); err != nil {
 		return err
 	} else if rows == 0 {
-		return ErrNothingChanged
+		return db.ErrNothingChanged
 	}
 
 	return nil
@@ -92,7 +92,7 @@ func (s SessionMySQL) DeleteASession(sessionID int64) error {
 	if rows, err := result.RowsAffected(); err != nil {
 		return err
 	} else if rows == 0 {
-		return ErrNothingChanged
+		return db.ErrNothingChanged
 	}
 
 	return nil

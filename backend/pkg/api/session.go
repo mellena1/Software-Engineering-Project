@@ -44,7 +44,7 @@ func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) [
 // @Failure 400 {} nil
 // @Router /api/v1/session [get]
 func (s sessionAPI) getAllSessions(w http.ResponseWriter, r *http.Request) {
-	sessions, err := a.sessionReader.ReadAllSessions()
+	sessions, err := s.sessionReader.ReadAllSessions()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write(nil)
@@ -100,7 +100,7 @@ func (s sessionAPI) writeASession(w http.ResponseWriter, r *http.Request) {
 
 // updateASessionRequest request for updateASession
 type updateASessionRequest struct {
-	SessionID   int     `json:"sessionID" example:"1"`
+	SessionID   int64   `json:"sessionID" example:"1"`
 	SpeakerID   *int    `json:"speakerID" example:"1"`
 	RoomID      *int    `json:"roomID" example:"1"`
 	TimeslotID  *int64  `json:"timeslotID" example:"1"`
@@ -129,7 +129,7 @@ func (s sessionAPI) updateASession(w http.ResponseWriter, r *http.Request) {
 	sessionRequest := updateASessionRequest{}
 	json.Unmarshal(j, &sessionRequest)
 
-	err := s.sessionWriter.UpdateASession(sessionRequest.SessionID, sessionRequest.SpeakerID, sessionRequest.RoomID, sessionRequest.TimeslotID, sessionRequest.SessionName)
+	err = s.sessionUpdater.UpdateASession(sessionRequest.SessionID, sessionRequest.SpeakerID, sessionRequest.RoomID, sessionRequest.TimeslotID, sessionRequest.SessionName)
 	if err != nil {
 		var msg string
 		var status int
@@ -151,7 +151,7 @@ func (s sessionAPI) updateASession(w http.ResponseWriter, r *http.Request) {
 
 // deleteASessionRequest request for deleteASession
 type deleteASessionRequest struct {
-	SessionID int `json:"sessionID" example:"1"`
+	SessionID int64 `json:"sessionID" example:"1"`
 }
 
 // deleteASession Delete an existing session in the db
