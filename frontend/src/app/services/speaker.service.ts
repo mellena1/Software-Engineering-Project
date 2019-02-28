@@ -25,15 +25,15 @@ export class SpeakerService {
     
   }
 
-  writeSpeaker() {
+  writeSpeaker(speaker: Speaker) {
 
   }
 
-  updateSpeaker() {
+  updateSpeaker(updateSpeaker: Speaker) {
 
   }
 
-  deleteSpeaker() {
+  deleteSpeaker(id: number) {
 
   }
 
