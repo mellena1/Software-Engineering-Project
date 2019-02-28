@@ -1,7 +1,62 @@
-<ul class="rooms">
-    <li *ngFor="let room of rooms">
-        <span class="hero-element">
-            <span class="badge">{{ room.id }}</span> {{room.name}}
-        </span>
-    </li>
-</ul>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>List of Rooms</title>
+    </head>
+    <body>
+        <h1>Rooms</h1>
+        <ul class="rooms">
+            <li *ngFor="let room of rooms"
+            [class.selected]="room == selectedRoom"
+            (click)="onSelect(room)">
+            <span class="badge">{{ room.name }} </span> {{ room.capacity }}
+          </li>
+         </ul>
+  
+
+    <div class="container">
+        <h2>Add Room</h2>
+        <form [formGroup]="roomForm" #formDir="ngForm">
+            <div [hidden]="formDir.submitted">
+                <div class="form-group">
+                    <label for="roomName">Room Name: </label>
+                    <input id="roomName" class="form-control"
+                           formControlName="roomName" required>   
+                </div>
+                <div class="form-group">
+                    <label for="roomCapacity">Room Capacity: </label>
+                    <input id="roomCapacity" class="form-control"
+                        formControlName="roomCapacity" required>     
+                </div>
+
+                <button type="submit" class="btn btn-default"
+                        [disabled]="roomForm.invalid">Submit</button>
+                       
+
+                <button type="button" class="btn btn-default"
+                        (click)="formDir.resetForm({})">Reset</button>    
+        </div>
+        </form>
+        <div class="submitted-message" *ngIf="formDir.submitted">
+            <p>You've submitted a new Room</p>
+            <button (click)="formDir.resetForm({})">Submit a new Room</button>
+        </div>
+    </div>
+
+    <div *ngIf="selectedRoom">
+            <h2>Edit or Delete Room </h2>
+            <div><span>RoomName: </span>{{selectedRoom.name}}</div>
+            <div><span>Room Capacity:</span>{{selectedRoom.capacity}}</div>
+            <br>
+            <button (click)="deleteRoom()">Delete this Room</button>
+            <br>
+            <div>
+              <label> Update:
+                <input [(ngModel)]="selectedRoom.roomName" placeholder="roomName">
+                <input [(ngModel)]="selectedRoom.capacity" placeholder="capacity">
+              </label>
+            </div>
+        </div>
+        </body>
+</html>

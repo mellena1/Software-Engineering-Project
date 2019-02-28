@@ -22,13 +22,14 @@ import { FormsModule }    from '@angular/forms';
   ]
 })
 export class SessionsComponent implements OnInit {
+  constructor(private sessionService: SessionService) { }
   sessions: Session[];
   newSession: Session;
   selectedSession: Session;
   error: any;
   sessionForm: FormGroup;
-  constructor(private sessionService: SessionService ) { }
 
+  
   ngOnInit() {
     this.getAllSessions();
     this.sessionForm = new FormGroup({
@@ -50,34 +51,13 @@ export class SessionsComponent implements OnInit {
   getAllSessions(): void {
     this.sessionService
       .getAllSessions()
-      //.subscribe(
-        //sessions => (this.sessions = sessions),
-        //error => (this.error = error)
-      //)
-  }
-
-  getSession(id: number): void {
-    this.sessionService
-      .getSession(id)
-  }
-
-  writeSession(): void {
-    this.sessionService
-      .writeSession()
-  }
-
-  updateSession(): void {
-    this.sessionService
-      .updateSession()
-  }
-
-  deleteSession(): void {
-    this.sessionService
-      .deleteSession()
+      .subscribe(
+        sessions => (this.sessions = sessions),
+        error => (this.error = error)
+      )
   }
 
   onSelect(session: Session): void {
     this.selectedSession = session;
   }
-
 }
