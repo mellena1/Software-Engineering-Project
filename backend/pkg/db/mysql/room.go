@@ -16,9 +16,27 @@ func NewRoomMySQL(db *sql.DB) RoomMySQL {
 	return RoomMySQL{db}
 }
 
-// ReadARoom reads a room from the db given roomName
-func (r RoomMySQL) ReadARoom(roomName string) (db.Room, error) {
-	return db.Room{}, nil
+// ReadARoom reads a room from the db given roomID
+func (r RoomMySQL) ReadARoom(roomID int) (db.Room, error) {
+	if r.db == nil {
+		return db.Room{}, ErrDBNotSet
+	}
+
+	newRoom := db.NewRoom()
+
+	q := ("SELECT * FROM room WHERE roomID = ?;")
+
+	row := r.db.QueryRow(q, roomID)
+	switch err := row.Scan(newRoom.ID, newRoom.Name, newRoom.Capacity); err {
+	case sql.ErrNoRows:
+		return db.Room{}, err
+	case nil:
+		return newRoom, nil
+	default:
+		return db.Room{}, err
+	}
+
+	return newRoom, nil
 }
 
 // ReadAllRooms reads all rooms from the db

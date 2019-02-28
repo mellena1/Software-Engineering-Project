@@ -26,6 +26,10 @@ type deleteARoomRequest struct {
 	ID *int
 }
 
+type roomRequest struct {
+	ID int
+}
+
 type updateARoomRequest struct {
 	ID       *int
 	Name     *string
@@ -70,7 +74,43 @@ func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(j)
 	if err != nil {
-		log.Println("Failed to respond to getAllRooms")
+		log.Println("Failed to respond to Rooms")
+	}
+}
+
+// getRoom Gets all rooms from the db
+// @Summary Get a room
+// @Description Returns a room
+// @Param roomID body api.roomRequest true "ID of the requested Room"
+// @Produce json
+// @Success 200 {} db.Room
+// @Failure 400 {} nil
+// @Router /api/v1/room [get]
+func (a roomAPI) getRoom(w http.ResponseWriter, r *http.Request) {
+
+	//Going off of what Kenny did here
+	var data roomRequest
+	body, _ := ioutil.ReadAll(r.Body)
+	err := json.Unmarshal(body, &data)
+
+	if err != nil {
+		return
+	}
+
+	roomID := data.ID
+
+	room, err := a.roomReader.ReadARoom(roomID) //This needs a string
+	if err != nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		log.Printf("Failed to read room (%v) from the db: %v", roomID, err)
+		w.Write([]byte("Read from the backend failed"))
+		return
+	}
+	j, _ := json.Marshal(room)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	_, err = w.Write(j)
+	if err != nil {
+		log.Println("Failed to respond to Room")
 	}
 }
 
