@@ -14,14 +14,6 @@
             <span class="badge">{{ room.roomName }} </span> {{ room.capacity }}
           </li>
          </ul>
-    
-        <h2>Add a Room</h2>
-        <div><span>Room Name:    </span> <input [(ngModel)]="selectedRoom.name" placeholder="Room Name"> </div>
-        <br>
-        <div><span>Room Capacity:  </span> <input [(ngModel)]="selectedRoom.capacity" placeholder="Room Capacity (eg. 25)"> </div>
-        <br>
-        <button ng-click="addRoom"> Add </button>
-         
     </body>
 
     <div *ngIf="selectedRoom">

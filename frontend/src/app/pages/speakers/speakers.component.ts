@@ -26,7 +26,7 @@ export class SpeakersComponent implements OnInit {
         error   => (this.error = error)
       )
   }
-
+  
   onSelect(speaker: Speaker): void {
     this.selectedSpeaker = speaker;
   }

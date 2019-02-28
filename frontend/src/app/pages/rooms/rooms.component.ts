@@ -37,6 +37,11 @@ export class RoomsComponent implements OnInit {
     .updateRoom()
   }
 
+  deleteRoom(): void{
+    this.roomService
+    .deleteRoom()
+  }
+
   onSelect(room: Room): void {
     this.selectedRoom = room;
   }
