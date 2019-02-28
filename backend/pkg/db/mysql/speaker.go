@@ -89,14 +89,7 @@ func (s SpeakerMySQL) UpdateASpeaker(id int, email string, firstName string, las
 		return ErrDBNotSet
 	}
 
-	oldSpeaker, err := s.ReadASpeaker(id)
-
-	if err != nil {
-		return err
-	}
-
-	speakerID := oldSpeaker.ID
-	_, err = s.db.Exec(`UPDATE speaker SET email = ?, firstName = ?, lastName = ? WHERE speakerID = ?`, email, firstName, lastName, speakerID)
+	_, err := s.db.Exec(`UPDATE speaker SET email = ?, firstName = ?, lastName = ? WHERE speakerID = ?`, email, firstName, lastName, id)
 
 	if err != nil {
 		return err

@@ -87,7 +87,6 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} nil
 // @Router /api/v1/speaker [get]
 func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
-
 	var data getASpeakerRequest
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &data)
@@ -122,7 +121,6 @@ func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} nil
 // @Router /api/v1/speaker [post]
 func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
-
 	var data writeASpeakerRequest
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &data)
@@ -140,7 +138,9 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-
+	json, _ := json.Marshal(data.Email)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	_, err = w.Write(json)
 	if err != nil {
 		log.Fatal("Failed to respond to writeASpeaker")
 	}
@@ -155,7 +155,6 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} nil
 // @Router /api/v1/speaker [put]
 func (a speakerAPI) updateASpeaker(w http.ResponseWriter, r *http.Request) {
-
 	var data updateASpeakerRequest
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &data)
@@ -172,8 +171,9 @@ func (a speakerAPI) updateASpeaker(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Write failed"))
 		return
 	}
+	json, _ := json.Marshal(data.ID)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-
+	_, err = w.Write(json)
 	if err != nil {
 		log.Fatal("Failed to respond to writeASpeaker")
 	}
@@ -188,7 +188,6 @@ func (a speakerAPI) updateASpeaker(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} nil
 // @Router /api/v1/speaker [delete]
 func (a speakerAPI) deleteASpeaker(w http.ResponseWriter, r *http.Request) {
-
 	var data deleteASpeakerRequest
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &data)
@@ -205,7 +204,10 @@ func (a speakerAPI) deleteASpeaker(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Write failed"))
 		return
 	}
+
+	json, _ := json.Marshal(data.ID)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	_, err = w.Write(json)
 
 	if err != nil {
 		log.Fatal("Failed to respond to writeASpeaker")
