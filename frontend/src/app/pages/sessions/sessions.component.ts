@@ -15,15 +15,36 @@ export class SessionsComponent implements OnInit {
 
 
   ngOnInit() {
+    this.getAllSessions();
   }
 
   getAllSessions(): void {
     this.sessionService
       .getAllSessions()
-      .subscribe(
-        sessions => (this.sessions = sessions),
-        error => (this.error = error)
-      )
+      //.subscribe(
+        //sessions => (this.sessions = sessions),
+        //error => (this.error = error)
+      //)
+  }
+
+  getSession(id: number): void {
+    this.sessionService
+      .getSession(id)
+  }
+
+  writeSession(): void {
+    this.sessionService
+      .writeSession()
+  }
+
+  updateSession(): void {
+    this.sessionService
+      .updateSession()
+  }
+
+  deleteSession(): void {
+    this.sessionService
+      .deleteSession()
   }
 
   onSelect(session: Session): void {
