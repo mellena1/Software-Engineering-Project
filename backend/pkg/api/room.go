@@ -144,7 +144,24 @@ func (a roomAPI) deleteARoom(w http.ResponseWriter, r *http.Request) {
 		w.Write(response)
 		return
 	}
+
 	err = a.roomDeleter.DeleteARoom(deleteRequest.ID)
+	if err != nil {
+		msg := "failed to delete a room"
+		log.Printf("%s: %v", msg, err)
+		w.WriteHeader(http.StatusServiceUnavailable)
+		response, _ := json.Marshal(msg)
+		w.Write(response)
+		return
+	}
+
+	json, _ := json.Marshal(true)
+	_, err = w.Write(json)
+	if err != nil {
+		msg := "DELETE Room failed to write back"
+		log.Printf("%s: %v", msg, err)
+		return
+	}
 }
 
 func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
