@@ -27,16 +27,73 @@ func (SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 }
 
 // WriteASession writes a session to the db
-func (SessionMySQL) WriteASession(s db.Session) error {
-	return nil
+func (s SessionMySQL) WriteASession(speakerID *int, roomID *int, timeslotID *int, name *string) (int64, error) {
+	if s.db == nil {
+		return 0, ErrDBNotSet
+	}
+
+	statement, err := s.db.Prepare("INSERT INTO session (`speakerID`, `roomID`, `timeslotID`, `sessionName`) VALUES (?, ?, ?, ?);")
+	if err != nil {
+		return 0, err
+	}
+	defer statement.Close()
+
+	result, err := statement.Exec(speakerID, roomID, timeslotID, name)
+	if err != nil {
+		return 0, err
+	}
+
+	return result.LastInsertId()
 }
 
 // UpdateASession updates a session in the db given a sessionID and the updated session
-func (SessionMySQL) UpdateASession(sessionID int, newSession db.Session) error {
+func (s SessionMySQL) UpdateASession(sessionID int, speakerID *int, roomID *int, timeslotID *int, name *string) error {
+	if s.db == nil {
+		return ErrDBNotSet
+	}
+
+	statement, err := s.db.Prepare("UPDATE session SET speakerID = ?, roomID = ?, timeslotID = ?, sessionName = ? WHERE sessionID = ?;")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	result, err := statement.Exec(speakerID, roomID, timeslotID, name, sessionID)
+	if err != nil {
+		return err
+	}
+
+	if rows, err := result.RowsAffected(); err != nil {
+		return err
+	} else if rows == 0 {
+		return ErrNothingChanged
+	}
+
 	return nil
 }
 
 // DeleteASession deletes a room given a sessionID
-func (SessionMySQL) DeleteASession(sessionID int) error {
+func (s SessionMySQL) DeleteASession(sessionID int64) error {
+	if s.db == nil {
+		return ErrDBNotSet
+	}
+
+	statement, err := s.db.Prepare("DELETE FROM session WHERE sessionID = ?;")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	result, err := statement.Exec(sessionID)
+	if err != nil {
+		return err
+	}
+
+	if rows, err := result.RowsAffected(); err != nil {
+		return err
+	} else if rows == 0 {
+		return ErrNothingChanged
+	}
+
 	return nil
 }
