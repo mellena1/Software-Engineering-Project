@@ -38,14 +38,21 @@ export class RoomService {
   }
 
   writeRoom(room: Room) {
-    return this.http.get(this.apiUrl + '/room')
+    
+    return this.http.post<Room>(this.apiUrl + '/room', room)
+    .pipe(map(data=>data), catchError(this.handleError));
+
   }
 
-  updateRoom() {
-
+  updateRoom(updatedRoom: Room) {
+    return this.http.put<Room>(this.apiUrl + '/room', updatedRoom)
+    .pipe(map(data=>data), catchError(this.handleError));
   }
 
-  deleteRoom() {
+  deleteRoom(id:number) : Observable<{}>{
+    let params = new HttpParams().set('id', stringify(id));
+    return this.http.delete(this.apiUrl + '/room', {params: params})
+    .pipe(map(data=>data), catchError(this.handleError));
 
   }
 
