@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
@@ -32,7 +33,7 @@ func (s SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
 
 	session := db.NewSession()
 
-	err := row.Scan(&session.ID, session.Speaker.Email, session.Speaker.FirstName,
+	err := row.Scan(&session.ID, session.Speaker.ID, session.Speaker.Email, session.Speaker.FirstName,
 		session.Speaker.LastName, session.Room.ID, session.Room.Name,
 		session.Room.Capacity, &session.Timeslot.ID, &session.Timeslot.StartTime,
 		&session.Timeslot.EndTime, session.Name)
@@ -63,12 +64,14 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 	sessions := []db.Session{}
 	for rows.Next() {
 		session := db.NewSession()
-		rows.Scan(&session.ID, session.Speaker.Email, session.Speaker.FirstName,
+		rows.Scan(&session.ID, session.Speaker.ID, session.Speaker.Email, session.Speaker.FirstName,
 			session.Speaker.LastName, session.Room.ID, session.Room.Name,
 			session.Room.Capacity, &session.Timeslot.ID, &session.Timeslot.StartTime,
 			&session.Timeslot.EndTime, session.Name)
 		sessions = append(sessions, session)
 	}
+
+	fmt.Printf("%v\n", sessions)
 
 	err = rows.Err()
 	if err != nil {
