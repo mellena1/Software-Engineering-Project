@@ -1,9 +1,30 @@
 basePath: '{{.BasePath}}'
 definitions:
+  api.deleteARoomRequest:
+    properties:
+      id:
+        type: integer
+    type: object
   api.getASpeakerRequest:
     properties:
       id:
         type: integer
+    type: object
+  api.updateARoomRequest:
+    properties:
+      capacity:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  api.writeARoomRequest:
+    properties:
+      capacity:
+        type: integer
+      name:
+        type: string
     type: object
   db.Room:
     properties:
@@ -70,10 +91,42 @@ info:
   version: "1.0"
 paths:
   /api/v1/room:
-    put:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a room from the db
+      parameters:
+      - description: Room to delete
+        in: body
+        name: room
+        required: true
+        schema:
+          $ref: '#/definitions/api.deleteARoomRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            type: boolean
+      summary: Delete a room from the db
+    post:
       consumes:
       - application/json
       description: Write a room to the db
+      parameters:
+      - description: Room to write
+        in: body
+        name: room
+        required: true
+        schema:
+          $ref: '#/definitions/api.writeARoomRequest'
+          type: object
       produces:
       - application/json
       responses:
@@ -86,6 +139,30 @@ paths:
           schema:
             type: boolean
       summary: Write a room to the db
+    put:
+      consumes:
+      - application/json
+      description: Update a room in the db
+      parameters:
+      - description: Room to update
+        in: body
+        name: room
+        required: true
+        schema:
+          $ref: '#/definitions/api.updateARoomRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            type: boolean
+      summary: Update a room in the db
   /api/v1/rooms:
     get:
       description: Return a list of all rooms

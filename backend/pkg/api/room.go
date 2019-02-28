@@ -81,7 +81,8 @@ func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Success 200 {int} nil
 // @Failure 400 {boolean} nil
-// @Router /api/v1/room [put]
+// @Router /api/v1/room [post]
+// @Param room body api.writeARoomRequest true "Room to write"
 func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -124,6 +125,15 @@ func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// deleteARoom deletes a room from the room table
+// @Summary Delete a room from the db
+// @Description Delete a room from the db
+// @Accept json
+// @Produce json
+// @Success 200 {boolean} nil
+// @Failure 400 {boolean} nil
+// @Router /api/v1/room [delete]
+// @Param room body api.deleteARoomRequest true "Room to delete"
 func (a roomAPI) deleteARoom(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -166,6 +176,15 @@ func (a roomAPI) deleteARoom(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// updateARoom update a room in the room table
+// @Summary Update a room in the db
+// @Description Update a room in the db
+// @Accept json
+// @Produce json
+// @Success 200 {boolean} nil
+// @Failure 400 {boolean} nil
+// @Router /api/v1/room [PUT]
+// @Param room body api.updateARoomRequest true "Room to update"
 func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
