@@ -31,28 +31,37 @@
         </div>
     </div>
 
-    <button (click)="toggle()" id="bt">Add a Speaker</button>
+    <div class="container">
+        <h2>Add Speaker</h2>
+        <form [formGroup]="speakerForm" #formDir="ngForm">
+            <div [hidden]="formDir.submitted">
+                <div class="form-group">
+                    <label for="firstName">First Name </label>
+                    <input id="firstName" class="form-control"
+                           formControlName="firstName" required>   
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name </label>
+                    <input id="lastName" class="form-control"
+                        formControlName="lastName" required>     
+                </div>
+                <div class="form-group">
+                    <label for="email">Email </label>
+                    <input id="email" class="form-control"
+                        formControlName="email" required>     
+                </div>
 
-    <ng-container *ngIf="show">
-        <div>
-            <div>
-                <br>
-                <label>Speaker First Name: </label><input id="firstName" placeholder="eg. Ronald" />
-                <br>
-            </div>
-            <div>
-                <br>
-                <label>Speaker Last Name: </label><input id="lastName" placeholder="eg. Krawitz" />
-                <br>
-            </div>
-            <div>
-                <br>
-                <label>Speaker Email Address: </label><input id="email" placeholder="eg. krawaitzr@wit.edu" />
-            </div>
-            <div>
-              <br>
-              <button (click)="addSpeaker()">Submit</button>
-            </div>
+                <button type="submit" class="btn btn-default"
+                        [disabled]="speakerForm.invalid">Submit</button>
+
+                <button type="button" class="btn btn-default"
+                        (click)="formDir.resetForm({})">Reset</button>    
         </div>
-    </ng-container>
+        </form>
+
+        <div class="submitted-message" *ngIf="formDir.submitted">
+            <p>You've submitted a new Speaker</p>
+            <button (click)="formDir.resetForm({})">Submit a new Speaker</button>
+        </div>
+    </div>
 </html>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-
 import { RoomService } from '../../services/room.service'
 import { Room } from '../../data_models/room';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-rooms',
@@ -9,32 +9,46 @@ import { Room } from '../../data_models/room';
   styleUrls: ['./rooms.component.css']
 })
 export class RoomsComponent implements OnInit {
-  rooms: Room[];
+  rooms: Room;
   selectedRoom: Room;
   error: any;
   public show:boolean = false;
   public buttonName:any = "Add a Room"
   constructor(private roomService: RoomService ) { }
+  roomForm: FormGroup;
   
   ngOnInit() {
     this.getAllRooms();
+    this.roomForm = new FormGroup({
+      'roomName': new FormControl(this.rooms.name, [
+        Validators.required
+      ]),
+      'roomCapacity': new FormControl(this.rooms.capacity, [
+        Validators.required
+      ])
+    });
   }
 
   getAllRooms(): void {
     this.roomService
       .getAllRooms()
       .subscribe(
-        rooms => (this.rooms = rooms),
+      //  rooms => (this.rooms = rooms),
         error => (this.error = error)
       )
   }
   
+  
   addRoom(): void {
       this.roomService
-      .writeRoom()
-      this.show=false;
+      .writeRoom(this.rooms)
+      .subscribe(
+      rooms => (this.rooms = rooms),
+      error => (this.error = error)
+      )
   }
-  
+
+  /*
   updateRoom(): void{
     this.roomService
     .updateRoom()
@@ -44,6 +58,8 @@ export class RoomsComponent implements OnInit {
     this.roomService
     .deleteRoom()
   }
+
+  */
 
   onSelect(room: Room): void {
     this.selectedRoom = room;
@@ -60,5 +76,4 @@ export class RoomsComponent implements OnInit {
     this.buttonName = "Add a Room";
   }
 }
-
 }
