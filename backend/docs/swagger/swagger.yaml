@@ -1,5 +1,10 @@
 basePath: '{{.BasePath}}'
 definitions:
+  api.deleteARoomRequest:
+    properties:
+      id:
+        type: integer
+    type: object
   api.deleteASpeakerRequest:
     properties:
       id:
@@ -9,6 +14,20 @@ definitions:
     properties:
       id:
         type: integer
+    type: object
+  api.roomRequest:
+    properties:
+      id:
+        type: integer
+    type: object
+  api.updateARoomRequest:
+    properties:
+      capacity:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
     type: object
   api.updateASpeakerRequest:
     properties:
@@ -21,6 +40,13 @@ definitions:
       lastName:
         type: string
     type: object
+  api.writeARoomRequest:
+    properties:
+      capacity:
+        type: integer
+      name:
+        type: string
+    type: object
   api.writeASpeakerRequest:
     properties:
       email:
@@ -28,22 +54,6 @@ definitions:
       firstName:
         type: string
       lastName:
-        type: string
-    type: object
-  api.updateARoomRequest:
-    properties:
-      capacity:
-        type: integer
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-  api.writeARoomRequest:
-    properties:
-      capacity:
-        type: integer
-      name:
         type: string
     type: object
   db.Room:
@@ -305,7 +315,7 @@ paths:
     put:
       description: Return a speaker with the specified email
       parameters:
-      - description: Speaker struct that wants to be added to the db
+      - description: Speaker struct that wants to be updated in the db
         in: body
         name: Speaker
         required: true

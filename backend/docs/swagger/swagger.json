@@ -250,7 +250,7 @@
                 "summary": "Edit a speaker",
                 "parameters": [
                     {
-                        "description": "Speaker struct that wants to be added to the db",
+                        "description": "Speaker struct that wants to be updated in the db",
                         "name": "Speaker",
                         "in": "body",
                         "required": true,
@@ -355,6 +355,14 @@
         }
     },
     "definitions": {
+        "api.deleteARoomRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.deleteASpeakerRequest": {
             "type": "object",
             "properties": {
@@ -368,6 +376,28 @@
             "properties": {
                 "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "api.roomRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.updateARoomRequest": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
@@ -388,6 +418,17 @@
                 }
             }
         },
+        "api.writeARoomRequest": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "api.writeASpeakerRequest": {
             "type": "object",
             "properties": {
@@ -398,31 +439,6 @@
                     "type": "string"
                 },
                 "lastName": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.updateARoomRequest": {
-            "type": "object",
-            "properties": {
-                "capacity": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.writeARoomRequest": {
-            "type": "object",
-            "properties": {
-                "capacity": {
-                    "type": "integer"
-                },
-                "name": {
                     "type": "string"
                 }
             }
