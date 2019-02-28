@@ -69,6 +69,23 @@ info:
   title: Code Camp Counter API
   version: "1.0"
 paths:
+  /api/v1/room:
+    put:
+      consumes:
+      - application/json
+      description: Write a room to the db
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: int
+        "400":
+          description: Bad Request
+          schema:
+            type: boolean
+      summary: Write a room to the db
   /api/v1/rooms:
     get:
       description: Return a list of all rooms
