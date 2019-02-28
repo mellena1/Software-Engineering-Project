@@ -1,9 +1,34 @@
 basePath: '{{.BasePath}}'
 definitions:
+  api.deleteASpeakerRequest:
+    properties:
+      id:
+        type: integer
+    type: object
   api.getASpeakerRequest:
     properties:
       id:
         type: integer
+    type: object
+  api.updateASpeakerRequest:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+    type: object
+  api.writeASpeakerRequest:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
     type: object
   db.Room:
     properties:
@@ -104,6 +129,25 @@ paths:
             type: ""
       summary: Get all sessions
   /api/v1/speaker:
+    delete:
+      description: Delete a speaker with the specified id
+      parameters:
+      - description: SpeakerID of the speaker to be deleted from the db
+        in: body
+        name: speakerID
+        required: true
+        schema:
+          $ref: '#/definitions/api.deleteASpeakerRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            type: ""
+      summary: Delete a speaker
     get:
       description: Return a speaker with the specified email
       parameters:
@@ -128,6 +172,44 @@ paths:
           schema:
             type: ""
       summary: Get a speaker by email
+    post:
+      description: Inserts a speaker with the specified email, firstName and lastName
+      parameters:
+      - description: Speaker that wants to be added to the db (no ID)
+        in: body
+        name: Speaker
+        required: true
+        schema:
+          $ref: '#/definitions/api.writeASpeakerRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            type: ""
+      summary: Write a speaker
+    put:
+      description: Return a speaker with the specified email
+      parameters:
+      - description: Speaker struct that wants to be added to the db
+        in: body
+        name: Speaker
+        required: true
+        schema:
+          $ref: '#/definitions/api.updateASpeakerRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400":
+          description: Bad Request
+          schema:
+            type: ""
+      summary: Edit a speaker
   /api/v1/speakers:
     get:
       description: Return a list of all speakers

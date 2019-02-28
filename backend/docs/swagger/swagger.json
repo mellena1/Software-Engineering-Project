@@ -98,6 +98,90 @@
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Return a speaker with the specified email",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Edit a speaker",
+                "parameters": [
+                    {
+                        "description": "Speaker struct that wants to be added to the db",
+                        "name": "Speaker",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.updateASpeakerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": ""
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Inserts a speaker with the specified email, firstName and lastName",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Write a speaker",
+                "parameters": [
+                    {
+                        "description": "Speaker that wants to be added to the db (no ID)",
+                        "name": "Speaker",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.writeASpeakerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": ""
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a speaker with the specified id",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete a speaker",
+                "parameters": [
+                    {
+                        "description": "SpeakerID of the speaker to be deleted from the db",
+                        "name": "speakerID",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.deleteASpeakerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": ""
+                        }
+                    }
+                }
             }
         },
         "/api/v1/speakers": {
@@ -128,11 +212,50 @@
         }
     },
     "definitions": {
+        "api.deleteASpeakerRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.getASpeakerRequest": {
             "type": "object",
             "properties": {
                 "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "api.updateASpeakerRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.writeASpeakerRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
                 }
             }
         },

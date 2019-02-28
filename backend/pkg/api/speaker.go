@@ -20,6 +20,20 @@ type speakerAPI struct {
 type getASpeakerRequest struct {
 	ID int
 }
+type writeASpeakerRequest struct {
+	Email     string
+	FirstName string
+	LastName  string
+}
+type updateASpeakerRequest struct {
+	ID        int
+	Email     string
+	FirstName string
+	LastName  string
+}
+type deleteASpeakerRequest struct {
+	ID int
+}
 
 // CreateSpeakerRoutes makes all of the routes for speaker related calls
 func CreateSpeakerRoutes(speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) []Route {
@@ -33,6 +47,9 @@ func CreateSpeakerRoutes(speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) [
 	routes := []Route{
 		NewRoute("/api/v1/speaker", speakAPI.getASpeaker, "GET"),
 		NewRoute("/api/v1/speakers", speakAPI.getAllSpeakers, "GET"),
+		NewRoute("/api/v1/speaker", speakAPI.writeASpeaker, "POST"),
+		NewRoute("/api/v1/speaker", speakAPI.updateASpeaker, "PUT"),
+		NewRoute("/api/v1/speaker", speakAPI.deleteASpeaker, "DELETE"),
 	}
 
 	return routes
@@ -93,5 +110,104 @@ func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
 	_, err = w.Write(j)
 	if err != nil {
 		log.Fatal("Failed to respond to getASpeaker")
+	}
+}
+
+// writeASpeaker Inserts a speaker into the database
+// @Summary Write a speaker
+// @Description Inserts a speaker with the specified email, firstName and lastName
+// @Param Speaker body api.writeASpeakerRequest true "Speaker that wants to be added to the db (no ID)"
+// @Produce json
+// @Success 200
+// @Failure 400 {} nil
+// @Router /api/v1/speaker [post]
+func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
+
+	var data writeASpeakerRequest
+	body, _ := ioutil.ReadAll(r.Body)
+	err := json.Unmarshal(body, &data)
+
+	if err != nil {
+		return
+	}
+
+	err = a.speakerWriter.WriteASpeaker(data.Email, data.FirstName, data.LastName)
+
+	if err != nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		log.Printf("Failed to write speaker (%v) to the db: %v", data.Email, err)
+		w.Write([]byte("Write failed"))
+		return
+	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	if err != nil {
+		log.Fatal("Failed to respond to writeASpeaker")
+	}
+}
+
+// updateASpeaker Edits a speaker already in the database
+// @Summary Edit a speaker
+// @Description Return a speaker with the specified email
+// @Param Speaker body api.updateASpeakerRequest true "Speaker struct that wants to be added to the db"
+// @Produce json
+// @Success 200
+// @Failure 400 {} nil
+// @Router /api/v1/speaker [put]
+func (a speakerAPI) updateASpeaker(w http.ResponseWriter, r *http.Request) {
+
+	var data updateASpeakerRequest
+	body, _ := ioutil.ReadAll(r.Body)
+	err := json.Unmarshal(body, &data)
+
+	if err != nil {
+		return
+	}
+
+	err = a.speakerUpdater.UpdateASpeaker(data.ID, data.Email, data.FirstName, data.LastName)
+
+	if err != nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		log.Printf("Failed to update speaker (%v) to the db: %v", data.ID, err)
+		w.Write([]byte("Write failed"))
+		return
+	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	if err != nil {
+		log.Fatal("Failed to respond to writeASpeaker")
+	}
+}
+
+// deleteASpeaker Delete a speaker from the database
+// @Summary Delete a speaker
+// @Description Delete a speaker with the specified id
+// @Param speakerID body api.deleteASpeakerRequest true "SpeakerID of the speaker to be deleted from the db"
+// @Produce json
+// @Success 200
+// @Failure 400 {} nil
+// @Router /api/v1/speaker [delete]
+func (a speakerAPI) deleteASpeaker(w http.ResponseWriter, r *http.Request) {
+
+	var data deleteASpeakerRequest
+	body, _ := ioutil.ReadAll(r.Body)
+	err := json.Unmarshal(body, &data)
+
+	if err != nil {
+		return
+	}
+
+	err = a.speakerDeleter.DeleteASpeaker(data.ID)
+
+	if err != nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		log.Printf("Failed to delete speaker (%v) from the db: %v", data.ID, err)
+		w.Write([]byte("Write failed"))
+		return
+	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	if err != nil {
+		log.Fatal("Failed to respond to writeASpeaker")
 	}
 }

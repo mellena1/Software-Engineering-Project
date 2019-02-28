@@ -34,15 +34,15 @@ type SpeakerReader interface {
 
 // SpeakerWriter implements all write related methods
 type SpeakerWriter interface {
-	WriteASpeaker(s Speaker) error
+	WriteASpeaker(email string, firstName string, lastName string) error
 }
 
 // SpeakerUpdater implements all update related methods
 type SpeakerUpdater interface {
-	UpdateASpeaker(id int, newSpeaker Speaker) error
+	UpdateASpeaker(id int, email string, firstName string, lastName string) error
 }
 
 // SpeakerDeleter implements all delete related methods
 type SpeakerDeleter interface {
-	DeleteASpeaker(id string) error
+	DeleteASpeaker(id int) error
 }
