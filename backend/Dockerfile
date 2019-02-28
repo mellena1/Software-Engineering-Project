@@ -6,7 +6,7 @@ RUN go get -u github.com/swaggo/swag/cmd/swag
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN go build -o api
 RUN swag init -s docs
+RUN go build -o api
 
 ENTRYPOINT ["./api"]

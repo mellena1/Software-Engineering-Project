@@ -6,6 +6,13 @@ steps:
   image: golang:1.11.5
   commands:
   - cd backend
+  - go get -u github.com/swaggo/swag/cmd/swag
+  - swag init -s docs
+
+- name: Backend-Run-go-tests
+  image: golang:1.11.5
+  commands:
+  - cd backend
   - go test -v ./...
 
 - name: Backend-gofmt
