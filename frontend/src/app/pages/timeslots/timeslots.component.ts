@@ -23,10 +23,10 @@ export class TimeslotsComponent implements OnInit {
   getAllTimeslots(): void{
     this.timeslotService
       .getAllTimeslots()
-      .subscribe(
-        timeslots => (this.timeslots = timeslots),
-        error => (this.error = error)
-      )
+      //.subscribe(
+      //  timeslots => (this.timeslots = timeslots),
+      //  error => (this.error = error)
+      // )
   }
 
   addTimeslot(timeslot: Timeslot): void {
