@@ -268,6 +268,128 @@
                     }
                 }
             }
+        },
+        "/api/v1/timeslot": {
+            "put": {
+                "description": "Update an existing timeslot in the db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Update an existing timeslot in the db",
+                "parameters": [
+                    {
+                        "description": "the timeslot to update with the new values",
+                        "name": "timeslot",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.updateATimeslotRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated properly"
+                    },
+                    "400": {
+                        "description": "the request was bad",
+                        "schema": {
+                            "type": ""
+                        }
+                    },
+                    "503": {
+                        "description": "failed to access the db",
+                        "schema": {
+                            "type": ""
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add a timeslot to the db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Add a timeslot",
+                "parameters": [
+                    {
+                        "description": "the timeslot to add",
+                        "name": "timeslot",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.writeATimeslotRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "the id of the timeslot added",
+                        "schema": {
+                            "type": ""
+                        }
+                    },
+                    "400": {
+                        "description": "the request was bad",
+                        "schema": {
+                            "type": ""
+                        }
+                    },
+                    "503": {
+                        "description": "failed to access the db",
+                        "schema": {
+                            "type": ""
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an existing timeslot in the db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete an existing timeslot in the db",
+                "parameters": [
+                    {
+                        "description": "the timeslot to delete",
+                        "name": "timeslot",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.deleteATimeslotRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted properly"
+                    },
+                    "400": {
+                        "description": "the request was bad",
+                        "schema": {
+                            "type": ""
+                        }
+                    },
+                    "503": {
+                        "description": "failed to access the db",
+                        "schema": {
+                            "type": ""
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -276,6 +398,15 @@
             "properties": {
                 "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "api.deleteATimeslotRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -309,6 +440,23 @@
                 }
             }
         },
+        "api.updateATimeslotRequest": {
+            "type": "object",
+            "properties": {
+                "endTime": {
+                    "type": "string",
+                    "example": "2019-10-01 23:00:00"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "startTime": {
+                    "type": "string",
+                    "example": "2019-02-18 21:00:00"
+                }
+            }
+        },
         "api.writeARoomRequest": {
             "type": "object",
             "properties": {
@@ -317,6 +465,19 @@
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "api.writeATimeslotRequest": {
+            "type": "object",
+            "properties": {
+                "endTime": {
+                    "type": "string",
+                    "example": "2019-10-01 23:00:00"
+                },
+                "startTime": {
+                    "type": "string",
+                    "example": "2019-02-18 21:00:00"
                 }
             }
         },

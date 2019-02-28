@@ -5,6 +5,12 @@ definitions:
       id:
         type: integer
     type: object
+  api.deleteATimeslotRequest:
+    properties:
+      id:
+        example: 1
+        type: integer
+    type: object
   api.getASpeakerRequest:
     properties:
       id:
@@ -24,11 +30,32 @@ definitions:
       name:
         type: string
     type: object
+  api.updateATimeslotRequest:
+    properties:
+      endTime:
+        example: "2019-10-01 23:00:00"
+        type: string
+      id:
+        example: 1
+        type: integer
+      startTime:
+        example: "2019-02-18 21:00:00"
+        type: string
+    type: object
   api.writeARoomRequest:
     properties:
       capacity:
         type: integer
       name:
+        type: string
+    type: object
+  api.writeATimeslotRequest:
+    properties:
+      endTime:
+        example: "2019-10-01 23:00:00"
+        type: string
+      startTime:
+        example: "2019-02-18 21:00:00"
         type: string
     type: object
   db.Room:
@@ -266,4 +293,85 @@ paths:
           schema:
             type: ""
       summary: Get all speakers
+  /api/v1/timeslot:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an existing timeslot in the db
+      parameters:
+      - description: the timeslot to delete
+        in: body
+        name: timeslot
+        required: true
+        schema:
+          $ref: '#/definitions/api.deleteATimeslotRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted properly
+        "400":
+          description: the request was bad
+          schema:
+            type: ""
+        "503":
+          description: failed to access the db
+          schema:
+            type: ""
+      summary: Delete an existing timeslot in the db
+    post:
+      consumes:
+      - application/json
+      description: Add a timeslot to the db
+      parameters:
+      - description: the timeslot to add
+        in: body
+        name: timeslot
+        required: true
+        schema:
+          $ref: '#/definitions/api.writeATimeslotRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: the id of the timeslot added
+          schema:
+            type: ""
+        "400":
+          description: the request was bad
+          schema:
+            type: ""
+        "503":
+          description: failed to access the db
+          schema:
+            type: ""
+      summary: Add a timeslot
+    put:
+      consumes:
+      - application/json
+      description: Update an existing timeslot in the db
+      parameters:
+      - description: the timeslot to update with the new values
+        in: body
+        name: timeslot
+        required: true
+        schema:
+          $ref: '#/definitions/api.updateATimeslotRequest'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated properly
+        "400":
+          description: the request was bad
+          schema:
+            type: ""
+        "503":
+          description: failed to access the db
+          schema:
+            type: ""
+      summary: Update an existing timeslot in the db
 swagger: "2.0"
