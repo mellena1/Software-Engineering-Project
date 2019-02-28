@@ -6,22 +6,14 @@ import { catchError, map } from 'rxjs/operators'
 
 import { Room } from '../data_models/room'
 import { stringify } from '@angular/core/src/render3/util';
-import { headersToString } from 'selenium-webdriver/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoomService {
   private apiUrl = environment.apiUrl;
-  
-  
-
-  constructor(private http: HttpClient) { }
   headers = new HttpHeaders();
-
-  
-  
-
+  constructor(private http: HttpClient) { }
 
   getAllRooms() {
     return this.http
@@ -33,15 +25,12 @@ export class RoomService {
     let params = new HttpParams().set('id', stringify(id));
     return this.http
       .get<Room>(this.apiUrl + '/room', {params: params})
-      .pipe(map(data=>data), catchError(this.handleError));
-    
+      .pipe(map(data=>data), catchError(this.handleError)); 
   }
 
   writeRoom(room: Room) {
-    
     return this.http.post<Room>(this.apiUrl + '/room', room)
     .pipe(map(data=>data), catchError(this.handleError));
-
   }
 
   updateRoom(updatedRoom: Room) {
@@ -53,7 +42,6 @@ export class RoomService {
     let params = new HttpParams().set('id', stringify(id));
     return this.http.delete(this.apiUrl + '/room', {params: params})
     .pipe(map(data=>data), catchError(this.handleError));
-
   }
 
   private handleError(res: HttpErrorResponse | any) {
