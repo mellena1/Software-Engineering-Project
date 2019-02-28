@@ -17,7 +17,7 @@
         <br>
         <div><span>Timeslot: </span> <select ng-model="selectedSession.Timeslot" ng-options="sessions.Timeslot for timeslot in sessions" placeholder="Select a Timeslot"> </select> </div>
         <br>
-        <button ng-click="addSession"> Add </button>
+        <button ng-click="writeSession"> Add </button>
         </fieldset>
 
         <h2>List of Sessions</h2>
@@ -29,6 +29,16 @@
               </li>
         </ul>
 
+        <div *ngIf="selectedSession">
+
+                <h2>Edit a Session:</h2>
+                <div><span>Presntation Name: </span> <input ng-model="selectedSession.name"> </div>
+                <div><span>Room Name: </span> <select ng-model="selectedSession.Room" ng-options="sessions.Room for room in sessions"></select> </div>
+                <div><span>Speaker Name: </span> <select ng-model="selectedSession.Speaker" ng-options="sessions.Speaker for speaker in sessions"></select> </div>
+                <div><span>Timeslot: </span> <select ng-model="selectedSession.Timeslot" ng-options="sessions.Timeslot for timelsot in sessions"></select> </div>
+                <br>
+                <button ng-click="updateSession"> Update </button>
+            </div>
        
 
     </body>
