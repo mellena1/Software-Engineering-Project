@@ -30,14 +30,10 @@ export class RoomService {
   }
 
   getARoom(id: number) :Observable<Room>{
-    const data = new FormData();
-    this.headers.append('id', 'number');
-    this.headers.set('id', stringify(id));
-    data.append('id', stringify(id));
-
+    let params = new HttpParams().set('id', stringify(id));
     return this.http
-    .get<Room>(this.apiUrl + '/room', data)
-    .pipe(map(data=>data), catchError(this.handleError));
+      .get<Room>(this.apiUrl + '/room', {params: params})
+      .pipe(map(data=>data), catchError(this.handleError));
     
   }
 
