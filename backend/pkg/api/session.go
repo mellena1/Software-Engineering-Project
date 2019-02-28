@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
@@ -27,13 +26,18 @@ func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) [
 	}
 
 	routes := []Route{
-		NewRoute("/api/v1/session", sessAPI.getAllSessions, "GET"),
+		NewRoute("/api/v1/session", sessAPI.getASession, "GET"),
+		NewRoute("/api/v1/sessions", sessAPI.getAllSessions, "GET"),
 		NewRoute("/api/v1/session", sessAPI.writeASession, "POST"),
 		NewRoute("/api/v1/session", sessAPI.updateASession, "PUT"),
 		NewRoute("/api/v1/session", sessAPI.deleteASession, "DELETE"),
 	}
 
 	return routes
+}
+
+type getASessionRequest struct {
+	ID int64 `json:"id" example:"1"`
 }
 
 // getAllSessions Gets all sessions from the db
@@ -43,18 +47,49 @@ func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) [
 // @Success 200 {array} db.Session
 // @Failure 400 {} nil
 // @Router /api/v1/session [get]
-func (s sessionAPI) getAllSessions(w http.ResponseWriter, r *http.Request) {
-	sessions, err := s.sessionReader.ReadAllSessions()
+func (s sessionAPI) getASession(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	body, err := ioutil.ReadAll(r.Body)
+	sessionRequest := getASessionRequest{}
+	json.Unmarshal(body, &sessionRequest)
+	session, err := s.sessionReader.ReadASession(sessionRequest.ID)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(nil)
+		ReportError(err, "Failed to get a session", http.StatusBadRequest, w)
 		return
 	}
-	j, err := json.Marshal(sessions)
-	_, err = w.Write(j)
+
+	j, err := json.Marshal(session)
 	if err != nil {
-		log.Fatal("Failed to respond to getAllSessions")
+		ReportError(err, "Failed to create session json", http.StatusBadRequest, w)
 	}
+
+	w.Write(j)
+}
+
+// getAllSessions Gets all sessions from the db
+// @Summary Get all sessions
+// @Description Return a list of all sessions
+// @Produce json
+// @Param roomID body api.getASessionRequest true "ID of the requested Session"
+// @Success 200 {array} db.Session
+// @Failure 400 {} nil
+// @Router /api/v1/sessions [get]
+func (s sessionAPI) getAllSessions(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	sessions, err := s.sessionReader.ReadAllSessions()
+	if err != nil {
+		ReportError(err, "Failed to get all sessions", http.StatusBadRequest, w)
+		return
+	}
+
+	j, err := json.Marshal(sessions)
+	if err != nil {
+		ReportError(err, "Failed to create sessions json", http.StatusBadRequest, w)
+	}
+
+	w.Write(j)
 }
 
 // writeASessionRequest request for writeASession

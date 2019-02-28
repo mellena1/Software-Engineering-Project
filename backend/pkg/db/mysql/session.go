@@ -17,13 +17,65 @@ func NewSessionMySQL(db *sql.DB) SessionMySQL {
 }
 
 // ReadASession reads a session from the db given sessionID
-func (SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
-	return db.Session{}, nil
+func (s SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
+	if s.db == nil {
+		return db.Session{}, ErrDBNotSet
+	}
+
+	q := `SELECT session.sessionID, speaker.*, room.*, timeslot.*, session.sessionName FROM session
+		INNER JOIN speaker ON session.speakerID = speaker.speakerID
+		INNER JOIN room ON session.roomID = room.roomID
+		INNER JOIN timeslot ON session.timeslotID = timeslot.timeslotID
+		WHERE session.sessionID = ` + string(sessionID) + ";"
+
+	row := s.db.QueryRow(q)
+
+	session := db.Session{}
+
+	err := row.Scan(session.ID, session.Speaker.Email, session.Speaker.FirstName,
+		session.Speaker.LastName, session.Room.ID, session.Room.Name,
+		session.Room.Capacity, session.Timeslot.ID, session.Timeslot.StartTime,
+		session.Timeslot.EndTime, session.Name)
+	if err != nil {
+		return db.Session{}, err
+	}
+
+	return session, nil
 }
 
 // ReadAllSessions reads all sessions from the db
-func (SessionMySQL) ReadAllSessions() ([]db.Session, error) {
-	return []db.Session{}, nil
+func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
+	if s.db == nil {
+		return nil, ErrDBNotSet
+	}
+
+	q := `SELECT session.sessionID, speaker.*, room.*, timeslot.*, session.sessionName FROM session
+		INNER JOIN speaker ON session.speakerID = speaker.speakerID
+		INNER JOIN room ON session.roomID = room.roomID
+		INNER JOIN timeslot ON session.timeslotID = timeslot.timeslotID;`
+
+	rows, err := s.db.Query(q)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	sessions := []db.Session{}
+	for rows.Next() {
+		session := db.Session{}
+		rows.Scan(session.ID, session.Speaker.Email, session.Speaker.FirstName,
+			session.Speaker.LastName, session.Room.ID, session.Room.Name,
+			session.Room.Capacity, session.Timeslot.ID, session.Timeslot.StartTime,
+			session.Timeslot.EndTime, session.Name)
+		sessions = append(sessions, session)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+
+	return sessions, nil
 }
 
 // WriteASession writes a session to the db
