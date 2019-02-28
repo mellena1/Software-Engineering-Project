@@ -149,7 +149,7 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 // updateASpeaker Edits a speaker already in the database
 // @Summary Edit a speaker
 // @Description Return a speaker with the specified email
-// @Param Speaker body api.updateASpeakerRequest true "Speaker struct that wants to be added to the db"
+// @Param Speaker body api.updateASpeakerRequest true "Speaker struct that wants to be updated in the db"
 // @Produce json
 // @Success 200
 // @Failure 400 {} nil
