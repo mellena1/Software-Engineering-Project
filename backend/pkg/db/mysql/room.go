@@ -45,7 +45,7 @@ func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 }
 
 // WriteARoom writes a room to the db
-func (r RoomMySQL) WriteARoom(name *string, id *int) (int64, error) {
+func (r RoomMySQL) WriteARoom(name *string, capacity *int) (int64, error) {
 	if r.db == nil {
 		return 0, ErrDBNotSet
 	}
@@ -55,7 +55,7 @@ func (r RoomMySQL) WriteARoom(name *string, id *int) (int64, error) {
 	}
 	defer insert.Close()
 
-	result, err := insert.Exec(name, id)
+	result, err := insert.Exec(*name, *capacity)
 	if err != nil {
 		return 0, err
 	}
