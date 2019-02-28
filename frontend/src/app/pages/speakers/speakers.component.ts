@@ -37,7 +37,7 @@ export class SpeakersComponent implements OnInit {
     this.speakerService
       .getAllSpeakers()
       .subscribe(
-  //   speaker => (this.speaker = speaker),
+        speakers => (this.speaker = speakers),
         error   => (this.error = error)
       )
   }
@@ -46,35 +46,13 @@ export class SpeakersComponent implements OnInit {
     this.selectedSpeaker = speaker;
   }
 
-   
-  addSpeaker(): void {
-    this.speakerService
-    .writeSpeaker()
-    this.show=false;
+  toggle() {
+    this.show = !this.show;
+    if(this.show){
+      this.buttonName = "Hide";
+    }
+    else{
+      this.buttonName = "Add a Room";
+    }
+  }
 }
-
-updateSpeaker(): void{
-  this.speakerService
-  .updateSpeaker
-}
-
-deleteRoom(): void{
-  this.speakerService
-  .deleteSpeaker
-}
-
-
-toggle(){
-  this.show = !this.show;
-
-
-if(this.show){
-  this.buttonName = "Hide";
-}
-else{
-  this.buttonName = "Add a Room";
-}
-}
-
-}
-

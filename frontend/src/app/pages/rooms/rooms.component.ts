@@ -9,13 +9,14 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./rooms.component.css']
 })
 export class RoomsComponent implements OnInit {
+  constructor(private roomService: RoomService) { }
+
   rooms: Room[];
   newRoom: Room;
   selectedRoom: Room;
   error: any;
   public show:boolean = false;
   public buttonName:any = "Add a Room"
-  constructor(private roomService: RoomService ) { }
   roomForm: FormGroup;
   
   ngOnInit() {
@@ -39,15 +40,6 @@ export class RoomsComponent implements OnInit {
       )
   }
   
-  
-  // addRoom(): void {
-  //   this.roomService
-  //     .writeRoom(this.room)
-  //     .subscribe(
-  //       rooms => (this.rooms = rooms),
-  //       error => (this.error = error)
-  //     )
-  //   }
 
   onSelect(room: Room): void {
     this.selectedRoom = room;

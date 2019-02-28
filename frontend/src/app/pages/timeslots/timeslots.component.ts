@@ -23,10 +23,10 @@ export class TimeslotsComponent implements OnInit {
   getAllTimeslots(): void{
     this.timeslotService
       .getAllTimeslots()
-      //.subscribe(
-      //  timeslots => (this.timeslots = timeslots),
-      //  error => (this.error = error)
-      // )
+      .subscribe(
+        timeslots => (this.timeslots = timeslots),
+        error => (this.error = error)
+       )
   }
 
   addTimeslot(timeslot: Timeslot): void {
@@ -40,10 +40,6 @@ export class TimeslotsComponent implements OnInit {
     .updateTimeslot(updatedTimeslot)
   }
 
-  deletedTimeslot(): void{
-  
-  }
-
   onSelect(timeslot: Timeslot): void {
     this.selectedTimeslot = timeslot;
     this.addTimeslot(this.selectedTimeslot);
@@ -51,8 +47,6 @@ export class TimeslotsComponent implements OnInit {
 
   toggle(){
     this.show = !this.show;
-  
-
     if(this.show){
       this.buttonName = "Hide";
     }
@@ -60,5 +54,4 @@ export class TimeslotsComponent implements OnInit {
       this.buttonName = "Add a Timeslot";
     }
   }
-
 }
