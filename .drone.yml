@@ -2,12 +2,12 @@ kind: pipeline
 name: default
 
 steps:
-- name: Backend-Run-go-tests
+- name: Generate-Swagger-Docs
   image: golang:1.11.5
   commands:
   - cd backend
   - go get -u github.com/swaggo/swag/cmd/swag
-  - swag init -s docs
+  - swag init
 
 - name: Backend-Run-go-tests
   image: golang:1.11.5
