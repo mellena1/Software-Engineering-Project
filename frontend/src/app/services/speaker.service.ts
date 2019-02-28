@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, throwError as observableThrowError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators'
@@ -11,9 +11,13 @@ import { Speaker } from '../data_models/speaker'
 })
 
 export class SpeakerService {
-  private apiUrl = environment.apiUrl;
   
   constructor(private http: HttpClient) { }
+
+  private apiUrl = environment.apiUrl;
+  headers = new HttpHeaders().set('Content-Type', 'application/json')
+  
+  
 
   getAllSpeakers() {
     return this.http
@@ -22,7 +26,13 @@ export class SpeakerService {
   }
   
   getSpeaker(id: number) {
-    
+    const params = new HttpParams()
+      .set('personId', id.toString());
+    return this.http.delete(this.apiUrl + '/speaker', {
+      headers: this.headers,
+      params: params
+      }
+    );
   }
 
   writeSpeaker(speaker: Speaker) {

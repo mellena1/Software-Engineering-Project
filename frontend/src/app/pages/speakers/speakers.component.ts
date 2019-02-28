@@ -11,6 +11,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class SpeakersComponent implements OnInit {
   speaker: Speaker;
+  speakers: Speaker[];
   selectedSpeaker: Speaker;
   error: any;
   public show:boolean = false;
@@ -20,6 +21,7 @@ export class SpeakersComponent implements OnInit {
 
   ngOnInit() {
     this.getAllSpeakers();
+    this.speakerService.deleteSpeaker(1);
     this.speakerForm = new FormGroup({
       'firstName': new FormControl(this.speaker.firstName, [
         Validators.required
@@ -37,7 +39,7 @@ export class SpeakersComponent implements OnInit {
     this.speakerService
       .getAllSpeakers()
       .subscribe(
-        speakers => (this.speaker = speakers),
+        speakers => (this.speakers = speakers),
         error   => (this.error = error)
       )
   }

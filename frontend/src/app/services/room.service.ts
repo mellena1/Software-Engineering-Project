@@ -21,7 +21,7 @@ export class RoomService {
       .pipe(map(data => data), catchError(this.handleError));
   }
 
-  getARoom(id: number): Observable<Room>{
+  getARoom(id: number) {
 
   }
 
@@ -33,7 +33,7 @@ export class RoomService {
     
   }
 
-  deleteRoom(id:number) : Observable<{}>{
+  deleteRoom(id:number): {
 
   }
 
