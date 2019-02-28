@@ -49,6 +49,11 @@ func NewAPI(mySQLConfig mysqlDriver.Config, logWriter io.Writer) (*API, error) {
 	speakerRoutes := api.CreateSpeakerRoutes(speakerDBFacade)
 	apiObj.CreateRoutes(speakerRoutes...)
 
+	// Timeslot
+	timeslotDBFacade := mysqlEntities.NewTimeslotMySQL(apiObj.db)
+	timeslotRoutes := api.CreateTimeslotRoutes(timeslotDBFacade)
+	apiObj.CreateRoutes(timeslotRoutes...)
+
 	return &apiObj, nil
 }
 
