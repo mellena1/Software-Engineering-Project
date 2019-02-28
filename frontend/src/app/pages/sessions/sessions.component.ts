@@ -17,6 +17,8 @@ export class SessionsComponent implements OnInit {
   constructor(private sessionService: SessionService ) { }
 
 
+  public mock = [{name: 'one', age: 30 },{ name: 'two', age: 27 },{ name: 'three', age: 50 }];
+
   ngOnInit() {
     this.getAllSessions();
   }
@@ -24,15 +26,11 @@ export class SessionsComponent implements OnInit {
   getAllSessions(): void {
     this.sessionService
       .getAllSessions()
-      .subscribe(
-        sessions => (this.sessions = sessions),
-        error => (this.error = error)
-      )
+      //.subscribe(
+        //sessions => (this.sessions = sessions),
+        //error => (this.error = error)
+      //)
   }
-
-  public room = Room;
-  public speaker = Speaker;
-  public timeslot = Timeslot;
 
   getSession(id: number): void {
     this.sessionService

@@ -6,21 +6,23 @@
     <body>
         <h1>Session Manager</h1>
 
-
+        <form>
         <fieldset>
         <h2>Create a Session</h2>
         <div><span>Presentation Name: </span> <input ng-model="selectedSession.name" placeholder="Name this session"> </div> 
         <br>
-        <div><span>Room Name: </span> <select ng-model="selectedSession" ng-options="sessions.Room for room in sessions" placeholder="Select a Room"> </select></div> 
+        <div><span>Room Name: </span> <select ng-model="selectedSession.Room"  ng-options="sessions.Room for room in sessions"> <option [ngValue]="null">Select a Room</option> </select></div> 
         <br>
-        <div><span>Speaker Name: </span> <select ng-model="selectedSession.Speaker" ng-options="sessions.Speaker for speaker in sessions" placeholder="Select a Speaker"> </select> </div>
+        <div><span>Speaker Name: </span> <select ng-model="selectedSession.Speaker" ng-options="sessions.Speaker for speaker in sessions"> <option [ngValue]="null">Select a Speaker</option> </select> </div>
         <br>
-        <div><span>Timeslot: </span> <select ng-model="selectedSession.Timeslot" ng-options="sessions.Timeslot for timeslot in sessions" placeholder="Select a Timeslot"> </select> </div>
+        <div><span>Timeslot: </span> <select ng-model="selectedSession.Timeslot" ng-options="sessions.Timeslot for timeslot in sessions"> <option [ngValue]="null">Select a Timeslot</option> </select> </div>
         <br>
         <button ng-click="writeSession"> Add </button>
         </fieldset>
+        </form>
 
         <h2>List of Sessions</h2>
+        <h3 style="text-align:left">(Select session to edit)</h3>
         <ul class="sessions">
                 <li *ngFor="let session of sessions"
                 [class.selected]="session == selectedSession"
@@ -38,7 +40,7 @@
                 <div><span>Timeslot: </span> <select ng-model="selectedSession.Timeslot" ng-options="sessions.Timeslot for timelsot in sessions"></select> </div>
                 <br>
                 <button ng-click="updateSession"> Update </button>
-            </div>
+        </div>
        
 
     </body>
