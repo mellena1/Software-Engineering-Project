@@ -26,7 +26,7 @@ type RoomReaderWriterUpdaterDeleter interface {
 
 // RoomReader implements all read related methods
 type RoomReader interface {
-	ReadARoom(roomName string) (Room, error)
+	ReadARoom(roomID int) (Room, error)
 	ReadAllRooms() ([]Room, error)
 }
 
@@ -37,10 +37,10 @@ type RoomWriter interface {
 
 // RoomUpdater implements all update related methods
 type RoomUpdater interface {
-	UpdateARoom(roomName string, newRoom Room) error
+	UpdateARoom(roomID int, newRoom Room) error
 }
 
 // RoomDeleter implements all delete related methods
 type RoomDeleter interface {
-	DeleteARoom(roomName int) error
+	DeleteARoom(roomID int) error
 }
