@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, throwError as observableThrowError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators'
@@ -10,29 +10,30 @@ import { Room } from '../data_models/room'
   providedIn: 'root'
 })
 export class RoomService {
-  private apiUrl = environment.apiUrl;
-
   constructor(private http: HttpClient) { }
+  
+  headers = new HttpHeaders();
+  private apiUrl = environment.apiUrl;
 
   getAllRooms() {
     return this.http
-      .get<Room[]>(this.apiUrl + '/room')
+      .get<Room[]>(this.apiUrl + '/rooms')
       .pipe(map(data => data), catchError(this.handleError));
   }
 
-  getARoom(id: number) {
+  getARoom(id: number): Observable<Room>{
+
+  }
+
+  writeRoom(room: Room) {
+  
+  }
+
+  updateRoom(updatedRoom: Room) {
     
   }
 
-  writeRoom() {
-
-  }
-
-  updateRoom() {
-
-  }
-
-  deleteRoom() {
+  deleteRoom(id:number) : Observable<{}>{
 
   }
 

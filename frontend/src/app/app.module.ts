@@ -1,6 +1,6 @@
 import { NgModule }       from '@angular/core';
 import { BrowserModule }  from '@angular/platform-browser';
-import { FormsModule }    from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule }    from '@angular/common/http';
 
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
@@ -8,7 +8,7 @@ import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { AppRoutingModule }     from './app-routing.module';
 
 import { AppComponent }         from './app.component';
-import { DashboardComponent }   from './pages/dashboard/dashboard.component';
+import { SessionsComponent }   from './pages/sessions/sessions.component';
 import { RoomsComponent } from './pages/rooms/rooms.component';
 import { SpeakersComponent } from './pages/speakers/speakers.component';
 import { TimeslotsComponent } from './pages/timeslots/timeslots.component';
@@ -18,14 +18,15 @@ import { TimeslotsComponent } from './pages/timeslots/timeslots.component';
     BrowserModule,
     FormsModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     HttpClientModule
   ],
   declarations: [
     AppComponent,
-    DashboardComponent,
+    SessionsComponent,
     RoomsComponent,
     SpeakersComponent,
-    TimeslotsComponent
+    TimeslotsComponent,
   ],
   bootstrap: [ AppComponent ]
 })

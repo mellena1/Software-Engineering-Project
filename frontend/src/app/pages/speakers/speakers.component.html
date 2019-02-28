@@ -1,3 +1,67 @@
-<p>
-  speakers works!
-</p>
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <title>List of Speakers</title>
+   </head>
+   <body>
+      <h1>Speakers</h1>
+      <ul class="speakers">
+         <li *ngFor="let speaker of speakers"
+         [class.selected]="speaker == selectedSpeaker"
+         (click)="onSelect(speaker)">
+         <span class="badge">{{ speaker.email }} </span> {{ speaker.firstName }} {{ speaker.lastName }}
+         </li>
+      </ul>
+   </body>
+
+   <div *ngIf="selectedSpeaker">
+        <h2>Edit or Delete Speaker</h2>
+        <div><span>Speaker Name: </span>{{selectedSpeaker.firstName}} {{selectedSpeaker.lastName}}</div>
+        <div><span>Speaker Email:</span>{{selectedSpeaker.email}}</div>
+        <br>
+        <button (click)="deleteRoom()">Delete this Speaker</button>
+        <br>
+        <div>
+          <label> Edit Speaker Details: 
+            <input [(ngModel)]="selectedSpeaker.firstName" placeholder="first name">
+            <input [(ngModel)]="selectedSpeaker.lastName" placeholder="last name">
+            <input [(ngModel)]="selectedSpeaker.email" placeholder="email">
+          </label>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Add Speaker</h2>
+        <form [formGroup]="speakerForm" #formDir="ngForm">
+            <div [hidden]="formDir.submitted">
+                <div class="form-group">
+                    <label for="firstName">First Name </label>
+                    <input id="firstName" class="form-control"
+                           formControlName="firstName" required>   
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name </label>
+                    <input id="lastName" class="form-control"
+                        formControlName="lastName" required>     
+                </div>
+                <div class="form-group">
+                    <label for="email">Email </label>
+                    <input id="email" class="form-control"
+                        formControlName="email" required>     
+                </div>
+
+                <button type="submit" class="btn btn-default"
+                        [disabled]="speakerForm.invalid">Submit</button>
+
+                <button type="button" class="btn btn-default"
+                        (click)="formDir.resetForm({})">Reset</button>    
+        </div>
+        </form>
+
+        <div class="submitted-message" *ngIf="formDir.submitted">
+            <p>You've submitted a new Speaker</p>
+            <button (click)="formDir.resetForm({})">Submit a new Speaker</button>
+        </div>
+    </div>
+</html>
