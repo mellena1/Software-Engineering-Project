@@ -9,7 +9,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./rooms.component.css']
 })
 export class RoomsComponent implements OnInit {
-  rooms: Room;
+  rooms: Room[];
+  newRoom: Room;
   selectedRoom: Room;
   error: any;
   public show:boolean = false;
@@ -20,10 +21,10 @@ export class RoomsComponent implements OnInit {
   ngOnInit() {
     this.getAllRooms();
     this.roomForm = new FormGroup({
-      'roomName': new FormControl(this.rooms.name, [
+      'roomName': new FormControl(this.newRoom.name, [
         Validators.required
       ]),
-      'roomCapacity': new FormControl(this.rooms.capacity, [
+      'roomCapacity': new FormControl(this.newRoom.capacity, [
         Validators.required
       ])
     });
@@ -33,33 +34,20 @@ export class RoomsComponent implements OnInit {
     this.roomService
       .getAllRooms()
       .subscribe(
-      //  rooms => (this.rooms = rooms),
+        rooms => (this.rooms = rooms),
         error => (this.error = error)
       )
   }
   
   
-  addRoom(): void {
-      this.roomService
-      .writeRoom(this.rooms)
-      .subscribe(
-      rooms => (this.rooms = rooms),
-      error => (this.error = error)
-      )
-  }
-
-  /*
-  updateRoom(): void{
-    this.roomService
-    .updateRoom()
-  }
-
-  deleteRoom(): void{
-    this.roomService
-    .deleteRoom()
-  }
-
-  */
+  // addRoom(): void {
+  //   this.roomService
+  //     .writeRoom(this.room)
+  //     .subscribe(
+  //       rooms => (this.rooms = rooms),
+  //       error => (this.error = error)
+  //     )
+  //   }
 
   onSelect(room: Room): void {
     this.selectedRoom = room;
@@ -67,13 +55,10 @@ export class RoomsComponent implements OnInit {
 
   toggle(){
     this.show = !this.show;
-  
-
-  if(this.show){
-    this.buttonName = "Hide";
+    if (this.show){
+      this.buttonName = "Hide";
+    } else{
+      this.buttonName = "Add a Room";
+    }
   }
-  else{
-    this.buttonName = "Add a Room";
-  }
-}
 }

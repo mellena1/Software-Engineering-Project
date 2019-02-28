@@ -6,7 +6,7 @@
     </head>
     <body>
         <h1>Rooms</h1>
-        <ul class="room">
+        <ul class="rooms">
             <li *ngFor="let room of rooms"
             [class.selected]="room == selectedRoom"
             (click)="onSelect(room)">
@@ -58,6 +58,5 @@
               </label>
             </div>
         </div>
-    
         </body>
 </html>

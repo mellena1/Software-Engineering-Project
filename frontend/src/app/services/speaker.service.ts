@@ -20,9 +20,7 @@ export class SpeakerService {
       .get<Speaker[]>(this.apiUrl + '/speakers')
       .pipe(map(data => data), catchError(this.handleError))
   }
-
-
-
+  
   getSpeaker(id: number) {
     
   }
