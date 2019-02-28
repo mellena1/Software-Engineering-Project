@@ -49,8 +49,12 @@ func (r RoomMySQL) WriteARoom(name *string, id *int) (int64, error) {
 	if r.db == nil {
 		return 0, ErrDBNotSet
 	}
-	insert, _ := r.db.Prepare("INSERT INTO room(`roomName`, `capacity`) VALUES (?, ?)")
+	insert, err := r.db.Prepare("INSERT INTO room(`roomName`, `capacity`) VALUES (?, ?)")
+	if err != nil {
+		return 0, err
+	}
 	defer insert.Close()
+
 	result, err := insert.Exec(name, id)
 	if err != nil {
 		return 0, err
