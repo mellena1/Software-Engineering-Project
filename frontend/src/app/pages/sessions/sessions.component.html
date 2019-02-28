@@ -5,6 +5,21 @@
     </head>
     <body>
         <h1>Session Manager</h1>
+
+
+        <fieldset>
+        <h2>Create a Session</h2>
+        <div><span>Session Name:    </span> <input [(ngModel)]="selectedSession.name" placeholder="Name this session"> </div> 
+        <br>
+        <div><span>Room Name:    </span> <input [(ngModel)]="selectedRoom.name" placeholder="Select a Room"> </div> 
+        <br>
+        <div><span>Speaker Name:  </span> <input [(ngModel)]="selectedSpeaker.name" placeholder="Select a Speaker"> </div>
+        <br>
+        <div><span>Timeslot:  </span> <input [(ngModel)]="selectedTimeslot.name" placeholder="Select a Timeslot"> </div>
+        <br>
+        <button ng-click="addSession"> Add </button>
+        </fieldset>
+
         <h2>List of Sessions</h2>
         <ul class="sessions">
                 <li *ngFor="let session of sessions"
