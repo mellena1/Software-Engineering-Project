@@ -9,3 +9,8 @@ func StringPtr(s string) *string {
 func IntPtr(i int) *int {
 	return &i
 }
+
+// Int64Ptr takes an int64 and returns a pointer to it
+func Int64Ptr(i int64) *int64 {
+	return &i
+}
