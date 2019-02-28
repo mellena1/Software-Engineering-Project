@@ -48,6 +48,8 @@ type getASessionRequest struct {
 // @Failure 400 {} nil
 // @Router /api/v1/session [get]
 func (s sessionAPI) getASession(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	body, err := ioutil.ReadAll(r.Body)
 	sessionRequest := getASessionRequest{}
 	json.Unmarshal(body, &sessionRequest)
@@ -74,6 +76,8 @@ func (s sessionAPI) getASession(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} nil
 // @Router /api/v1/sessions [get]
 func (s sessionAPI) getAllSessions(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	sessions, err := s.sessionReader.ReadAllSessions()
 	if err != nil {
 		ReportError(err, "Failed to get all sessions", http.StatusBadRequest, w)
