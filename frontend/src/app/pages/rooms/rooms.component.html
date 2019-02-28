@@ -10,7 +10,7 @@
             <li *ngFor="let room of rooms"
             [class.selected]="room == selectedRoom"
             (click)="onSelect(room)">
-            <span class="badge">{{ room.roomName }} </span> {{ room.capacity }}
+            <span class="badge">{{ room.name }} </span> {{ room.capacity }}
           </li>
          </ul>
   
@@ -46,7 +46,7 @@
 
     <div *ngIf="selectedRoom">
             <h2>Edit or Delete Room </h2>
-            <div><span>RoomName: </span>{{selectedRoom.roomName}}</div>
+            <div><span>RoomName: </span>{{selectedRoom.name}}</div>
             <div><span>Room Capacity:</span>{{selectedRoom.capacity}}</div>
             <br>
             <button (click)="deleteRoom()">Delete this Room</button>
