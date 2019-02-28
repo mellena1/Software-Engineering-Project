@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { SessionService } from '../../services/session.service'
 import { Session} from '../../data_models/session'
+import { Room } from 'src/app/data_models/room';
+import { Speaker } from 'src/app/data_models/speaker';
+import { Timeslot } from 'src/app/data_models/timeslot';
 
 @Component({
   selector: 'app-sessions',
@@ -21,11 +24,15 @@ export class SessionsComponent implements OnInit {
   getAllSessions(): void {
     this.sessionService
       .getAllSessions()
-      //.subscribe(
-        //sessions => (this.sessions = sessions),
-        //error => (this.error = error)
-      //)
+      .subscribe(
+        sessions => (this.sessions = sessions),
+        error => (this.error = error)
+      )
   }
+
+  public room = Room;
+  public speaker = Speaker;
+  public timeslot = Timeslot;
 
   getSession(id: number): void {
     this.sessionService

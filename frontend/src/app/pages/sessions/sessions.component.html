@@ -9,13 +9,13 @@
 
         <fieldset>
         <h2>Create a Session</h2>
-        <div><span>Presentation Name: </span> <input [(ngModel)]="selectedSession.name" placeholder="Name this session"> </div> 
+        <div><span>Presentation Name: </span> <input ng-model="selectedSession.name" placeholder="Name this session"> </div> 
         <br>
-        <div><span>Room Name: </span> <select [(ngModel)]="selectedRoom.name" placeholder="Select a Room"> </select></div> 
+        <div><span>Room Name: </span> <select ng-model="selectedSession" ng-options="sessions.Room for room in sessions" placeholder="Select a Room"> </select></div> 
         <br>
-        <div><span>Speaker Name: </span> <select [(ngModel)]="selectedSpeaker.name" placeholder="Select a Speaker"> </select> </div>
+        <div><span>Speaker Name: </span> <select ng-model="selectedSession.Speaker" ng-options="sessions.Speaker for speaker in sessions" placeholder="Select a Speaker"> </select> </div>
         <br>
-        <div><span>Timeslot: </span> <select [(ngModel)]="selectedTimeslot.name" placeholder="Select a Timeslot"> </select> </div>
+        <div><span>Timeslot: </span> <select ng-model="selectedSession.Timeslot" ng-options="sessions.Timeslot for timeslot in sessions" placeholder="Select a Timeslot"> </select> </div>
         <br>
         <button ng-click="addSession"> Add </button>
         </fieldset>
@@ -25,7 +25,7 @@
                 <li *ngFor="let session of sessions"
                 [class.selected]="session == selectedSession"
                 (click)="onSelect(session)">
-                <span class="badge">{{ session.id }} </span> {{session.name}} -- {{ room.name }} -- {{speaker.name}} -- {{timeslot.name}}
+                <span class="badge">{{ session.id }} </span> {{session.name}} -- {{ session.Room }} -- {{session.Speaker}} -- {{session.Timeslot}}
               </li>
         </ul>
 
