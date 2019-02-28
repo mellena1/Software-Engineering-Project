@@ -26,7 +26,7 @@ import { TimeslotsComponent } from './pages/timeslots/timeslots.component';
     DashboardComponent,
     RoomsComponent,
     SpeakersComponent,
-    TimeslotsComponent
+    TimeslotsComponent,
   ],
   bootstrap: [ AppComponent ]
 })
