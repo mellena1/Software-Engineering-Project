@@ -1,27 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>List of Speakers</title>
-    </head>
-    <body>
-            <h1>Speakers</h1>
-            <h2>Add a Speaker</h2>
-            <div><span>First Name:    </span> <input [(ngModel)]="selectedRoom.name" placeholder="First Name"> </div>
-            <br>
-            <div><span>Last Name:  </span> <input [(ngModel)]="selectedRoom.capacity" placeholder="Last Name"> </div>
-            <br>
-            <div><span>Email:  </span> <input [(ngModel)]="selectedRoom.capacity" placeholder="Email Address"> </div>
-            <br>
-            <button ng-click="addRoom"> Add </button>
-    
-        <h2>List of Speakers</h2>
-        <ul class="speakers">
-            <li *ngFor="let speaker of speakers"
-            [class.selected]="speaker == selectedSpeaker"
-            (click)="onSelect(speaker)">
-            <span class="badge">{{ speaker.id }} </span> {{ speaker.firstName }} {{ speaker.lastName }} {{ speaker.email }}
-          </li>
-         </ul>
-    </body>
+   <head>
+      <meta charset="utf-8">
+      <title>List of Speakers</title>
+   </head>
+   <body>
+      <h1>Speakers</h1>
+      <ul class="speakers">
+         <li *ngFor="let speaker of speakers"
+         [class.selected]="speaker == selectedSpeaker"
+         (click)="onSelect(speaker)">
+         <span class="badge">{{ speaker.email }} </span> {{ speaker.firstName }} {{ speaker.lastName }}
+         </li>
+      </ul>
+   </body>
+
+   <div *ngIf="selectedSpeaker">
+        <h2>Edit or Delete Speaker</h2>
+        <div><span>Speaker Name: </span>{{selectedSpeaker.firstName}} {{selectedSpeaker.lastName}}</div>
+        <div><span>Speaker Email:</span>{{selectedSpeaker.email}}</div>
+        <br>
+        <button (click)="deleteRoom()">Delete this Speaker</button>
+        <br>
+        <div>
+          <label> Edit Speaker Details: 
+            <input [(ngModel)]="selectedSpeaker.firstName" placeholder="first name">
+            <input [(ngModel)]="selectedSpeaker.lastName" placeholder="last name">
+            <input [(ngModel)]="selectedSpeaker.email" placeholder="email">
+          </label>
+        </div>
+    </div>
+
+    <button (click)="toggle()" id="bt">Add a Speaker</button>
+
+    <ng-container *ngIf="show">
+        <div>
+            <div>
+                <br>
+                <label>Speaker First Name: </label><input id="firstName" placeholder="eg. Ronald" />
+                <br>
+            </div>
+            <div>
+                <br>
+                <label>Speaker Last Name: </label><input id="lastName" placeholder="eg. Krawitz" />
+                <br>
+            </div>
+            <div>
+                <br>
+                <label>Speaker Email Address: </label><input id="email" placeholder="eg. krawaitzr@wit.edu" />
+            </div>
+            <div>
+              <br>
+              <button (click)="addSpeaker()">Submit</button>
+            </div>
+        </div>
+    </ng-container>
 </html>

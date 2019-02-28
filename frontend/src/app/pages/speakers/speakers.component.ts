@@ -12,6 +12,8 @@ export class SpeakersComponent implements OnInit {
   speaker: Speaker[];
   selectedSpeaker: Speaker;
   error: any;
+  public show:boolean = false;
+  public buttonName:any = "Add a Speaker"
   constructor(private speakerService: SpeakerService) { }
 
   ngOnInit() {
@@ -31,4 +33,35 @@ export class SpeakersComponent implements OnInit {
     this.selectedSpeaker = speaker;
   }
 
+   
+  addSpeaker(): void {
+    this.speakerService
+    .writeSpeaker()
+    this.show=false;
 }
+
+updateSpeaker(): void{
+  this.speakerService
+  .updateSpeaker
+}
+
+deleteRoom(): void{
+  this.speakerService
+  .deleteSpeaker
+}
+
+
+toggle(){
+  this.show = !this.show;
+
+
+if(this.show){
+  this.buttonName = "Hide";
+}
+else{
+  this.buttonName = "Add a Room";
+}
+}
+
+}
+

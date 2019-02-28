@@ -27,15 +27,15 @@ export class SpeakerService {
     
   }
 
-  writeRoom() {
+  writeSpeaker() {
 
   }
 
-  updateRoom() {
+  updateSpeaker() {
 
   }
 
-  deleteRoom() {
+  deleteSpeaker() {
 
   }
 
