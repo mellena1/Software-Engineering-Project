@@ -37,7 +37,7 @@ type RoomWriter interface {
 
 // RoomUpdater implements all update related methods
 type RoomUpdater interface {
-	UpdateARoom(name *string, newRoom Room) error
+	UpdateARoom(id *int, name *string, capacity *int) error
 }
 
 // RoomDeleter implements all delete related methods

@@ -43,8 +43,8 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 
 	routes := []Route{
 		NewRoute("/api/v1/rooms", roomAPI.getAllRooms, "GET"),
-		NewRoute("/api/v1/room", roomAPI.writeARoom, "PUT"),
-		NewRoute("/api/v1/room", roomAPI.updateARoom, "PUT"),
+		NewRoute("/api/v1/room", roomAPI.writeARoom, "POST"),
+		NewRoute("/api/v1/room", roomAPI.updateARoom, "PUST"),
 		NewRoute("/api/v1/room", roomAPI.deleteARoom, "DELETE"),
 	}
 
@@ -177,4 +177,30 @@ func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
 
 	updateRequest := updateARoomRequest{}
 	err = json.Unmarshal(body, &updateRequest)
+	if err != nil {
+		msg := "failed to unmarshal json"
+		log.Printf("%s: %v", msg, err)
+		w.WriteHeader(http.StatusBadRequest)
+		response, _ := json.Marshal(msg)
+		w.Write(response)
+		return
+	}
+
+	err = a.roomUpdater.UpdateARoom(updateRequest.ID, updateRequest.Name, updateRequest.Capacity)
+	if err != nil {
+		msg := "failed to update a room"
+		log.Printf("%s: %v", msg, err)
+		w.WriteHeader(http.StatusServiceUnavailable)
+		response, _ := json.Marshal(msg)
+		w.Write(response)
+		return
+	}
+
+	json, _ := json.Marshal(true)
+	_, err = w.Write(json)
+	if err != nil {
+		msg := "PUT Room update failed to write back"
+		log.Printf("%s: %v", msg, err)
+		return
+	}
 }

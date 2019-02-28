@@ -53,14 +53,32 @@ func (r RoomMySQL) WriteARoom(name *string, id *int) (int64, error) {
 	defer insert.Close()
 	result, err := insert.Exec(name, id)
 	if err != nil {
-		return 0, ErrDBNotSet
+		return 0, err
 	}
 
 	return result.LastInsertId()
 }
 
 // UpdateARoom updates a room in the db given a roomName and the updated room
-func (r RoomMySQL) UpdateARoom(name *string, newRoom db.Room) error {
+func (r RoomMySQL) UpdateARoom(id *int, name *string, capacity *int) error {
+	if r.db == nil {
+		return ErrDBNotSet
+	}
+
+	statement, err := r.db.Prepare("UPDATE room SET roomName = ?, capacity = ? WHERE roomID = ?;")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	result, err := statement.Exec(*name, *capacity, *id)
+	if err != nil {
+		return err
+	}
+
+	if _, err = result.RowsAffected(); err != nil {
+		return err
+	}
 	return nil
 }
 
