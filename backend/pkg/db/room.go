@@ -2,9 +2,9 @@ package db
 
 // Room holds all data about a room
 type Room struct {
-	ID       *int
-	Name     *string
-	Capacity *int
+	ID       *int    `json:"id" example:"1"`
+	Name     *string `json:"name" example:"My Room Name"`
+	Capacity *int    `json:"capacity" example:"50"`
 }
 
 // NewRoom makes a new Room with default values
