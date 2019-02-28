@@ -63,26 +63,66 @@ func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 }
 
 // WriteARoom writes a room to the db
-func (r RoomMySQL) WriteARoom(room db.Room) error {
-	return nil
+func (r RoomMySQL) WriteARoom(name *string, capacity *int) (int64, error) {
+	if r.db == nil {
+		return 0, ErrDBNotSet
+	}
+	insert, err := r.db.Prepare("INSERT INTO room(`roomName`, `capacity`) VALUES (?, ?)")
+	if err != nil {
+		return 0, err
+	}
+	defer insert.Close()
+
+	result, err := insert.Exec(*name, *capacity)
+	if err != nil {
+		return 0, err
+	}
+
+	return result.LastInsertId()
 }
 
 // UpdateARoom updates a room in the db given a roomName and the updated room
-func (r RoomMySQL) UpdateARoom(roomID int, newRoom db.Room) error {
-	return nil
-}
-
-// DeleteARoom deletes a room given a roomName
-func (r RoomMySQL) DeleteARoom(roomID int) error {
+func (r RoomMySQL) UpdateARoom(id *int, name *string, capacity *int) error {
 	if r.db == nil {
 		return ErrDBNotSet
 	}
 
-	q := ("DELETE FROM room WHERE roomID = ?;")
-	_, err := r.db.Exec(q, roomID)
+	statement, err := r.db.Prepare("UPDATE room SET roomName = ?, capacity = ? WHERE roomID = ?;")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	result, err := statement.Exec(*name, *capacity, *id)
 	if err != nil {
 		return err
 	}
 
+	if _, err = result.RowsAffected(); err != nil {
+		return err
+	}
+	return nil
+}
+
+// DeleteARoom deletes a room given a roomName
+func (r RoomMySQL) DeleteARoom(id *int) error {
+	if r.db == nil {
+		return ErrDBNotSet
+	}
+
+	statement, err := r.db.Prepare("DELETE FROM room WHERE roomID = ?;")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	result, err := statement.Exec(*id)
+	if err != nil {
+		return err
+	}
+
+	if _, err = result.RowsAffected(); err != nil {
+		return err
+	}
 	return nil
 }
