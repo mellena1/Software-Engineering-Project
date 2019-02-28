@@ -5,8 +5,8 @@ steps:
 - name: Generate-Swagger-Docs
   image: golang:1.11.5
   commands:
-  - cd backend
   - go get -u github.com/swaggo/swag/cmd/swag
+  - cd backend
   - swag init
 
 - name: Backend-Run-go-tests
