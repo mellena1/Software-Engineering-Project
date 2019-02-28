@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
@@ -74,8 +73,6 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 			&session.Timeslot.EndTime, session.Name)
 		sessions = append(sessions, session)
 	}
-
-	fmt.Printf("%v\n", sessions)
 
 	err = rows.Err()
 	if err != nil {
