@@ -40,7 +40,6 @@ export class RoomsComponent implements OnInit {
       )
   }
   
-
   onSelect(room: Room): void {
     this.selectedRoom = room;
   }
