@@ -37,6 +37,7 @@ CREATE TABLE session (
     timeslotID      INT,
     sessionName     VARCHAR(32),
     FOREIGN KEY (speakerID)  REFERENCES speaker (speakerID),
+    FOREIGN KEY (timeslotID) REFERENCES timeslot (timeslotID) ON DELETE SET NULL,
     FOREIGN KEY (roomID)     REFERENCES room (roomID) ON DELETE SET NULL,
     FOREIGN KEY (timeslotID) REFERENCES timeslot (timeslotID),
     PRIMARY KEY (sessionID)

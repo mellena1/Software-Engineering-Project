@@ -35,8 +35,6 @@ func (r RoomMySQL) ReadARoom(roomID int) (db.Room, error) {
 	default:
 		return db.Room{}, err
 	}
-
-	return newRoom, nil
 }
 
 // ReadAllRooms reads all rooms from the db
