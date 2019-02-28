@@ -44,7 +44,7 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 	routes := []Route{
 		NewRoute("/api/v1/rooms", roomAPI.getAllRooms, "GET"),
 		NewRoute("/api/v1/room", roomAPI.writeARoom, "POST"),
-		NewRoute("/api/v1/room", roomAPI.updateARoom, "PUST"),
+		NewRoute("/api/v1/room", roomAPI.updateARoom, "PUT"),
 		NewRoute("/api/v1/room", roomAPI.deleteARoom, "DELETE"),
 	}
 
@@ -115,6 +115,7 @@ func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json, _ := json.Marshal(id)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(json)
 	if err != nil {
 		msg := "GET Room failed to write back"
@@ -156,6 +157,7 @@ func (a roomAPI) deleteARoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json, _ := json.Marshal(true)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(json)
 	if err != nil {
 		msg := "DELETE Room failed to write back"
@@ -197,6 +199,7 @@ func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json, _ := json.Marshal(true)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(json)
 	if err != nil {
 		msg := "PUT Room update failed to write back"
