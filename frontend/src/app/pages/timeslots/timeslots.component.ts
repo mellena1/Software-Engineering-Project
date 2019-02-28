@@ -9,8 +9,10 @@ import { TimeslotService } from 'src/app/services/timeslot.service';
 })
 export class TimeslotsComponent implements OnInit {
   timeslots: Timeslot[];
-  selectedTimeslot = new Timeslot(1, "", "");
+  selectedTimeslot: Timeslot;
   error: any;
+  public show:boolean = false;
+  public buttonName:any = "Add a Timeslot"
 
   constructor(private timeslotService: TimeslotService) { }
 
@@ -30,16 +32,33 @@ export class TimeslotsComponent implements OnInit {
   addTimeslot(timeslot: Timeslot): void {
     this.timeslotService
     .writeTimeslot(timeslot)
+    this.show=false;
   }
 
-  updateTimeslot(): void {
+  updateTimeslot(updatedTimeslot: Timeslot): void {
     this.timeslotService
-    .updateTimeslot()
+    .updateTimeslot(updatedTimeslot)
+  }
+
+  deletedTimeslot(): void{
+  
   }
 
   onSelect(timeslot: Timeslot): void {
     this.selectedTimeslot = timeslot;
     this.addTimeslot(this.selectedTimeslot);
+  }
+
+  toggle(){
+    this.show = !this.show;
+  
+
+    if(this.show){
+      this.buttonName = "Hide";
+    }
+    else{
+      this.buttonName = "Add a Timeslot";
+    }
   }
 
 }
