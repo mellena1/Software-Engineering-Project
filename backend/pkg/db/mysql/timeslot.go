@@ -19,12 +19,47 @@ func NewTimeslotMySQL(db *sql.DB) TimeslotMySQL {
 
 // ReadATimeslot reads a timeslot from the db given an id
 func (t TimeslotMySQL) ReadATimeslot(id int64) (db.Timeslot, error) {
-	return db.Timeslot{}, nil
+	timeslot := db.NewTimeslot()
+
+	if t.db == nil {
+		return timeslot, ErrDBNotSet
+	}
+
+	stmt, err := t.db.Prepare("SELECT timeslotID, startTime, endTime FROM timeslot where timeslotID = ?;")
+	if err != nil {
+		return timeslot, err
+	}
+
+	row := stmt.QueryRow(id)
+
+	err = row.Scan(&timeslot.ID, &timeslot.StartTime, &timeslot.EndTime)
+
+	return timeslot, err
 }
 
 // ReadAllTimeslots reads all timeslots from the db
 func (t TimeslotMySQL) ReadAllTimeslots() ([]db.Timeslot, error) {
-	return nil, nil
+	if t.db == nil {
+		return nil, ErrDBNotSet
+	}
+
+	stmt, err := t.db.Prepare("SELECT timeslotID, startTime, endTime FROM timeslot;")
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := stmt.Query()
+	if err != nil {
+		return nil, err
+	}
+
+	timeslots := []db.Timeslot{}
+	for rows.Next() {
+		rowTimeslot := db.NewTimeslot()
+		rows.Scan(&rowTimeslot.ID, &rowTimeslot.StartTime, &rowTimeslot.EndTime)
+		timeslots = append(timeslots, rowTimeslot)
+	}
+	return timeslots, nil
 }
 
 // WriteATimeslot writes a timeslot to the db
