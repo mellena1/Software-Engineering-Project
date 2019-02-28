@@ -40,11 +40,13 @@ type getASessionRequest struct {
 	ID int64 `json:"id" example:"1"`
 }
 
-// getAllSessions Gets all sessions from the db
-// @Summary Get all sessions
-// @Description Return a list of all sessions
+// getASession Gets a session from the db
+// @Summary Get a session
+// @Description Return a session
 // @Produce json
-// @Success 200 {array} db.Session
+// @Accept json
+// @param session body api.getASessionRequest true "the session to get"
+// @Success 200 {} db.Session
 // @Failure 400 {} nil
 // @Router /api/v1/session [get]
 func (s sessionAPI) getASession(w http.ResponseWriter, r *http.Request) {
@@ -71,7 +73,6 @@ func (s sessionAPI) getASession(w http.ResponseWriter, r *http.Request) {
 // @Summary Get all sessions
 // @Description Return a list of all sessions
 // @Produce json
-// @Param roomID body api.getASessionRequest true "ID of the requested Session"
 // @Success 200 {array} db.Session
 // @Failure 400 {} nil
 // @Router /api/v1/sessions [get]
