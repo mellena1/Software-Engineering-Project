@@ -23,17 +23,21 @@ func (s SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
 		return db.Session{}, ErrDBNotSet
 	}
 
-	q := `SELECT session.sessionID, speaker.*, room.*, timeslot.*, session.sessionName FROM session
+	statement, err := s.db.Prepare(`SELECT session.sessionID, speaker.*, room.*, timeslot.*, session.sessionName FROM session
 		INNER JOIN speaker ON session.speakerID = speaker.speakerID
 		INNER JOIN room ON session.roomID = room.roomID
 		INNER JOIN timeslot ON session.timeslotID = timeslot.timeslotID
-		WHERE session.sessionID = ` + string(sessionID) + ";"
+		WHERE session.sessionID = ?;`)
+	if err != nil {
+		return db.Session{}, err
+	}
+	defer statement.Close()
 
-	row := s.db.QueryRow(q)
+	row := statement.QueryRow(sessionID)
 
 	session := db.NewSession()
 
-	err := row.Scan(&session.ID, session.Speaker.ID, session.Speaker.Email, session.Speaker.FirstName,
+	err = row.Scan(&session.ID, session.Speaker.ID, session.Speaker.Email, session.Speaker.FirstName,
 		session.Speaker.LastName, session.Room.ID, session.Room.Name,
 		session.Room.Capacity, &session.Timeslot.ID, &session.Timeslot.StartTime,
 		&session.Timeslot.EndTime, session.Name)
