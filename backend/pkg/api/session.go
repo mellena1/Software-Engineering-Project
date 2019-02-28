@@ -66,6 +66,7 @@ func (a sessionAPI) getASession(w http.ResponseWriter, r *http.Request) {
 // @Summary Get all sessions
 // @Description Return a list of all sessions
 // @Produce json
+// @Param roomID body api.getASessionRequest true "ID of the requested Session"
 // @Success 200 {array} db.Session
 // @Failure 400 {} nil
 // @Router /api/v1/sessions [get]

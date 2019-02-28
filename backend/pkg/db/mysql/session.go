@@ -28,32 +28,16 @@ func (s SessionMySQL) ReadASession(sessionID int) (db.Session, error) {
 		INNER JOIN timeslot ON session.timeslotID = timeslot.timeslotID
 		WHERE session.sessionID = ` + string(sessionID) + ";"
 
-	rows, err := s.db.Query(q)
-	if err != nil {
-		return db.Session{}, err
-	}
-	defer rows.Close()
+	row := s.db.QueryRow(q)
 
 	session := db.Session{}
-	hasNext := rows.Next()
 
-	if hasNext == true {
-		rows.Scan(session.ID, session.Speaker.Email, session.Speaker.FirstName,
-			session.Speaker.LastName, session.Room.ID, session.Room.RoomName,
-			session.Room.Capacity, session.Timeslot.ID, session.Timeslot.StartTime,
-			session.Timeslot.EndTime, session.Name)
-	} else {
-		err = rows.Err()
-		if err != nil {
-			return session, err
-		}
-		return session, ErrNoRowsFound
-	}
-
-	// check if the session ID returned multiple rows, if so error
-	hasNext = rows.Next()
-	if hasNext == true {
-		return session, ErrTooManyRows
+	err := row.Scan(session.ID, session.Speaker.Email, session.Speaker.FirstName,
+		session.Speaker.LastName, session.Room.ID, session.Room.RoomName,
+		session.Room.Capacity, session.Timeslot.ID, session.Timeslot.StartTime,
+		session.Timeslot.EndTime, session.Name)
+	if err != nil {
+		return db.Session{}, err
 	}
 
 	return session, nil
