@@ -23,8 +23,8 @@ export class SpeakerService {
   
   getSpeaker(id: number) {
     const params = new HttpParams()
-      .set('personId', id.toString());
-    return this.http.delete(this.apiUrl + '/speaker', {
+      .set('id', id.toString());
+    return this.http.delete<Speaker>(this.apiUrl + '/speaker', {
       headers: this.headers,
       params: params
       }

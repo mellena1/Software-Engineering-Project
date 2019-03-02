@@ -23,30 +23,12 @@ import { FormsModule }    from '@angular/forms';
 })
 export class SessionsComponent implements OnInit {
   constructor(private sessionService: SessionService) { }
-  
   sessions: Session[];
-  newSession: Session;
-  selectedSession: Session;
+  session: Session;
   error: any;
-  sessionForm: FormGroup;
 
-  
   ngOnInit() {
     this.getAllSessions();
-    this.sessionForm = new FormGroup({
-      'sessionName': new FormControl(this.newSession.name, [
-        Validators.required
-      ]),
-      'sessionRoom': new FormControl(this.newSession.room, [
-        Validators.required
-      ]),
-      'sessionSpeaker': new FormControl(this.newSession.speaker, [
-        Validators.required
-      ]),
-      'sessionTime': new FormControl(this.newSession.timeslot, [
-        Validators.required
-      ])
-    });
   }
 
   getAllSessions(): void {
@@ -56,9 +38,5 @@ export class SessionsComponent implements OnInit {
         sessions => (this.sessions = sessions),
         error => (this.error = error)
       )
-  }
-
-  onSelect(session: Session): void {
-    this.selectedSession = session;
   }
 }
