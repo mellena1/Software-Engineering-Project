@@ -10,12 +10,9 @@ import { Timeslot } from '../data_models/timeslot'
   providedIn: 'root'
 })
 export class TimeslotService {
-  timeslot: Timeslot;
-
+  constructor(private http: HttpClient) { }
   private apiUrl = environment.apiUrl;
   
-  constructor(private http: HttpClient) { }
-
   getAllTimeslots() {
     return this.http
       .get<Timeslot[]>(this.apiUrl + '/timeslots')

@@ -11,14 +11,10 @@ import { Speaker } from '../data_models/speaker'
 })
 
 export class SpeakerService {
-  
   constructor(private http: HttpClient) { }
-
   private apiUrl = environment.apiUrl;
   headers = new HttpHeaders().set('Content-Type', 'application/json')
   
-  
-
   getAllSpeakers() {
     return this.http
       .get<Speaker[]>(this.apiUrl + '/speakers')

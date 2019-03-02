@@ -11,9 +11,8 @@ import { Room } from '../data_models/room'
 })
 export class RoomService {
   constructor(private http: HttpClient) { }
-  
-  headers = new HttpHeaders();
   private apiUrl = environment.apiUrl;
+  
 
   getAllRooms() {
     return this.http
@@ -33,7 +32,7 @@ export class RoomService {
     
   }
 
-  deleteRoom(id:number): {
+  deleteRoom(id: number) {
 
   }
 

@@ -23,6 +23,7 @@ import { FormsModule }    from '@angular/forms';
 })
 export class SessionsComponent implements OnInit {
   constructor(private sessionService: SessionService) { }
+  
   sessions: Session[];
   newSession: Session;
   selectedSession: Session;

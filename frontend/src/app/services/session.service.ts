@@ -10,10 +10,9 @@ import { Session } from '../data_models/session'
   providedIn: 'root'
 })
 export class SessionService {
+  constructor(private http: HttpClient) { }
   private apiUrl = environment.apiUrl;
   
-  constructor(private http: HttpClient) { }
-
   getAllSessions() {
     return this.http
       .get<Session[]>(this.apiUrl + '/sessions')

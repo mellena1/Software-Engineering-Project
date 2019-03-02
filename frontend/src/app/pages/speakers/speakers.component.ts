@@ -10,13 +10,15 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./speakers.component.css']
 })
 export class SpeakersComponent implements OnInit {
+  constructor(private speakerService: SpeakerService) { }
+  
   speaker: Speaker;
   speakers: Speaker[];
   selectedSpeaker: Speaker;
   error: any;
   public show:boolean = false;
   public buttonName:any = "Add a Speaker"
-  constructor(private speakerService: SpeakerService) { }
+  
   speakerForm: FormGroup;
 
   ngOnInit() {

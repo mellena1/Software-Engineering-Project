@@ -8,13 +8,15 @@ import { TimeslotService } from 'src/app/services/timeslot.service';
   styleUrls: ['./timeslots.component.css']
 })
 export class TimeslotsComponent implements OnInit {
+  constructor(private timeslotService: TimeslotService) { }
+  
   timeslots: Timeslot[];
   selectedTimeslot: Timeslot;
   error: any;
   public show:boolean = false;
   public buttonName:any = "Add a Timeslot"
 
-  constructor(private timeslotService: TimeslotService) { }
+  
 
   ngOnInit() {
     this.getAllTimeslots();

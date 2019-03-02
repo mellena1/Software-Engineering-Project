@@ -6,7 +6,7 @@ The frontend uses [Angular](https://angular.io/) for rendering and routing. The 
 ## Local Development
 **You will need both `git` and `npm` installed to run this project.**
 
-First run `npm install` in the `frontend` directory. After that is finished, run `ng serve` to start a local development server. Visit 
+First run  `npm install -g @angular/cli` and then  run`npm install` in the `frontend` directory. After that is finished, run `ng serve` to start a local development server. Visit 
 `localhost:8080` to see the page.
 
 ## Hints
