@@ -5,6 +5,7 @@ import { Observable, throwError as observableThrowError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators'
 
 import { Speaker } from '../data_models/speaker'
+import { last } from '@angular/router/src/utils/collection';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,7 @@ export class SpeakerService {
   }
   
   getSpeaker(id: number) {
-    const params = new HttpParams()
+    var params = new HttpParams()
       .set('id', id.toString());
     return this.http.get<Speaker>(this.apiUrl + '/speaker', {
       params: params
@@ -37,12 +38,16 @@ export class SpeakerService {
     return this.http.post(this.apiUrl + '/speaker', options);
   }
 
-  updateSpeaker(updateSpeaker: Speaker) {
-
+  updateSpeaker(firstName: string, lastName: string, email: string) {
+    var obj = { 'firstName': firstName, 'lastName': last, 'email': email };
+    return this.http.post(this.apiUrl + '/speaker', {
+      headers: this.jsonHeaders,
+      body: JSON.stringify(obj)
+    });
   }
 
   deleteSpeaker(id: number) {
-    const params = new HttpParams()
+    var params = new HttpParams()
       .set('id', id.toString());
     return this.http.delete<Speaker>(this.apiUrl + '/speaker', {
       params: params

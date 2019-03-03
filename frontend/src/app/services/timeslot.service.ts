@@ -12,6 +12,7 @@ import { Timeslot } from '../data_models/timeslot'
 export class TimeslotService {
   constructor(private http: HttpClient) { }
   private apiUrl = environment.apiUrl;
+  jsonHeaders = new HttpHeaders().set('Content-Type', 'application/json')
   
   getAllTimeslots() {
     return this.http
@@ -20,25 +21,33 @@ export class TimeslotService {
   }
 
   getTimeslot(id: number) {
-    const params = new HttpParams()
+    var params = new HttpParams()
       .set('id', id.toString());
-    return this.http.get<Timeslot>(this.apiUrl + '/session', {
+    return this.http.get<Timeslot>(this.apiUrl + '/timeslot', {
       params: params
     });
   }
 
-  writeTimeslot(timeslot: Timeslot) {
+  writeTimeslot(starTime: string, endTime: string) {
+    var obj = { 'startTime': starTime, 'endTime': endTime };
+    return this.http.post(this.apiUrl + '/speaker', {
+      headers: this.jsonHeaders,
+      body: JSON.stringify(obj)
+    });
 
   }
 
   updateTimeslot(updatedTimeslot: Timeslot) {
-
+    return this.http.post(this.apiUrl + '/timeslot', {
+      headers: this.jsonHeaders,
+      body: JSON.stringify(updatedTimeslot)
+    });
   }
 
   deleteTimeslot(id: number) {
-    const params = new HttpParams()
+    var params = new HttpParams()
       .set('id', id.toString());
-    return this.http.delete<Timeslot>(this.apiUrl + '/session', {
+    return this.http.delete<Timeslot>(this.apiUrl + '/timeslot', {
       params: params
     });
   }

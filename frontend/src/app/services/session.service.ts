@@ -12,6 +12,7 @@ import { Session } from '../data_models/session'
 export class SessionService {
   constructor(private http: HttpClient) { }
   private apiUrl = environment.apiUrl;
+  jsonHeaders = new HttpHeaders().set('Content-Type', 'application/json')
   
   getAllSessions() {
     return this.http
@@ -20,23 +21,26 @@ export class SessionService {
   }
 
   getSession(id: number) {
-    const params = new HttpParams()
+    var params = new HttpParams()
       .set('id', id.toString());
     return this.http.get<Session>(this.apiUrl + '/session', {
       params: params
     });
   }
 
-  writeSession(session: Session) {
+  writeSession() {
 
   }
 
   updateSession(updatedSession: Session) {
-
+    return this.http.post(this.apiUrl + '/session', {
+      headers: this.jsonHeaders,
+      body: JSON.stringify(updatedSession)
+    });
   }
 
   deleteSession(id: number) {
-    const params = new HttpParams()
+    var params = new HttpParams()
       .set('id', id.toString());
     return this.http.delete<Session>(this.apiUrl + '/session', {
       params: params
