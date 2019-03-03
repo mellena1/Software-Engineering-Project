@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, throwError as observableThrowError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators'
@@ -20,7 +20,11 @@ export class SessionService {
   }
 
   getSession(id: number) {
-
+    const params = new HttpParams()
+      .set('id', id.toString());
+    return this.http.get<Session>(this.apiUrl + '/session', {
+      params: params
+    });
   }
 
   writeSession(session: Session) {
@@ -32,7 +36,11 @@ export class SessionService {
   }
 
   deleteSession(id: number) {
-
+    const params = new HttpParams()
+      .set('id', id.toString());
+    return this.http.delete<Session>(this.apiUrl + '/session', {
+      params: params
+    });
   }
 
   private handleError(res: HttpErrorResponse | any) {

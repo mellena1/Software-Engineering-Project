@@ -21,7 +21,11 @@ export class RoomService {
   }
 
   getARoom(id: number) {
-
+    const params = new HttpParams()
+      .set('id', id.toString());
+    return this.http.get<Room>(this.apiUrl + '/room', {
+      params: params
+    });
   }
 
   writeRoom(room: Room) {
@@ -33,7 +37,11 @@ export class RoomService {
   }
 
   deleteRoom(id: number) {
-
+    const params = new HttpParams()
+      .set('id', id.toString());
+    return this.http.delete<Room>(this.apiUrl + '/room', {
+      params: params
+    });
   }
 
   private handleError(res: HttpErrorResponse | any) {

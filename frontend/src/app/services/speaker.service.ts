@@ -26,8 +26,7 @@ export class SpeakerService {
       .set('id', id.toString());
     return this.http.get<Speaker>(this.apiUrl + '/speaker', {
       params: params
-      }
-    );
+    });
   }
   
   writeSpeaker(speaker: Speaker) {
@@ -43,11 +42,11 @@ export class SpeakerService {
   }
 
   deleteSpeaker(id: number) {
-    const options = {
-      headers: this.jsonHeaders,
-      body: '{ id: ' + id + ' }'
-    };
-    return this.http.delete(this.apiUrl + '/speaker', options)
+    const params = new HttpParams()
+      .set('id', id.toString());
+    return this.http.delete<Speaker>(this.apiUrl + '/speaker', {
+      params: params
+    });
   }
 
   private handleError(res: HttpErrorResponse | any) {
