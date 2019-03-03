@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { map } from 'rxjs/operators'
+import { Observable, throwError as observableThrowError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators'
 
 import { Timeslot } from '../data_models/timeslot'
 
@@ -9,27 +10,36 @@ import { Timeslot } from '../data_models/timeslot'
   providedIn: 'root'
 })
 export class TimeslotService {
+  timeslot: Timeslot;
+
   private apiUrl = environment.apiUrl;
   
   constructor(private http: HttpClient) { }
 
   getAllTimeslots() {
-
+    return this.http
+      .get<Timeslot[]>(this.apiUrl + '/timeslots')
+      .pipe(map(data => data), catchError(this.handleError))
   }
 
   getTimeslot(id: number) {
-    
-  }
-
-  writeTimeslot() {
 
   }
 
-  updateTimeslot() {
+  writeTimeslot(timeslot: Timeslot) {
 
   }
 
-  deleteTimeslot() {
+  updateTimeslot(updatedTimeslot: Timeslot) {
 
+  }
+
+  deleteTimeslot(id: number) {
+
+  }
+
+  private handleError(res: HttpErrorResponse | any) {
+    console.error(res.error || res.body.error);
+    return observableThrowError(res.error || 'Server error');
   }
 }
