@@ -18,7 +18,7 @@ import { environment } from 'src/environments/environment.prod';
     FormsModule,
     AppRoutingModule,
     HttpClientModule,
-    environment.production ? HttpClientInMemoryWebApiModule.forRoot(MockApi): []
+    environment.production ? HttpClientInMemoryWebApiModule.forRoot(MockApi): [],
     ReactiveFormsModule,
   ],
   declarations: [
