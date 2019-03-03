@@ -36,8 +36,8 @@ func (s SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
 
 	session := db.NewSession()
 
-	err = row.Scan(&session.ID, session.Speaker.ID, session.Speaker.Email, session.Speaker.FirstName,
-		session.Speaker.LastName, session.Room.ID, session.Room.Name,
+	err = row.Scan(&session.ID, &session.Speaker.ID, session.Speaker.Email, session.Speaker.FirstName,
+		session.Speaker.LastName, &session.Room.ID, session.Room.Name,
 		session.Room.Capacity, &session.Timeslot.ID, &session.Timeslot.StartTime,
 		&session.Timeslot.EndTime, session.Name)
 	if err != nil {
@@ -67,8 +67,8 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 	sessions := []db.Session{}
 	for rows.Next() {
 		session := db.NewSession()
-		rows.Scan(&session.ID, session.Speaker.ID, session.Speaker.Email, session.Speaker.FirstName,
-			session.Speaker.LastName, session.Room.ID, session.Room.Name,
+		rows.Scan(&session.ID, &session.Speaker.ID, session.Speaker.Email, session.Speaker.FirstName,
+			session.Speaker.LastName, &session.Room.ID, session.Room.Name,
 			session.Room.Capacity, &session.Timeslot.ID, &session.Timeslot.StartTime,
 			&session.Timeslot.EndTime, session.Name)
 		sessions = append(sessions, session)
