@@ -17,7 +17,7 @@ func NewSpeakerMySQL(db *sql.DB) SpeakerMySQL {
 }
 
 // ReadASpeaker reads a speaker from the db given email
-func (s SpeakerMySQL) ReadASpeaker(speakerID int) (db.Speaker, error) {
+func (s SpeakerMySQL) ReadASpeaker(speakerID int64) (db.Speaker, error) {
 	if s.db == nil {
 		return db.Speaker{}, ErrDBNotSet
 	}
@@ -33,7 +33,7 @@ func (s SpeakerMySQL) ReadASpeaker(speakerID int) (db.Speaker, error) {
 
 	speaker := db.NewSpeaker()
 	for rows.Next() {
-		rows.Scan(speaker.ID, speaker.Email, speaker.FirstName, speaker.LastName)
+		rows.Scan(&speaker.ID, speaker.Email, speaker.FirstName, speaker.LastName)
 	}
 
 	return speaker, nil
@@ -56,7 +56,7 @@ func (s SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
 	speakers := []db.Speaker{}
 	for rows.Next() {
 		newSpeaker := db.NewSpeaker()
-		rows.Scan(newSpeaker.ID, newSpeaker.Email, newSpeaker.FirstName, newSpeaker.LastName)
+		rows.Scan(&newSpeaker.ID, newSpeaker.Email, newSpeaker.FirstName, newSpeaker.LastName)
 		speakers = append(speakers, newSpeaker)
 	}
 	return speakers, nil
@@ -84,7 +84,7 @@ func (s SpeakerMySQL) WriteASpeaker(email string, firstName string, lastName str
 }
 
 // UpdateASpeaker updates a speaker in the db given an email and the updated speaker
-func (s SpeakerMySQL) UpdateASpeaker(id int, email string, firstName string, lastName string) error {
+func (s SpeakerMySQL) UpdateASpeaker(id int64, email string, firstName string, lastName string) error {
 	if s.db == nil {
 		return ErrDBNotSet
 	}
@@ -99,7 +99,7 @@ func (s SpeakerMySQL) UpdateASpeaker(id int, email string, firstName string, las
 }
 
 // DeleteASpeaker deletes a speaker given an email
-func (s SpeakerMySQL) DeleteASpeaker(id int) error {
+func (s SpeakerMySQL) DeleteASpeaker(id int64) error {
 	if s.db == nil {
 		return ErrDBNotSet
 	}

@@ -36,36 +36,38 @@ func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) [
 	return routes
 }
 
-type getASessionRequest struct {
-	ID int64 `json:"id" example:"1"`
-}
-
 // getASession Gets a session from the db
 // @Summary Get a session
 // @Description Return a session
 // @Produce json
-// @Accept json
-// @param session body api.getASessionRequest true "the session to get"
-// @Success 200 {} db.Session
-// @Failure 400 {} nil
+// @param id query int true "the session to retrieve"
+// @Success 200 {object} db.Session
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/session [get]
 func (s sessionAPI) getASession(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	body, err := ioutil.ReadAll(r.Body)
-	sessionRequest := getASessionRequest{}
-	json.Unmarshal(body, &sessionRequest)
-	session, err := s.sessionReader.ReadASession(sessionRequest.ID)
-	if err != nil {
-		ReportError(err, "Failed to get a session", http.StatusBadRequest, w)
+	requestedID, err := getIDFromQueries(r)
+	switch err {
+	case ErrQueryNotSet:
+		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		return
+	case ErrBadQuery:
+		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		return
+	case ErrBadQueryType:
+		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
 		return
 	}
 
-	j, err := json.Marshal(session)
+	session, err := s.sessionReader.ReadASession(requestedID)
 	if err != nil {
-		ReportError(err, "Failed to create session json", http.StatusBadRequest, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		return
 	}
 
+	j, _ := json.Marshal(session)
 	w.Write(j)
 }
 
@@ -74,7 +76,8 @@ func (s sessionAPI) getASession(w http.ResponseWriter, r *http.Request) {
 // @Description Return a list of all sessions
 // @Produce json
 // @Success 200 {array} db.Session
-// @Failure 400 {} nil
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/sessions [get]
 func (s sessionAPI) getAllSessions(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -108,8 +111,8 @@ type writeASessionRequest struct {
 // @produce json
 // @param session body api.writeASessionRequest true "the session to add"
 // @Success 200 {} int "the id of the session added"
-// @Failure 400 {} string "the request was bad"
-// @Failure 503 {} string "failed to access the db"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/session [post]
 func (s sessionAPI) writeASession(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -150,8 +153,8 @@ type updateASessionRequest struct {
 // @produce json
 // @param session body api.updateASessionRequest true "the session to update with the new values"
 // @Success 200 "Updated properly"
-// @Failure 400 {} string "the request was bad"
-// @Failure 503 {} string "failed to access the db"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/session [put]
 func (s sessionAPI) updateASession(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -185,34 +188,32 @@ func (s sessionAPI) updateASession(w http.ResponseWriter, r *http.Request) {
 	w.Write(nil)
 }
 
-// deleteASessionRequest request for deleteASession
-type deleteASessionRequest struct {
-	SessionID int64 `json:"sessionID" example:"1"`
-}
-
 // deleteASession Delete an existing session in the db
 // @Summary Delete an existing session in the db
 // @Description Delete an existing session in the db
-// @accept json
 // @produce json
-// @param session body api.deleteASessionRequest true "the session to delete"
+// @param id query int true "the session to delete"
 // @Success 200 "Deleted properly"
-// @Failure 400 {} string "the request was bad"
-// @Failure 503 {} string "failed to access the db"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/session [delete]
 func (s sessionAPI) deleteASession(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	j, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+	requestedID, err := getIDFromQueries(r)
+	switch err {
+	case ErrQueryNotSet:
+		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		return
+	case ErrBadQuery:
+		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		return
+	case ErrBadQueryType:
+		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
 		return
 	}
 
-	sessionRequest := deleteASessionRequest{}
-	json.Unmarshal(j, &sessionRequest)
-
-	err = s.sessionDeleter.DeleteASession(sessionRequest.SessionID)
+	err = s.sessionDeleter.DeleteASession(requestedID)
 	if err != nil {
 		var msg string
 		var status int
