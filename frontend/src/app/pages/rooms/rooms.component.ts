@@ -11,11 +11,23 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class RoomsComponent implements OnInit {
   constructor(private roomService: RoomService) { }
   rooms: Room[];
-  room: Room;
+  newRoom: Room;
+  selectedRoom: Room;
   error: any;
-  
+  public show: boolean = false;
+  public buttonName: any = "Add a Room"
+  roomForm: FormGroup;
+
   ngOnInit() {
     this.getAllRooms();
+    this.roomForm = new FormGroup({
+      'roomName': new FormControl(this.newRoom.name, [
+        Validators.required
+      ]),
+      'roomCapacity': new FormControl(this.newRoom.capacity, [
+        Validators.required
+      ])
+    });
   }
 
   getAllRooms(): void {
@@ -25,5 +37,18 @@ export class RoomsComponent implements OnInit {
         rooms => (this.rooms = rooms),
         error => (this.error = error)
       )
+  }
+
+  onSelect(room: Room): void {
+    this.selectedRoom = room;
+  }
+
+  toggle() {
+    this.show = !this.show;
+    if (this.show) {
+      this.buttonName = "Hide";
+    } else {
+      this.buttonName = "Add a Room";
+    }
   }
 }
