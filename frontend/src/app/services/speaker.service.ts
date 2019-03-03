@@ -13,7 +13,7 @@ import { Speaker } from '../data_models/speaker'
 export class SpeakerService {
   constructor(private http: HttpClient) { }
   private apiUrl = environment.apiUrl;
-  headers = new HttpHeaders().set('Content-Type', 'application/json')
+  jsonHeaders = new HttpHeaders().set('Content-Type', 'application/json')
   
   getAllSpeakers() {
     return this.http
@@ -24,15 +24,18 @@ export class SpeakerService {
   getSpeaker(id: number) {
     const params = new HttpParams()
       .set('id', id.toString());
-    return this.http.delete<Speaker>(this.apiUrl + '/speaker', {
-      headers: this.headers,
+    return this.http.get<Speaker>(this.apiUrl + '/speaker', {
       params: params
       }
     );
   }
-
+  
   writeSpeaker(speaker: Speaker) {
-
+    const options = {
+      headers: this.jsonHeaders,
+      body: JSON.stringify(speaker)
+    };
+    return this.http.post(this.apiUrl + '/speaker', options);
   }
 
   updateSpeaker(updateSpeaker: Speaker) {
@@ -40,12 +43,15 @@ export class SpeakerService {
   }
 
   deleteSpeaker(id: number) {
-
+    const options = {
+      headers: this.jsonHeaders,
+      body: '{ id: ' + id + ' }'
+    };
+    return this.http.delete(this.apiUrl + '/speaker', options)
   }
 
   private handleError(res: HttpErrorResponse | any) {
     console.error(res.error || res.body.error);
     return observableThrowError(res.error || 'Server error');
   }
-
 }

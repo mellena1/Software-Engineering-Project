@@ -17,7 +17,10 @@ export class SpeakersComponent implements OnInit {
 
   ngOnInit() {
     this.getAllSpeakers();
-    this.speakerService.getSpeaker(1);
+    this.getSpeaker(1);
+    console.log('deleting speaker...')
+    this.speakerService.deleteSpeaker(1).subscribe(data => console.log(data));
+    console.log('deleted speaker...')
   }
 
   getAllSpeakers(): void {
@@ -27,5 +30,18 @@ export class SpeakersComponent implements OnInit {
         speakers => (this.speakers = speakers),
         error   => (this.error = error)
       )
+  }
+
+  getSpeaker(id: number): void {
+    this.speakerService
+      .getSpeaker(id)
+      .subscribe(
+        speaker => (this.speaker = speaker),
+        error => (this.error = error)
+      )
+  }
+
+  writeSpeaker(speaker: Speaker): void {
+    this.speakerService.writeSpeaker(speaker)
   }
 }
