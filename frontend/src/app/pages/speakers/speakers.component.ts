@@ -17,10 +17,6 @@ export class SpeakersComponent implements OnInit {
 
   ngOnInit() {
     this.getAllSpeakers();
-    this.getSpeaker(1);
-    console.log('deleting speaker...')
-    this.speakerService.deleteSpeaker(1).subscribe(data => console.log(data));
-    console.log('deleted speaker...')
   }
 
   getAllSpeakers(): void {
