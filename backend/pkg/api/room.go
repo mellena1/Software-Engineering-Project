@@ -22,16 +22,8 @@ type writeARoomRequest struct {
 	Capacity *int
 }
 
-type deleteARoomRequest struct {
-	ID *int
-}
-
-type roomRequest struct {
-	ID int
-}
-
 type updateARoomRequest struct {
-	ID       *int
+	ID       int64
 	Name     *string
 	Capacity *int
 }
@@ -47,7 +39,7 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 
 	routes := []Route{
 		NewRoute("/api/v1/rooms", roomAPI.getAllRooms, "GET"),
-		NewRoute("/api/v1/room", roomAPI.getRoom, "GET"),
+		NewRoute("/api/v1/room", roomAPI.getARoom, "GET"),
 		NewRoute("/api/v1/room", roomAPI.writeARoom, "POST"),
 		NewRoute("/api/v1/room", roomAPI.updateARoom, "PUT"),
 		NewRoute("/api/v1/room", roomAPI.deleteARoom, "DELETE"),
@@ -61,7 +53,8 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 // @Description Return a list of all rooms
 // @Produce json
 // @Success 200 {array} db.Room
-// @Failure 400 {} nil
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/rooms [get]
 func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 	rooms, err := a.roomReader.ReadAllRooms()
@@ -82,33 +75,36 @@ func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 // getRoom Gets all rooms from the db
 // @Summary Get a room
 // @Description Returns a room
-// @Param roomID body api.roomRequest true "ID of the requested Room"
+// @param id query int true "the room to retrieve"
 // @Produce json
 // @Success 200 {} db.Room
-// @Failure 400 {} nil
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/room [get]
-func (a roomAPI) getRoom(w http.ResponseWriter, r *http.Request) {
+func (a roomAPI) getARoom(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	//Going off of what Kenny did here
-	var data roomRequest
-	body, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(body, &data)
-
-	if err != nil {
+	requestedID, err := getIDFromQueries(r)
+	switch err {
+	case ErrQueryNotSet:
+		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		return
+	case ErrBadQuery:
+		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		return
+	case ErrBadQueryType:
+		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
 		return
 	}
 
-	roomID := data.ID
-
-	room, err := a.roomReader.ReadARoom(roomID) //This needs a string
+	room, err := a.roomReader.ReadARoom(requestedID)
 	if err != nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
-		log.Printf("Failed to read room (%v) from the db: %v", roomID, err)
+		log.Printf("Failed to read room (%v) from the db: %v", requestedID, err)
 		w.Write([]byte("Read from the backend failed"))
 		return
 	}
 	j, _ := json.Marshal(room)
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(j)
 	if err != nil {
 		log.Println("Failed to respond to Room")
@@ -120,11 +116,14 @@ func (a roomAPI) getRoom(w http.ResponseWriter, r *http.Request) {
 // @Description Write a room to the db
 // @Accept json
 // @Produce json
-// @Success 200 {int} nil
-// @Failure 400 {boolean} nil
-// @Router /api/v1/room [post]
 // @Param room body api.writeARoomRequest true "Room to write"
+// @Success 200 {int} nil
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
+// @Router /api/v1/room [post]
 func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		msg := "unable to read body"
@@ -157,7 +156,6 @@ func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json, _ := json.Marshal(id)
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(json)
 	if err != nil {
 		msg := "GET Room failed to write back"
@@ -171,33 +169,28 @@ func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
 // @Description Delete a room from the db
 // @Accept json
 // @Produce json
-// @Success 200 {boolean} nil
-// @Failure 400 {boolean} nil
+// @param id query int true "the room to delete"
+// @Success 200 "Deleted properly"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/room [delete]
-// @Param room body api.deleteARoomRequest true "Room to delete"
 func (a roomAPI) deleteARoom(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		msg := "unable to read body"
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusBadRequest)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	requestedID, err := getIDFromQueries(r)
+	switch err {
+	case ErrQueryNotSet:
+		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		return
+	case ErrBadQuery:
+		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		return
+	case ErrBadQueryType:
+		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
 		return
 	}
 
-	deleteRequest := deleteARoomRequest{}
-	err = json.Unmarshal(body, &deleteRequest)
-	if err != nil {
-		msg := "failed to unmarshal json"
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusBadRequest)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
-		return
-	}
-
-	err = a.roomDeleter.DeleteARoom(deleteRequest.ID)
+	err = a.roomDeleter.DeleteARoom(requestedID)
 	if err != nil {
 		msg := "failed to delete a room"
 		log.Printf("%s: %v", msg, err)
@@ -208,7 +201,6 @@ func (a roomAPI) deleteARoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json, _ := json.Marshal(true)
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(json)
 	if err != nil {
 		msg := "DELETE Room failed to write back"
@@ -222,11 +214,14 @@ func (a roomAPI) deleteARoom(w http.ResponseWriter, r *http.Request) {
 // @Description Update a room in the db
 // @Accept json
 // @Produce json
+// @param id query int true "the room to delete"
 // @Success 200 {boolean} nil
 // @Failure 400 {boolean} nil
 // @Router /api/v1/room [PUT]
 // @Param room body api.updateARoomRequest true "Room to update"
 func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		msg := "unable to read body"
@@ -259,7 +254,6 @@ func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json, _ := json.Marshal(true)
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(json)
 	if err != nil {
 		msg := "PUT Room update failed to write back"
