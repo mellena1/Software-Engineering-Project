@@ -30,19 +30,18 @@ export class SpeakerService {
     });
   }
   
-  writeSpeaker(speaker: Speaker) {
-    const options = {
-      headers: this.jsonHeaders,
-      body: JSON.stringify(speaker)
-    };
-    return this.http.post(this.apiUrl + '/speaker', options);
-  }
-
-  updateSpeaker(firstName: string, lastName: string, email: string) {
+  writeSpeaker(firstName: string, lastName: string, email: string) {
     var obj = { 'firstName': firstName, 'lastName': last, 'email': email };
     return this.http.post(this.apiUrl + '/speaker', {
       headers: this.jsonHeaders,
       body: JSON.stringify(obj)
+    });
+  }
+
+  updateSpeakers(updatedSpeaker: Speaker) {
+    return this.http.post(this.apiUrl + '/speaker', {
+      headers: this.jsonHeaders,
+      body: JSON.stringify(updatedSpeaker)
     });
   }
 
