@@ -46,7 +46,7 @@ export class RoomService {
   deleteRoom(id: number) {
     var params = new HttpParams()
       .set('id', id.toString());
-    return this.http.delete<Room>(this.apiUrl + '/room', {
+    return this.http.delete(this.apiUrl + '/room', {
       params: params
     });
   }

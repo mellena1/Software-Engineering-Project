@@ -42,7 +42,7 @@ export class SessionService {
   deleteSession(id: number) {
     var params = new HttpParams()
       .set('id', id.toString());
-    return this.http.delete<Session>(this.apiUrl + '/session', {
+    return this.http.delete(this.apiUrl + '/session', {
       params: params
     });
   }

@@ -29,7 +29,7 @@ export class TimeslotService {
   }
 
   writeTimeslot(startTime: string, endTime: string) {
-    var obj = { 'startTime': starTime, 'endTime': endTime };
+    var obj = { 'startTime': startTime, 'endTime': endTime };
     return this.http.post(this.apiUrl + '/timeslot', {
       headers: this.jsonHeaders,
       body: JSON.stringify(obj)
@@ -47,7 +47,7 @@ export class TimeslotService {
   deleteTimeslot(id: number) {
     var params = new HttpParams()
       .set('id', id.toString());
-    return this.http.delete<Timeslot>(this.apiUrl + '/timeslot', {
+    return this.http.delete(this.apiUrl + '/timeslot', {
       params: params
     });
   }
