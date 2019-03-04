@@ -28,8 +28,12 @@ export class SessionService {
     });
   }
 
-  writeSession() {
-
+  writeSession(name: string, roomID: number, speakerID: number, timeslotID: number) {
+    var obj = { 'name': name, 'roomID': roomID, 'speakerID': speakerID, 'timeslotID': timeslotID };
+    return this.http.post(this.apiUrl + 'session', {
+      headers: this.jsonHeaders,
+      body: JSON.stringify(obj)
+    });
   }
 
   updateSession(updatedSession: Session) {
