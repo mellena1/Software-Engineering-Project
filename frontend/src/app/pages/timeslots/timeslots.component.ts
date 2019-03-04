@@ -30,7 +30,7 @@ export class TimeslotsComponent implements OnInit {
 
   addTimeslot(timeslot: Timeslot): void {
     this.timeslotService
-      .writeTimeslot(timeslot)
+      .writeTimeslot(timeslot.startTime, timeslot.endTime)
     this.show = false;
   }
 
