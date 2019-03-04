@@ -28,7 +28,7 @@ export class TimeslotService {
     });
   }
 
-  writeTimeslot(starTime: string, endTime: string) {
+  writeTimeslot(startTime: string, endTime: string) {
     var obj = { 'startTime': starTime, 'endTime': endTime };
     return this.http.post(this.apiUrl + '/speaker', {
       headers: this.jsonHeaders,
