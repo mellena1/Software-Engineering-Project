@@ -5,7 +5,6 @@ import { Observable, throwError as observableThrowError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators'
 
 import { Speaker } from '../data_models/speaker'
-import { last } from '@angular/router/src/utils/collection';
 
 @Injectable({
   providedIn: 'root'
