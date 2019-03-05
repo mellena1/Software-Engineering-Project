@@ -1,16 +1,16 @@
 import { Component, OnInit, NgModule } from '@angular/core';
 import { SessionService } from '../../services/session.service'
-import { Session} from '../../data_models/session'
+import { Session } from '../../data_models/session'
 import { Room } from 'src/app/data_models/room';
 import { Speaker } from 'src/app/data_models/speaker';
 import { Timeslot } from 'src/app/data_models/timeslot';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { FormsModule }    from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-sessions',
   templateUrl: './sessions.component.html',
-  styleUrls: [ './sessions.component.css' ]
+  styleUrls: ['./sessions.component.css']
 })
 @NgModule({
   imports: [
@@ -29,7 +29,6 @@ export class SessionsComponent implements OnInit {
   error: any;
   sessionForm: FormGroup;
 
-  
   ngOnInit() {
     this.getAllSessions();
     this.sessionForm = new FormGroup({

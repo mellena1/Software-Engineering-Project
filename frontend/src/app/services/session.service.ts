@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, throwError as observableThrowError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators'
@@ -10,10 +10,10 @@ import { Session } from '../data_models/session'
   providedIn: 'root'
 })
 export class SessionService {
-  private apiUrl = environment.apiUrl;
-  
   constructor(private http: HttpClient) { }
-
+  private apiUrl = environment.apiUrl;
+  jsonHeaders = new HttpHeaders().set('Content-Type', 'application/json')
+  
   getAllSessions() {
     return this.http
       .get<Session[]>(this.apiUrl + '/sessions')
@@ -21,19 +21,34 @@ export class SessionService {
   }
 
   getSession(id: number) {
-
+    var params = new HttpParams()
+      .set('id', id.toString());
+    return this.http.get<Session>(this.apiUrl + '/session', {
+      params: params
+    });
   }
 
-  writeSession(session: Session) {
-
+  writeSession(name: string, roomID: number, speakerID: number, timeslotID: number) {
+    var obj = { 'name': name, 'roomID': roomID, 'speakerID': speakerID, 'timeslotID': timeslotID };
+    return this.http.post(this.apiUrl + 'session', {
+      headers: this.jsonHeaders,
+      body: JSON.stringify(obj)
+    });
   }
 
   updateSession(updatedSession: Session) {
-
+    return this.http.post(this.apiUrl + '/session', {
+      headers: this.jsonHeaders,
+      body: JSON.stringify(updatedSession)
+    });
   }
 
   deleteSession(id: number) {
-
+    var params = new HttpParams()
+      .set('id', id.toString());
+    return this.http.delete(this.apiUrl + '/session', {
+      params: params
+    });
   }
 
   private handleError(res: HttpErrorResponse | any) {

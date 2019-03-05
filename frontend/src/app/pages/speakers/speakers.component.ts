@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {SpeakerService} from 'src/app/services/speaker.service'
-import {Speaker} from 'src/app/data_models/speaker';
+import { SpeakerService } from 'src/app/services/speaker.service'
+import { Speaker } from 'src/app/data_models/speaker';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 
@@ -10,12 +10,13 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./speakers.component.css']
 })
 export class SpeakersComponent implements OnInit {
+  constructor(private speakerService: SpeakerService) { }
   speaker: Speaker;
+  speakers: Speaker[];
   selectedSpeaker: Speaker;
   error: any;
-  public show:boolean = false;
-  public buttonName:any = "Add a Speaker"
-  constructor(private speakerService: SpeakerService) { }
+  public show: boolean = false;
+  public buttonName: any = "Add a Speaker"
   speakerForm: FormGroup;
 
   ngOnInit() {
@@ -37,21 +38,21 @@ export class SpeakersComponent implements OnInit {
     this.speakerService
       .getAllSpeakers()
       .subscribe(
-        speakers => (this.speaker = speakers),
-        error   => (this.error = error)
+        speakers => (this.speakers = speakers),
+        error => (this.error = error)
       )
   }
-  
+
   onSelect(speaker: Speaker): void {
     this.selectedSpeaker = speaker;
   }
 
   toggle() {
     this.show = !this.show;
-    if(this.show){
+    if (this.show) {
       this.buttonName = "Hide";
     }
-    else{
+    else {
       this.buttonName = "Add a Room";
     }
   }
