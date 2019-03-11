@@ -14,7 +14,7 @@
                                     <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">&times;</a>
                                     {{successMessage}}
                                 </div>
-                                <form name="testform" ng-submit="insertData()">
+                                <form name="testform" ng-submit="writeRoom()">
                                     <table class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
@@ -25,31 +25,28 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td><input type="text" ng-model="addData.first_name" class="form-control" placeholder="Enter Room Name" ng-required="true" /></td>
-                                                <td><input type="text" ng-model="addData.last_name" class="form-control" placeholder="Enter Room Capacity" ng-required="true" /></td>
+                                                <td><input type="text" ng-model="room.name" class="form-control" placeholder="Enter Room Name" ng-required="true" /></td>
+                                                <td><input type="text" ng-model="room.capacity" class="form-control" placeholder="Enter Room Capacity" ng-required="true" /></td>
                                                 <td><button type="submit" class="btn btn-success btn-sm" ng-disabled="testform.$invalid">Add</button></td>
                                             </tr>
                                             <tr *ngFor="let room of rooms">
                                                 <td>
-                                                    <span (keyup)="changeValue('name','capacity',$event)" (blur)="getAllRooms()">{{room.name}}</span>
+                                                    <span (blur)="getAllRooms()">{{room.name}}</span>
                                                 </td>
                                                 <td>
-                                                    <span (keyup)="changeValue('name','capacity',$event)" (blur)="getAllRooms()">{{room.capacity}}</span>
+                                                    <span (blur)="getAllRooms()">{{room.capacity}}</span>
+                                                </td>
+                                            </tr>
+                                            <td>
+                                                    <button type="button" class="btn btn-primary btn-sm">Edit</button>
+                                                    <button type="button" class="btn btn-danger btn-sm">Delete</button>
                                             </td>
                                         </tbody>
                                     </table>
                                 </form>
-                                <script type="text/ng-template" id="display">
-                                    <td>{{room.name}}</td>
-                                    <td>{{room.capacity}}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-sm" ng-click="showEdit(data)">Edit</button>
-                                        <button type="button" class="btn btn-danger btn-sm" ng-click="deleteData(data.id)">Delete</button>
-                                    </td>
-                                </script>
                                 <script type="text/ng-template" id="edit">
-                                    <td><input type="text" ng-model="formData.first_name" class="form-control"  /></td>
-                                    <td><input type="text" ng-model="formData.last_name" class="form-control" /></td>
+                                    <td><input type="text" ng-model="room.name" class="form-control"  /></td>
+                                    <td><input type="text" ng-model="room.capacity" class="form-control" /></td>
                                     <td>
                                         <input type="hidden" ng-model="formData.data.id" />
                                         <button type="button" class="btn btn-info btn-sm" ng-click="editData()">Save</button>
