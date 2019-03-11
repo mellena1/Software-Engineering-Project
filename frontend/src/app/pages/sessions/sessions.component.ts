@@ -56,6 +56,26 @@ export class SessionsComponent implements OnInit {
       )
   }
 
+  getSession(id: number) {
+    this.sessionService
+      .getSession(id)
+  }
+
+  writeSession(name: string, roomID: number, speakerID: number, timeslotID: number) {
+    this.sessionService
+      .writeSession(name, roomID, speakerID, timeslotID)
+  }
+
+  updateSession(updatedSession: Session) {
+    this.sessionService
+      .updateSession(updatedSession)
+  }
+
+  deleteSession(id: number) {
+    this.sessionService
+      .deleteSession(id)
+  }
+
   onSelect(session: Session): void {
     this.selectedSession = session;
   }
