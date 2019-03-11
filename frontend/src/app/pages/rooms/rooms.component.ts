@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RoomService } from '../../services/room.service'
 import { Room } from '../../data_models/room';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { rootRenderNodes } from '@angular/core/src/view';
 
 @Component({
   selector: 'app-rooms',
@@ -11,12 +12,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class RoomsComponent implements OnInit {
   constructor(private roomService: RoomService) { }
   rooms: Room[];
-  newRoom: Room;
-  selectedRoom: Room;
   error: any;
-  public show: boolean = false;
-  public buttonName: any = "Add a Room"
-  roomForm: FormGroup;
 
   ngOnInit() {
     this.getAllRooms();

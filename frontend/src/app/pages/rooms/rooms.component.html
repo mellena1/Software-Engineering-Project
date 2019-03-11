@@ -9,12 +9,12 @@
         <div class="container">
             <br />
                     <h3 align="center">Rooms</h3><br />
-                    <div class ="table-responsive" ng-app="liveApp" ng-controller="liveController" ng-init="fetchData()">
+                    <div class ="table-responsive" ng-app="app-rooms" ng-init="getAllRooms()">
                             <div class="alert alert-success alert-dismissible" ng-show="success" >
                                     <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">&times;</a>
                                     {{successMessage}}
                                 </div>
-                                <form name="testform" ng-submit="writeRoom()">
+                                <form name="testform">
                                     <table class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
@@ -27,32 +27,32 @@
                                             <tr>
                                                 <td><input type="text" ng-model="room.name" class="form-control" placeholder="Enter Room Name" ng-required="true" /></td>
                                                 <td><input type="text" ng-model="room.capacity" class="form-control" placeholder="Enter Room Capacity" ng-required="true" /></td>
-                                                <td><button type="submit" class="btn btn-success btn-sm" ng-disabled="testform.$invalid">Add</button></td>
+                                                <td><button (click)="writeRoom()" type="submit" class="btn btn-success btn-sm">Add</button></td>
                                             </tr>
                                             <tr *ngFor="let room of rooms">
                                                 <td>
-                                                    <span (blur)="getAllRooms()">{{room.name}}</span>
+                                                    <span>{{room.name}}</span>
                                                 </td>
                                                 <td>
-                                                    <span (blur)="getAllRooms()">{{room.capacity}}</span>
+                                                    <span>{{room.capacity}}</span>
+                                                </td>
+                                                <td>
+                                                        <button type="button" class="btn btn-primary btn-sm" ng-click="showEdit(data)">Edit</button>
+                                                        <button type="button" class="btn btn-danger btn-sm" ng-click="deleteData(data.id)">Delete</button>
                                                 </td>
                                             </tr>
-                                            <td>
-                                                    <button type="button" class="btn btn-primary btn-sm">Edit</button>
-                                                    <button type="button" class="btn btn-danger btn-sm">Delete</button>
-                                            </td>
                                         </tbody>
                                     </table>
                                 </form>
                                 <script type="text/ng-template" id="edit">
-                                    <td><input type="text" ng-model="room.name" class="form-control"  /></td>
-                                    <td><input type="text" ng-model="room.capacity" class="form-control" /></td>
+                                    <td><input type="text" ng-model="formData.first_name" class="form-control" /></td>
+                                    <td><input type="text" ng-model="formData.last_name" class="form-control" /></td>
                                     <td>
                                         <input type="hidden" ng-model="formData.data.id" />
                                         <button type="button" class="btn btn-info btn-sm" ng-click="editData()">Save</button>
                                         <button type="button" class="btn btn-default btn-sm" ng-click="reset()">Cancel</button>
                                     </td>
-                                </script>         
+                                </script>    
                     </div>  
             </div>
         </body>
