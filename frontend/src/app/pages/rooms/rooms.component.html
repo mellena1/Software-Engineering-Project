@@ -29,15 +29,19 @@
                                                 <td><input type="text" ng-model="addData.last_name" class="form-control" placeholder="Enter Room Capacity" ng-required="true" /></td>
                                                 <td><button type="submit" class="btn btn-success btn-sm" ng-disabled="testform.$invalid">Add</button></td>
                                             </tr>
-                                            <tr ng-repeat="data in namesData" ng-include="getTemplate(data)">
-                                            </tr>
-                                            
+                                            <tr *ngFor="let room of rooms">
+                                                <td>
+                                                    <span (keyup)="changeValue('name','capacity',$event)" (blur)="getAllRooms()">{{room.name}}</span>
+                                                </td>
+                                                <td>
+                                                    <span (keyup)="changeValue('name','capacity',$event)" (blur)="getAllRooms()">{{room.capacity}}</span>
+                                            </td>
                                         </tbody>
                                     </table>
                                 </form>
                                 <script type="text/ng-template" id="display">
-                                    <td>{{room.Name}}</td>
-                                    <td>{{room.Capacity}}</td>
+                                    <td>{{room.name}}</td>
+                                    <td>{{room.capacity}}</td>
                                     <td>
                                         <button type="button" class="btn btn-primary btn-sm" ng-click="showEdit(data)">Edit</button>
                                         <button type="button" class="btn btn-danger btn-sm" ng-click="deleteData(data.id)">Delete</button>
@@ -56,84 +60,3 @@
             </div>
         </body>
 </html>
-
-<script>
-
-    var app = angular.module('liveApp',[]);
-    app.controller('liveController', function($scope, $http){
-        $scope.formData = {};
-    $scope.addData = {};
-    $scope.success = false;
-
-    $scope.getTemplate = function(room){
-        if (room.id === $scope.formData.id)
-        {
-            return 'edit';
-        }
-        else
-        {
-            return 'display';
-        }
-    };
-
-    $scope.fetchData = function(){
-        $http.get('select.php').success(function(data){
-            $scope.namesData = data;
-        });
-    };
-
-    $scope.insertData = function(){
-        $http({
-            method:"POST",
-            url:"insert.php",
-            data:$scope.addData,
-        }).success(function(data){
-            $scope.success = true;
-            $scope.successMessage = data.message;
-            $scope.fetchData();
-            $scope.addData = {};
-        });
-    };
-
-    $scope.showEdit = function(data) {
-        $scope.formData = angular.copy(data);
-    };
-
-    $scope.editData = function(){
-        $http({
-            method:"POST",
-            url:"edit.php",
-            data:$scope.formData,
-        }).success(function(data){
-            $scope.success = true;
-            $scope.successMessage = data.message;
-            $scope.fetchData();
-            $scope.formData = {};
-        });
-    };
-
-    $scope.reset = function(){
-        $scope.formData = {};
-    };
-
-    $scope.closeMsg = function(){
-        $scope.success = false;
-    };
-
-    $scope.deleteData = function(id){
-        if(confirm("Are you sure you want to remove it?"))
-        {
-            $http({
-                method:"POST",
-                url:"delete.php",
-                data:{'id':id}
-            }).success(function(data){
-                $scope.success = true;
-                $scope.successMessage = data.message;
-                $scope.fetchData();
-            }); 
-        }
-    };
-
-});
-</script>

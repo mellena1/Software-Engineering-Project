@@ -31,16 +31,11 @@ export class RoomsComponent implements OnInit {
       )
   }
 
-  onSelect(room: Room): void {
-    this.selectedRoom = room;
-  }
-
-  toggle() {
-    this.show = !this.show;
-    if (this.show) {
-      this.buttonName = "Hide";
-    } else {
-      this.buttonName = "Add a Room";
-    }
-  }
+  writeRoom(name: string, capacity: number) {
+    this.roomService
+      .writeRoom(name,capacity)
+      .subscribe(
+        error => (this.error = error)
+      )
+}
 }
