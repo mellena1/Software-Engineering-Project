@@ -20,14 +20,6 @@ export class RoomsComponent implements OnInit {
 
   ngOnInit() {
     this.getAllRooms();
-    this.roomForm = new FormGroup({
-      'roomName': new FormControl(this.newRoom.name, [
-        Validators.required
-      ]),
-      'roomCapacity': new FormControl(this.newRoom.capacity, [
-        Validators.required
-      ])
-    });
   }
 
   getAllRooms(): void {
