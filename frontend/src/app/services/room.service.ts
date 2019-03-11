@@ -11,30 +11,44 @@ import { Room } from '../data_models/room'
 })
 export class RoomService {
   constructor(private http: HttpClient) { }
-  
-  headers = new HttpHeaders();
   private apiUrl = environment.apiUrl;
-
+  jsonHeaders = new HttpHeaders().set('Content-Type', 'application/json')
+  
   getAllRooms() {
     return this.http
       .get<Room[]>(this.apiUrl + '/rooms')
       .pipe(map(data => data), catchError(this.handleError));
   }
 
-  getARoom(id: number): Observable<Room>{
-
+  getARoom(id: number) {
+    var params = new HttpParams()
+      .set('id', id.toString());
+    return this.http.get<Room>(this.apiUrl + '/room', {
+      params: params
+    });
   }
 
-  writeRoom(room: Room) {
-  
+  writeRoom(name: string, capacity: number) {
+    var obj = { 'name': name, 'capacity': capacity };
+    return this.http.post(this.apiUrl + '/room', {
+      headers: this.jsonHeaders,
+      body: JSON.stringify(obj)
+    });
   }
 
   updateRoom(updatedRoom: Room) {
-    
+    return this.http.post(this.apiUrl + '/room', {
+      headers: this.jsonHeaders,
+      body: JSON.stringify(updatedRoom)
+    });
   }
 
-  deleteRoom(id:number) : Observable<{}>{
-
+  deleteRoom(id: number) {
+    var params = new HttpParams()
+      .set('id', id.toString());
+    return this.http.delete(this.apiUrl + '/room', {
+      params: params
+    });
   }
 
   private handleError(res: HttpErrorResponse | any) {

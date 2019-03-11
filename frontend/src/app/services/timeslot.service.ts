@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable, throwError as observableThrowError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators'
@@ -10,12 +10,10 @@ import { Timeslot } from '../data_models/timeslot'
   providedIn: 'root'
 })
 export class TimeslotService {
-  timeslot: Timeslot;
-
-  private apiUrl = environment.apiUrl;
-  
   constructor(private http: HttpClient) { }
-
+  private apiUrl = environment.apiUrl;
+  jsonHeaders = new HttpHeaders().set('Content-Type', 'application/json')
+  
   getAllTimeslots() {
     return this.http
       .get<Timeslot[]>(this.apiUrl + '/timeslots')
@@ -23,19 +21,35 @@ export class TimeslotService {
   }
 
   getTimeslot(id: number) {
-
+    var params = new HttpParams()
+      .set('id', id.toString());
+    return this.http.get<Timeslot>(this.apiUrl + '/timeslot', {
+      params: params
+    });
   }
 
-  writeTimeslot(timeslot: Timeslot) {
+  writeTimeslot(startTime: string, endTime: string) {
+    var obj = { 'startTime': startTime, 'endTime': endTime };
+    return this.http.post(this.apiUrl + '/timeslot', {
+      headers: this.jsonHeaders,
+      body: JSON.stringify(obj)
+    });
 
   }
 
   updateTimeslot(updatedTimeslot: Timeslot) {
-
+    return this.http.post(this.apiUrl + '/timeslot', {
+      headers: this.jsonHeaders,
+      body: JSON.stringify(updatedTimeslot)
+    });
   }
 
   deleteTimeslot(id: number) {
-
+    var params = new HttpParams()
+      .set('id', id.toString());
+    return this.http.delete(this.apiUrl + '/timeslot', {
+      params: params
+    });
   }
 
   private handleError(res: HttpErrorResponse | any) {
