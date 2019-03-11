@@ -14,7 +14,7 @@
                                     <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">&times;</a>
                                     {{successMessage}}
                                 </div>
-                                <form name="testform">
+                                <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
                                     <table class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
@@ -25,9 +25,9 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td><input type="text" ng-model="room.name" class="form-control" placeholder="Enter Room Name" ng-required="true" /></td>
-                                                <td><input type="text" ng-model="room.capacity" class="form-control" placeholder="Enter Room Capacity" ng-required="true" /></td>
-                                                <td><button (click)="writeRoom()" type="submit" class="btn btn-success btn-sm">Add</button></td>
+                                                <td><input type="text" formControlName="roomName" [(ngModel)] = "room.name" class="form-control" placeholder="Enter Room Name" ng-required="true" /></td>
+                                                <td><input type="number" formControlName="roomCapacity" [(ngModel)] = "room.capacity" class="form-control" placeholder="Enter Room Capacity" ng-required="true" /></td>
+                                                <td><button type="submit" class="btn btn-success btn-sm">Add</button></td>
                                             </tr>
                                             <tr *ngFor="let room of rooms">
                                                 <td>

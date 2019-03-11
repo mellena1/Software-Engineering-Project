@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RoomService } from '../../services/room.service'
 import { Room } from '../../data_models/room';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { rootRenderNodes } from '@angular/core/src/view';
+
 
 @Component({
   selector: 'app-rooms',
@@ -13,6 +13,16 @@ export class RoomsComponent implements OnInit {
   constructor(private roomService: RoomService) { }
   rooms: Room[];
   error: any;
+  room={
+    name:"",
+    capacity:0
+  }
+  roomForm = new FormGroup({
+    roomName: new FormControl(''),
+    roomCapacity: new FormControl(''),
+  });
+
+
 
   ngOnInit() {
     this.getAllRooms();
@@ -27,11 +37,20 @@ export class RoomsComponent implements OnInit {
       )
   }
 
-  writeRoom(name: string, capacity: number) {
+ // writeRoom() {
+ //   this.roomService
+ //     .writeRoom()
+ //     .subscribe(
+ //       error => (this.error = error)
+ //     )
+
+  onSubmit(): void{
     this.roomService
-      .writeRoom(name,capacity)
+      .writeRoom(this.room.name,this.room.capacity)
       .subscribe(
         error => (this.error = error)
       )
-}
+    console.log("Room Submitted!", this.roomForm.value);
+    this.roomForm.reset();
+  }
 }
