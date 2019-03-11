@@ -65,7 +65,7 @@ func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	j, _ := json.Marshal(rooms)
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	_, err = w.Write(j)
 	if err != nil {
 		log.Println("Failed to respond to Rooms")
@@ -82,8 +82,6 @@ func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/room [get]
 func (a roomAPI) getARoom(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
@@ -122,8 +120,6 @@ func (a roomAPI) getARoom(w http.ResponseWriter, r *http.Request) {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/room [post]
 func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		msg := "unable to read body"
@@ -175,8 +171,6 @@ func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/room [delete]
 func (a roomAPI) deleteARoom(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
@@ -220,8 +214,6 @@ func (a roomAPI) deleteARoom(w http.ResponseWriter, r *http.Request) {
 // @Router /api/v1/room [PUT]
 // @Param room body api.updateARoomRequest true "Room to update"
 func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		msg := "unable to read body"

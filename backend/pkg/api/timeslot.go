@@ -47,8 +47,6 @@ func CreateTimeslotRoutes(timeslotDBFacade db.TimeslotReaderWriterUpdaterDeleter
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslots [get]
 func (t timeslotAPI) getAllTimeslots(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	timeslots, err := t.timeslotReader.ReadAllTimeslots()
 	if err != nil {
 		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
@@ -69,8 +67,6 @@ func (t timeslotAPI) getAllTimeslots(w http.ResponseWriter, r *http.Request) {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslot [get]
 func (t timeslotAPI) getATimeslot(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
@@ -111,8 +107,6 @@ type writeATimeslotRequest struct {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslot [post]
 func (t timeslotAPI) writeATimeslot(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	j, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		ReportError(err, "unable to read body", http.StatusBadRequest, w)
@@ -165,8 +159,6 @@ type updateATimeslotRequest struct {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslot [put]
 func (t timeslotAPI) updateATimeslot(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	j, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		ReportError(err, "unable to read body", http.StatusBadRequest, w)
@@ -226,8 +218,6 @@ type deleteATimeslotRequest struct {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslot [delete]
 func (t timeslotAPI) deleteATimeslot(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
