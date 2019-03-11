@@ -57,8 +57,6 @@ func CreateSpeakerRoutes(speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) [
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/speakers [get]
 func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	speakers, err := a.speakerReader.ReadAllSpeakers()
 	if err != nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
@@ -83,8 +81,6 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/speaker [get]
 func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
@@ -119,8 +115,6 @@ func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/speaker [post]
 func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	var data writeASpeakerRequest
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &data)
@@ -154,8 +148,6 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/speaker [put]
 func (a speakerAPI) updateASpeaker(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	var data updateASpeakerRequest
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &data)
@@ -189,8 +181,6 @@ func (a speakerAPI) updateASpeaker(w http.ResponseWriter, r *http.Request) {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/speaker [delete]
 func (a speakerAPI) deleteASpeaker(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
