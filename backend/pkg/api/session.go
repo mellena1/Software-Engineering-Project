@@ -46,8 +46,6 @@ func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) [
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/session [get]
 func (s sessionAPI) getASession(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
@@ -80,8 +78,6 @@ func (s sessionAPI) getASession(w http.ResponseWriter, r *http.Request) {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/sessions [get]
 func (s sessionAPI) getAllSessions(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	sessions, err := s.sessionReader.ReadAllSessions()
 	if err != nil {
 		ReportError(err, "Failed to get all sessions", http.StatusBadRequest, w)
@@ -115,8 +111,6 @@ type writeASessionRequest struct {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/session [post]
 func (s sessionAPI) writeASession(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	j, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		ReportError(err, "unable to read body", http.StatusBadRequest, w)
@@ -157,8 +151,6 @@ type updateASessionRequest struct {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/session [put]
 func (s sessionAPI) updateASession(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	j, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		ReportError(err, "unable to read body", http.StatusBadRequest, w)
@@ -198,8 +190,6 @@ func (s sessionAPI) updateASession(w http.ResponseWriter, r *http.Request) {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/session [delete]
 func (s sessionAPI) deleteASession(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
