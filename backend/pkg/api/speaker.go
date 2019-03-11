@@ -17,22 +17,16 @@ type speakerAPI struct {
 	speakerDeleter db.SpeakerDeleter
 }
 
-type getASpeakerRequest struct {
-	ID int
-}
 type writeASpeakerRequest struct {
 	Email     string
 	FirstName string
 	LastName  string
 }
 type updateASpeakerRequest struct {
-	ID        int
+	ID        int64
 	Email     string
 	FirstName string
 	LastName  string
-}
-type deleteASpeakerRequest struct {
-	ID int
 }
 
 // CreateSpeakerRoutes makes all of the routes for speaker related calls
@@ -60,9 +54,11 @@ func CreateSpeakerRoutes(speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) [
 // @Description Return a list of all speakers
 // @Produce json
 // @Success 200 {array} db.Speaker
-// @Failure 400 {} nil
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/speakers [get]
 func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	speakers, err := a.speakerReader.ReadAllSpeakers()
 	if err != nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
@@ -71,7 +67,6 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	j, err := json.Marshal(speakers)
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(j)
 	if err != nil {
 		log.Fatal("Failed to respond to getAllSpeakers")
@@ -81,35 +76,37 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 // getAllSpeakers Gets a speaker with the specified email from the db
 // @Summary Get a speaker by email
 // @Description Return a speaker with the specified email
-// @Param speakerID body api.getASpeakerRequest true "ID of the requested speaker"
+// @param id query int true "the speaker to retrieve"
 // @Produce json
-// @Success 200 {array} db.Speaker
-// @Failure 400 {} nil
+// @Success 200 {object} db.Speaker
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/speaker [get]
 func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
-	var data getASpeakerRequest
-	body, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(body, &data)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	if err != nil {
+	requestedID, err := getIDFromQueries(r)
+	switch err {
+	case ErrQueryNotSet:
+		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		return
+	case ErrBadQuery:
+		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		return
+	case ErrBadQueryType:
+		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
 		return
 	}
 
-	speakerID := data.ID
-
-	speakers, err := a.speakerReader.ReadASpeaker(speakerID)
+	speaker, err := a.speakerReader.ReadASpeaker(requestedID)
 	if err != nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
-		log.Printf("Failed to read speaker (%v) from the db: %v", speakerID, err)
+		log.Printf("Failed to read speaker (%v) from the db: %v", requestedID, err)
 		w.Write([]byte("Read from the backend failed"))
 		return
 	}
-	j, err := json.Marshal(speakers)
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	_, err = w.Write(j)
-	if err != nil {
-		log.Fatal("Failed to respond to getASpeaker")
-	}
+	j, err := json.Marshal(speaker)
+	w.Write(j)
 }
 
 // writeASpeaker Inserts a speaker into the database
@@ -118,9 +115,12 @@ func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
 // @Param Speaker body api.writeASpeakerRequest true "Speaker that wants to be added to the db (no ID)"
 // @Produce json
 // @Success 200
-// @Failure 400 {} nil
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/speaker [post]
 func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	var data writeASpeakerRequest
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &data)
@@ -137,9 +137,7 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Write failed"))
 		return
 	}
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json, _ := json.Marshal(data.Email)
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(json)
 	if err != nil {
 		log.Fatal("Failed to respond to writeASpeaker")
@@ -152,9 +150,12 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 // @Param Speaker body api.updateASpeakerRequest true "Speaker struct that wants to be updated in the db"
 // @Produce json
 // @Success 200
-// @Failure 400 {} nil
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/speaker [put]
 func (a speakerAPI) updateASpeaker(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	var data updateASpeakerRequest
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &data)
@@ -172,7 +173,6 @@ func (a speakerAPI) updateASpeaker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json, _ := json.Marshal(data.ID)
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	_, err = w.Write(json)
 	if err != nil {
 		log.Fatal("Failed to respond to writeASpeaker")
@@ -182,34 +182,33 @@ func (a speakerAPI) updateASpeaker(w http.ResponseWriter, r *http.Request) {
 // deleteASpeaker Delete a speaker from the database
 // @Summary Delete a speaker
 // @Description Delete a speaker with the specified id
-// @Param speakerID body api.deleteASpeakerRequest true "SpeakerID of the speaker to be deleted from the db"
+// @param id query int true "the speaker to delete"
 // @Produce json
 // @Success 200
-// @Failure 400 {} nil
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/speaker [delete]
 func (a speakerAPI) deleteASpeaker(w http.ResponseWriter, r *http.Request) {
-	var data deleteASpeakerRequest
-	body, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(body, &data)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	if err != nil {
+	requestedID, err := getIDFromQueries(r)
+	switch err {
+	case ErrQueryNotSet:
+		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		return
+	case ErrBadQuery:
+		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		return
+	case ErrBadQueryType:
+		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
 		return
 	}
-
-	err = a.speakerDeleter.DeleteASpeaker(data.ID)
+	err = a.speakerDeleter.DeleteASpeaker(requestedID)
 
 	if err != nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
-		log.Printf("Failed to delete speaker (%v) from the db: %v", data.ID, err)
-		w.Write([]byte("Write failed"))
+		log.Printf("Failed to delete speaker (%v) from the db: %v", requestedID, err)
+		w.Write([]byte("delete failed"))
 		return
-	}
-
-	json, _ := json.Marshal(data.ID)
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	_, err = w.Write(json)
-
-	if err != nil {
-		log.Fatal("Failed to respond to writeASpeaker")
 	}
 }

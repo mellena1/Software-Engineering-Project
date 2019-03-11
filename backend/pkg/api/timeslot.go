@@ -43,8 +43,8 @@ func CreateTimeslotRoutes(timeslotDBFacade db.TimeslotReaderWriterUpdaterDeleter
 // @Description Get all timeslots from the db
 // @produce json
 // @Success 200 {array} db.Timeslot "all timeslots in the db"
-// @Failure 400 {string} string "the request was bad"
-// @Failure 503 {string} string "failed to access the db"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslots [get]
 func (t timeslotAPI) getAllTimeslots(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -59,34 +59,32 @@ func (t timeslotAPI) getAllTimeslots(w http.ResponseWriter, r *http.Request) {
 	w.Write(responseJSON)
 }
 
-// getATimeslotRequest request for getATimeslot
-type getATimeslotRequest struct {
-	ID int64 `json:"id" example:"1"`
-}
-
 // getATimeslot Get a timeslot from the db
 // @Summary Get a timeslot from the db
 // @Description Get a timeslot from the db
 // @produce json
-// @accept json
-// @param timeslot body api.getATimeslotRequest true "the timeslot to retrieve"
+// @param id query int true "the timeslot to retrieve"
 // @Success 200 {object} db.Timeslot "the requested timeslot"
-// @Failure 400 {string} string "the request was bad"
-// @Failure 503 {string} string "failed to access the db"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslot [get]
 func (t timeslotAPI) getATimeslot(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	j, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+	requestedID, err := getIDFromQueries(r)
+	switch err {
+	case ErrQueryNotSet:
+		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		return
+	case ErrBadQuery:
+		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		return
+	case ErrBadQueryType:
+		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
 		return
 	}
 
-	timeslotRequest := getATimeslotRequest{}
-	json.Unmarshal(j, &timeslotRequest)
-
-	timeslot, err := t.timeslotReader.ReadATimeslot(timeslotRequest.ID)
+	timeslot, err := t.timeslotReader.ReadATimeslot(requestedID)
 	if err != nil {
 		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
 		return
@@ -109,8 +107,8 @@ type writeATimeslotRequest struct {
 // @produce json
 // @param timeslot body api.writeATimeslotRequest true "the timeslot to add"
 // @Success 200 {integer} int64 "the id of the timeslot added"
-// @Failure 400 {string} string "the request was bad"
-// @Failure 503 {string} string "failed to access the db"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslot [post]
 func (t timeslotAPI) writeATimeslot(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -163,8 +161,8 @@ type updateATimeslotRequest struct {
 // @produce json
 // @param timeslot body api.updateATimeslotRequest true "the timeslot to update with the new values"
 // @Success 200 "Updated properly"
-// @Failure 400 {string} string "the request was bad"
-// @Failure 503 {string} string "failed to access the db"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslot [put]
 func (t timeslotAPI) updateATimeslot(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -222,24 +220,28 @@ type deleteATimeslotRequest struct {
 // @Description Delete an existing timeslot in the db
 // @accept json
 // @produce json
-// @param timeslot body api.deleteATimeslotRequest true "the timeslot to delete"
+// @param id query int true "the timeslot to delete"
 // @Success 200 "Deleted properly"
-// @Failure 400 {string} string "the request was bad"
-// @Failure 503 {string} string "failed to access the db"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslot [delete]
 func (t timeslotAPI) deleteATimeslot(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	j, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+	requestedID, err := getIDFromQueries(r)
+	switch err {
+	case ErrQueryNotSet:
+		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		return
+	case ErrBadQuery:
+		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		return
+	case ErrBadQueryType:
+		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
 		return
 	}
 
-	timeslotRequest := deleteATimeslotRequest{}
-	json.Unmarshal(j, &timeslotRequest)
-
-	err = t.timeslotDeleter.DeleteATimeslot(timeslotRequest.ID)
+	err = t.timeslotDeleter.DeleteATimeslot(requestedID)
 	if err != nil {
 		var msg string
 		var status int

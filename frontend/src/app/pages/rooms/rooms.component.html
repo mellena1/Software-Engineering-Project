@@ -1,7 +1,59 @@
-<ul class="rooms">
-    <li *ngFor="let room of rooms">
-        <span class="hero-element">
-            <span class="badge">{{ room.id }}</span> {{room.name}}
-        </span>
-    </li>
-</ul>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> 
+        <title>List of Rooms</title>
+    </head>
+    <body>
+        <div class="container">
+            <br />
+                    <h3 align="center">Rooms</h3><br />
+                    <div class ="table-responsive" ng-app="liveApp" ng-controller="liveController" ng-init="fetchData()">
+                            <div class="alert alert-success alert-dismissible" ng-show="success" >
+                                    <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">&times;</a>
+                                    {{successMessage}}
+                                </div>
+                                <form name="testform" ng-submit="writeRoom()">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Room Name</th>
+                                                <th>Room Capacity</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><input type="text" ng-model="room.name" class="form-control" placeholder="Enter Room Name" ng-required="true" /></td>
+                                                <td><input type="text" ng-model="room.capacity" class="form-control" placeholder="Enter Room Capacity" ng-required="true" /></td>
+                                                <td><button type="submit" class="btn btn-success btn-sm" ng-disabled="testform.$invalid">Add</button></td>
+                                            </tr>
+                                            <tr *ngFor="let room of rooms">
+                                                <td>
+                                                    <span (blur)="getAllRooms()">{{room.name}}</span>
+                                                </td>
+                                                <td>
+                                                    <span (blur)="getAllRooms()">{{room.capacity}}</span>
+                                                </td>
+                                            </tr>
+                                            <td>
+                                                    <button type="button" class="btn btn-primary btn-sm">Edit</button>
+                                                    <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                                            </td>
+                                        </tbody>
+                                    </table>
+                                </form>
+                                <script type="text/ng-template" id="edit">
+                                    <td><input type="text" ng-model="room.name" class="form-control"  /></td>
+                                    <td><input type="text" ng-model="room.capacity" class="form-control" /></td>
+                                    <td>
+                                        <input type="hidden" ng-model="formData.data.id" />
+                                        <button type="button" class="btn btn-info btn-sm" ng-click="editData()">Save</button>
+                                        <button type="button" class="btn btn-default btn-sm" ng-click="reset()">Cancel</button>
+                                    </td>
+                                </script>         
+                    </div>  
+            </div>
+        </body>
+</html>

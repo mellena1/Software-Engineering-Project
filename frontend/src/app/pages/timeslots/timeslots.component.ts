@@ -8,19 +8,18 @@ import { TimeslotService } from 'src/app/services/timeslot.service';
   styleUrls: ['./timeslots.component.css']
 })
 export class TimeslotsComponent implements OnInit {
+  constructor(private timeslotService: TimeslotService) { }
   timeslots: Timeslot[];
   selectedTimeslot: Timeslot;
   error: any;
-  public show:boolean = false;
-  public buttonName:any = "Add a Timeslot"
-
-  constructor(private timeslotService: TimeslotService) { }
+  public show: boolean = false;
+  public buttonName: any = "Add a Timeslot"
 
   ngOnInit() {
     this.getAllTimeslots();
   }
 
-  getAllTimeslots(): void{
+  getAllTimeslots(): void {
     this.timeslotService
       .getAllTimeslots()
       .subscribe(
@@ -31,17 +30,13 @@ export class TimeslotsComponent implements OnInit {
 
   addTimeslot(timeslot: Timeslot): void {
     this.timeslotService
-    .writeTimeslot(timeslot)
-    this.show=false;
+      .writeTimeslot(timeslot.startTime, timeslot.endTime)
+    this.show = false;
   }
 
   updateTimeslot(updatedTimeslot: Timeslot): void {
     this.timeslotService
-    .updateTimeslot(updatedTimeslot)
-  }
-
-  deletedTimeslot(): void{
-  
+      .updateTimeslot(updatedTimeslot)
   }
 
   onSelect(timeslot: Timeslot): void {
@@ -49,16 +44,13 @@ export class TimeslotsComponent implements OnInit {
     this.addTimeslot(this.selectedTimeslot);
   }
 
-  toggle(){
+  toggle() {
     this.show = !this.show;
-  
-
-    if(this.show){
+    if (this.show) {
       this.buttonName = "Hide";
     }
-    else{
+    else {
       this.buttonName = "Add a Timeslot";
     }
   }
-
 }

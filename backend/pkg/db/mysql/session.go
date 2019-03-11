@@ -22,20 +22,24 @@ func (s SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
 		return db.Session{}, ErrDBNotSet
 	}
 
-	q := `SELECT session.sessionID, speaker.*, room.*, timeslot.*, session.sessionName FROM session
+	statement, err := s.db.Prepare(`SELECT session.sessionID, speaker.*, room.*, timeslot.*, session.sessionName FROM session
 		INNER JOIN speaker ON session.speakerID = speaker.speakerID
 		INNER JOIN room ON session.roomID = room.roomID
 		INNER JOIN timeslot ON session.timeslotID = timeslot.timeslotID
-		WHERE session.sessionID = ` + string(sessionID) + ";"
+		WHERE session.sessionID = ?;`)
+	if err != nil {
+		return db.Session{}, err
+	}
+	defer statement.Close()
 
-	row := s.db.QueryRow(q)
+	row := statement.QueryRow(sessionID)
 
-	session := db.Session{}
+	session := db.NewSession()
 
-	err := row.Scan(session.ID, session.Speaker.Email, session.Speaker.FirstName,
-		session.Speaker.LastName, session.Room.ID, session.Room.Name,
-		session.Room.Capacity, session.Timeslot.ID, session.Timeslot.StartTime,
-		session.Timeslot.EndTime, session.Name)
+	err = row.Scan(&session.ID, &session.Speaker.ID, session.Speaker.Email, session.Speaker.FirstName,
+		session.Speaker.LastName, &session.Room.ID, session.Room.Name,
+		session.Room.Capacity, &session.Timeslot.ID, &session.Timeslot.StartTime,
+		&session.Timeslot.EndTime, session.Name)
 	if err != nil {
 		return db.Session{}, err
 	}
@@ -62,11 +66,11 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 
 	sessions := []db.Session{}
 	for rows.Next() {
-		session := db.Session{}
-		rows.Scan(session.ID, session.Speaker.Email, session.Speaker.FirstName,
-			session.Speaker.LastName, session.Room.ID, session.Room.Name,
-			session.Room.Capacity, session.Timeslot.ID, session.Timeslot.StartTime,
-			session.Timeslot.EndTime, session.Name)
+		session := db.NewSession()
+		rows.Scan(&session.ID, &session.Speaker.ID, session.Speaker.Email, session.Speaker.FirstName,
+			session.Speaker.LastName, &session.Room.ID, session.Room.Name,
+			session.Room.Capacity, &session.Timeslot.ID, &session.Timeslot.StartTime,
+			&session.Timeslot.EndTime, session.Name)
 		sessions = append(sessions, session)
 	}
 

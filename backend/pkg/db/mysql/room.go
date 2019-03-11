@@ -17,7 +17,7 @@ func NewRoomMySQL(db *sql.DB) RoomMySQL {
 }
 
 // ReadARoom reads a room from the db given roomID
-func (r RoomMySQL) ReadARoom(roomID int) (db.Room, error) {
+func (r RoomMySQL) ReadARoom(roomID int64) (db.Room, error) {
 	if r.db == nil {
 		return db.Room{}, ErrDBNotSet
 	}
@@ -27,7 +27,7 @@ func (r RoomMySQL) ReadARoom(roomID int) (db.Room, error) {
 	q := ("SELECT * FROM room WHERE roomID = ?;")
 
 	row := r.db.QueryRow(q, roomID)
-	switch err := row.Scan(newRoom.ID, newRoom.Name, newRoom.Capacity); err {
+	switch err := row.Scan(&newRoom.ID, newRoom.Name, newRoom.Capacity); err {
 	case sql.ErrNoRows:
 		return db.Room{}, err
 	case nil:
@@ -54,7 +54,7 @@ func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 	rooms := []db.Room{}
 	for rows.Next() {
 		newRoom := db.NewRoom()
-		rows.Scan(newRoom.ID, newRoom.Name, newRoom.Capacity)
+		rows.Scan(&newRoom.ID, newRoom.Name, newRoom.Capacity)
 		rooms = append(rooms, newRoom)
 	}
 	return rooms, nil
@@ -80,7 +80,7 @@ func (r RoomMySQL) WriteARoom(name *string, capacity *int) (int64, error) {
 }
 
 // UpdateARoom updates a room in the db given a roomName and the updated room
-func (r RoomMySQL) UpdateARoom(id *int, name *string, capacity *int) error {
+func (r RoomMySQL) UpdateARoom(id int64, name *string, capacity *int) error {
 	if r.db == nil {
 		return ErrDBNotSet
 	}
@@ -91,7 +91,7 @@ func (r RoomMySQL) UpdateARoom(id *int, name *string, capacity *int) error {
 	}
 	defer statement.Close()
 
-	result, err := statement.Exec(*name, *capacity, *id)
+	result, err := statement.Exec(*name, *capacity, id)
 	if err != nil {
 		return err
 	}
@@ -103,7 +103,7 @@ func (r RoomMySQL) UpdateARoom(id *int, name *string, capacity *int) error {
 }
 
 // DeleteARoom deletes a room given a roomName
-func (r RoomMySQL) DeleteARoom(id *int) error {
+func (r RoomMySQL) DeleteARoom(id int64) error {
 	if r.db == nil {
 		return ErrDBNotSet
 	}
@@ -114,7 +114,7 @@ func (r RoomMySQL) DeleteARoom(id *int) error {
 	}
 	defer statement.Close()
 
-	result, err := statement.Exec(*id)
+	result, err := statement.Exec(id)
 	if err != nil {
 		return err
 	}
