@@ -37,13 +37,6 @@ export class RoomsComponent implements OnInit {
       )
   }
 
- // writeRoom() {
- //   this.roomService
- //     .writeRoom()
- //     .subscribe(
- //       error => (this.error = error)
- //     )
-
   onSubmit(): void{
     this.roomService
       .writeRoom(this.room.name,this.room.capacity)
@@ -52,5 +45,6 @@ export class RoomsComponent implements OnInit {
       )
     console.log("Room Submitted!", this.roomForm.value);
     this.roomForm.reset();
+    window.location.reload();
   }
 }
