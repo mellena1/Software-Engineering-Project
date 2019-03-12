@@ -68,6 +68,7 @@ func (a API) ListenAndServe(addr string) error {
 	// Add CORS stuff
 	handler = handlers.CORS(
 		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}),
 		handlers.AllowedHeaders([]string{"Content-Type"}),
 	)(handler)
 
