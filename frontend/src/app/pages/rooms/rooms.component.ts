@@ -1,54 +1,53 @@
-import { Component, OnInit } from '@angular/core';
-import { RoomService } from '../../services/room.service'
-import { Room } from '../../data_models/room';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit } from "@angular/core";
+import { RoomService } from "../../services/room.service";
+import { Room } from "../../data_models/room";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 
 @Component({
-  selector: 'app-rooms',
-  templateUrl: './rooms.component.html',
-  styleUrls: ['./rooms.component.css']
+  selector: "app-rooms",
+  templateUrl: "./rooms.component.html",
+  styleUrls: ["./rooms.component.css"]
 })
 export class RoomsComponent implements OnInit {
-  constructor(private roomService: RoomService) { }
+  constructor(private roomService: RoomService) {}
   rooms: Room[];
-  newRoom: Room;
-  selectedRoom: Room;
   error: any;
-  public show: boolean = false;
-  public buttonName: any = "Add a Room"
-  roomForm: FormGroup;
+  room = new Room("", 0);
+  isEditable = false;
+  roomForm = new FormGroup({
+    roomName: new FormControl(""),
+    roomCapacity: new FormControl("")
+  });
 
   ngOnInit() {
     this.getAllRooms();
-    this.roomForm = new FormGroup({
-      'roomName': new FormControl(this.newRoom.name, [
-        Validators.required
-      ]),
-      'roomCapacity': new FormControl(this.newRoom.capacity, [
-        Validators.required
-      ])
-    });
+  }
+
+  deleteRoom(id): void {
+    if (confirm("Are you sure you want to remove it?")) {
+      this.roomService
+        .deleteRoom(id)
+        .subscribe(error => (this.error = error));
+      console.log("The following Room Deleted :", this.roomForm.value);
+      this.rooms = this.rooms.filter(item => item.id !== id);
+    }
   }
 
   getAllRooms(): void {
     this.roomService
       .getAllRooms()
-      .subscribe(
-        rooms => (this.rooms = rooms),
-        error => (this.error = error)
-      )
+      .subscribe(rooms => (this.rooms = rooms), error => (this.error = error));
   }
 
-  onSelect(room: Room): void {
-    this.selectedRoom = room;
-  }
+  onSubmit(): void {
+    var newRoom = new Room(this.room.name, this.room.capacity);
 
-  toggle() {
-    this.show = !this.show;
-    if (this.show) {
-      this.buttonName = "Hide";
-    } else {
-      this.buttonName = "Add a Room";
-    }
+    this.roomService
+      .writeRoom(this.room.name, this.room.capacity)
+      .subscribe(error => (this.error = error), id => (newRoom.id = id));
+    console.log("Room Submitted!", this.roomForm.value);
+    this.roomForm.reset();
+
+    this.rooms.push(newRoom);
   }
 }
