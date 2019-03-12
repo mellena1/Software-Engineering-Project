@@ -23,10 +23,10 @@ export class RoomsComponent implements OnInit {
     this.getAllRooms();
   }
 
-  deleteRoom(roomid): void {
+  deleteRoom(id): void {
     if (confirm("Are you sure you want to remove it?")) {
       this.roomService
-        .deleteRoom(roomid)
+        .deleteRoom(id)
         .subscribe(error => (this.error = error));
       console.log("The following Room Deleted :", this.roomForm.value);
       this.rooms = this.rooms.filter(item => item.id !== roomid);
