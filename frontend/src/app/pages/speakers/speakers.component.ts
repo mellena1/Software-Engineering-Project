@@ -13,11 +13,8 @@ export class SpeakersComponent implements OnInit {
   constructor(private speakerService: SpeakerService) { }
   speakers: Speaker[];
   error: any;
-  speaker={
-    firstName:"",
-    lastName:"",
-    email:""
-  }
+  speaker = new Speaker("","","");
+  isEditable = false;
   speakerForm = new FormGroup({
     firstName: new FormControl(''),
     lastName: new FormControl(''),
@@ -37,7 +34,7 @@ export class SpeakersComponent implements OnInit {
       )
   }
 
-  deleteRoom(speakerid): void {
+  deleteSpeaker(speakerid): void {
     if(confirm("Are you sure you want to remove it?"))
     {
       this.speakerService
@@ -46,19 +43,22 @@ export class SpeakersComponent implements OnInit {
         error => (this.error = error)
       )
       console.log("The following Speaker Deleted :", this.speakerForm.value);
-      window.location.reload();
+      this.speakers = this.speakers.filter(item => item.id !== speakerid);
     }
   }
 
     onSubmit(): void{
+      
+      var newSpeaker = new Speaker(this.speaker.firstName,this.speaker.lastName,this.speaker.email);
       this.speakerService
         .writeSpeaker(this.speaker.firstName,this.speaker.lastName,this.speaker.email)
         .subscribe(
-          error => (this.error = error)
+          error => (this.error = error),
+          id => (newSpeaker.id = id)
         )
       console.log("Speaker Submitted!", this.speakerForm.value);
       this.speakerForm.reset();
-      window.location.reload();
+      this.speakers.push(newSpeaker);   
     }
   }
 

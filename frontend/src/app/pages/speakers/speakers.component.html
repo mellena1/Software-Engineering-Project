@@ -9,7 +9,7 @@
         <div class="container">
             <br />
                     <h3 align="center">Speakers</h3><br />
-                    <div class ="table-responsive" ng-app="app-rooms" ng-init="getAllSpeakers()">
+                    <div class ="table-responsive" ng-app="app-speakers" ng-init="getAllSpeakers()">
                         <!--    
                         <div class="alert alert-success alert-dismissible" ng-show="success" >
                                     <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">&times;</a>
@@ -44,8 +44,8 @@
                                                     <span>{{speaker.email}}</span>
                                                 </td>
                                                 <td>
-                                                        <button type="button" class="btn btn-primary btn-sm" ng-click="editRoom()">Edit</button>
-                                                        <button type="button" class="btn btn-danger btn-sm" (click)="deleteRoom(speaker.id)">Delete</button>
+                                                        <button type="button" class="btn btn-primary btn-sm" ng-click="editSpeaker()">Edit</button>
+                                                        <button type="button" class="btn btn-danger btn-sm" (click)="deleteSpeaker(speaker.id)">Delete</button>
                                                 </td>
                                             </tr>
                                         </tbody>
