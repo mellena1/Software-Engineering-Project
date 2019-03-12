@@ -29,7 +29,7 @@ export class RoomsComponent implements OnInit {
         .deleteRoom(id)
         .subscribe(error => (this.error = error));
       console.log("The following Room Deleted :", this.roomForm.value);
-      this.rooms = this.rooms.filter(item => item.id !== roomid);
+      this.rooms = this.rooms.filter(item => item.id !== id);
     }
   }
 
