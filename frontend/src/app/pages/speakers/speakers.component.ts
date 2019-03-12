@@ -33,13 +33,13 @@ export class SpeakersComponent implements OnInit {
       );
   }
 
-  deleteSpeaker(speakerid): void {
+  deleteSpeaker(id): void {
     if (confirm("Are you sure you want to remove it?")) {
       this.speakerService
-        .deleteSpeaker(speakerid)
+        .deleteSpeaker(id)
         .subscribe(error => (this.error = error));
       console.log("The following Speaker Deleted :", this.speakerForm.value);
-      this.speakers = this.speakers.filter(item => item.id !== speakerid);
+      this.speakers = this.speakers.filter(item => item.id !== id);
     }
   }
 
