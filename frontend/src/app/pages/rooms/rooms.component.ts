@@ -13,10 +13,7 @@ export class RoomsComponent implements OnInit {
   constructor(private roomService: RoomService) { }
   rooms: Room[];
   error: any;
-  room={
-    name:"",
-    capacity:0
-  }
+  room = new Room("", 0);
   isEditable = false;
   roomForm = new FormGroup({
     roomName: new FormControl(''),
@@ -38,7 +35,7 @@ export class RoomsComponent implements OnInit {
         error => (this.error = error)
       )
       console.log("The following Room Deleted :", this.roomForm.value);
-      window.location.reload();
+      this.rooms = this.rooms.filter(item => item.id !== roomid);
     }
   }
 
@@ -53,13 +50,17 @@ export class RoomsComponent implements OnInit {
   
 
   onSubmit(): void{
+    var newRoom = new Room(this.room.name, this.room.capacity);
+
     this.roomService
       .writeRoom(this.room.name,this.room.capacity)
       .subscribe(
-        error => (this.error = error)
+        error => (this.error = error),
+        id => (newRoom.id = id)
       )
     console.log("Room Submitted!", this.roomForm.value);
     this.roomForm.reset();
-    window.location.reload();
+
+    this.rooms.push(newRoom);
   }
 }
