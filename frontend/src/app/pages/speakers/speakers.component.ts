@@ -11,27 +11,21 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class SpeakersComponent implements OnInit {
   constructor(private speakerService: SpeakerService) { }
-  speaker: Speaker;
   speakers: Speaker[];
-  selectedSpeaker: Speaker;
   error: any;
-  public show: boolean = false;
-  public buttonName: any = "Add a Speaker"
-  speakerForm: FormGroup;
+  speaker={
+    firstName:"",
+    lastName:"",
+    email:""
+  }
+  speakerForm = new FormGroup({
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+    email: new FormControl(''),
+  });
 
   ngOnInit() {
     this.getAllSpeakers();
-    this.speakerForm = new FormGroup({
-      'firstName': new FormControl(this.speaker.firstName, [
-        Validators.required
-      ]),
-      'lastName': new FormControl(this.speaker.lastName, [
-        Validators.required
-      ]),
-      'email': new FormControl(this.speaker.email, [
-        Validators.required
-      ])
-    });
   }
 
   getAllSpeakers(): void {
@@ -43,17 +37,29 @@ export class SpeakersComponent implements OnInit {
       )
   }
 
-  onSelect(speaker: Speaker): void {
-    this.selectedSpeaker = speaker;
+  deleteRoom(speakerid): void {
+    if(confirm("Are you sure you want to remove it?"))
+    {
+      this.speakerService
+      .deleteSpeaker(speakerid)
+      .subscribe(
+        error => (this.error = error)
+      )
+      console.log("The following Speaker Deleted :", this.speakerForm.value);
+      window.location.reload();
+    }
   }
 
-  toggle() {
-    this.show = !this.show;
-    if (this.show) {
-      this.buttonName = "Hide";
-    }
-    else {
-      this.buttonName = "Add a Room";
+    onSubmit(): void{
+      this.speakerService
+        .writeSpeaker(this.speaker.firstName,this.speaker.lastName,this.speaker.email)
+        .subscribe(
+          error => (this.error = error)
+        )
+      console.log("Speaker Submitted!", this.speakerForm.value);
+      this.speakerForm.reset();
+      window.location.reload();
     }
   }
-}
+
+

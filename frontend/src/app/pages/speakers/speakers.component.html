@@ -1,67 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="utf-8">
-      <title>List of Speakers</title>
-   </head>
-   <body>
-      <h1>Speakers</h1>
-      <ul class="speakers">
-         <li *ngFor="let speaker of speakers"
-         [class.selected]="speaker == selectedSpeaker"
-         (click)="onSelect(speaker)">
-         <span class="badge">{{ speaker.email }} </span> {{ speaker.firstName }} {{ speaker.lastName }}
-         </li>
-      </ul>
-   </body>
-
-   <div *ngIf="selectedSpeaker">
-        <h2>Edit or Delete Speaker</h2>
-        <div><span>Speaker Name: </span>{{selectedSpeaker.firstName}} {{selectedSpeaker.lastName}}</div>
-        <div><span>Speaker Email:</span>{{selectedSpeaker.email}}</div>
-        <br>
-        <button (click)="deleteRoom()">Delete this Speaker</button>
-        <br>
-        <div>
-          <label> Edit Speaker Details: 
-            <input [(ngModel)]="selectedSpeaker.firstName" placeholder="first name">
-            <input [(ngModel)]="selectedSpeaker.lastName" placeholder="last name">
-            <input [(ngModel)]="selectedSpeaker.email" placeholder="email">
-          </label>
-        </div>
-    </div>
-
-    <div class="container">
-        <h2>Add Speaker</h2>
-        <form [formGroup]="speakerForm" #formDir="ngForm">
-            <div [hidden]="formDir.submitted">
-                <div class="form-group">
-                    <label for="firstName">First Name </label>
-                    <input id="firstName" class="form-control"
-                           formControlName="firstName" required>   
-                </div>
-                <div class="form-group">
-                    <label for="lastName">Last Name </label>
-                    <input id="lastName" class="form-control"
-                        formControlName="lastName" required>     
-                </div>
-                <div class="form-group">
-                    <label for="email">Email </label>
-                    <input id="email" class="form-control"
-                        formControlName="email" required>     
-                </div>
-
-                <button type="submit" class="btn btn-default"
-                        [disabled]="speakerForm.invalid">Submit</button>
-
-                <button type="button" class="btn btn-default"
-                        (click)="formDir.resetForm({})">Reset</button>    
-        </div>
-        </form>
-
-        <div class="submitted-message" *ngIf="formDir.submitted">
-            <p>You've submitted a new Speaker</p>
-            <button (click)="formDir.resetForm({})">Submit a new Speaker</button>
-        </div>
-    </div>
+    <head>
+        <meta charset="utf-8">
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> 
+        <title>List of Speakers</title>
+    </head>
+    <body>
+        <div class="container">
+            <br />
+                    <h3 align="center">Speakers</h3><br />
+                    <div class ="table-responsive" ng-app="app-rooms" ng-init="getAllSpeakers()">
+                        <!--    
+                        <div class="alert alert-success alert-dismissible" ng-show="success" >
+                                    <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">&times;</a>
+                                    {{successMessage}}
+                                </div>
+                            -->
+                                <form [formGroup]="speakerForm" (ngSubmit)="onSubmit()">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Speaker First Name</th>
+                                                <th>Speaker Last Name</th>
+                                                <th>Email Address</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><input type="text" formControlName="firstName" [(ngModel)] = "speaker.firstName" class="form-control" placeholder="Enter First Name" ng-required="true" /></td>
+                                                <td><input type="text" formControlName="lastName" [(ngModel)] = "speaker.lastName" class="form-control" placeholder="Enter Last Name" ng-required="true" /></td>
+                                                <td><input type="text" formControlName="email" [(ngModel)] = "speaker.email" class="form-control" placeholder="Enter email" ng-required="true" /></td>
+                                                <td><button type="submit" class="btn btn-success btn-sm" ng-disabled="speakerForm.$invalid">Add</button></td>
+                                            </tr>
+                                            <tr *ngFor="let speaker of speakers">
+                                                <td>
+                                                    <span>{{speaker.firstName}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{speaker.lastName}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{speaker.email}}</span>
+                                                </td>
+                                                <td>
+                                                        <button type="button" class="btn btn-primary btn-sm" ng-click="editRoom()">Edit</button>
+                                                        <button type="button" class="btn btn-danger btn-sm" (click)="deleteRoom(speaker.id)">Delete</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                                <script type="text/ng-template" id="edit">
+                                    <td><input type="text" ng-model="formData.first_name" class="form-control" /></td>
+                                    <td><input type="text" ng-model="formData.last_name" class="form-control" /></td>
+                                    <td>
+                                        <input type="hidden" ng-model="formData.data.id" />
+                                        <button type="button" class="btn btn-info btn-sm" ng-click="editData()">Save</button>
+                                        <button type="button" class="btn btn-default btn-sm" ng-click="reset()">Cancel</button>
+                                    </td>
+                                </script>    
+                    </div>  
+            </div>
+        </body>
 </html>
