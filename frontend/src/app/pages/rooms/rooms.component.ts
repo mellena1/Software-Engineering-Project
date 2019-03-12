@@ -17,6 +17,7 @@ export class RoomsComponent implements OnInit {
     name:"",
     capacity:0
   }
+  isEditable = false;
   roomForm = new FormGroup({
     roomName: new FormControl(''),
     roomCapacity: new FormControl(''),
@@ -35,6 +36,10 @@ export class RoomsComponent implements OnInit {
         rooms => (this.rooms = rooms),
         error => (this.error = error)
       )
+  }
+  
+  editRoom() {
+    this.isEditable = true;
   }
 
   onSubmit(): void{
