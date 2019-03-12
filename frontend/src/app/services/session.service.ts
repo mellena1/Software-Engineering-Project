@@ -10,6 +10,7 @@ import { Observable, throwError as observableThrowError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 import { Session } from "../data_models/session";
+import { WriteResponse } from "./writeResponse";
 
 @Injectable({
   providedIn: "root"
@@ -45,7 +46,7 @@ export class SessionService {
       speakerID: speakerID,
       timeslotID: timeslotID
     };
-    return this.http.post(this.apiUrl + "session", {
+    return this.http.post<WriteResponse>(this.apiUrl + "session", {
       headers: this.jsonHeaders,
       body: JSON.stringify(obj)
     });

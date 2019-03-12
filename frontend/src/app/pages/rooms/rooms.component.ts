@@ -44,7 +44,7 @@ export class RoomsComponent implements OnInit {
 
     this.roomService
       .writeRoom(this.room.name, this.room.capacity)
-      .subscribe(error => (this.error = error), id => (newRoom.id = id));
+      .subscribe(response => (newRoom.id = response.id), error => (this.error = error));
     console.log("Room Submitted!", this.roomForm.value);
     this.roomForm.reset();
 
