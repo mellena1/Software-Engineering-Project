@@ -38,7 +38,7 @@ export class RoomsComponent implements OnInit {
         error => (this.error = error)
       )
       console.log("The following Room Deleted :", this.roomForm.value);
-      window.location.reload();
+      //window.location.reload();
     }
   }
 

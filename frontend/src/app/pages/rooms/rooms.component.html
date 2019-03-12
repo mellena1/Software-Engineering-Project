@@ -40,7 +40,7 @@
                                                 </td>
                                                 <td>
                                                         <button type="button" class="btn btn-primary btn-sm" ng-click="editRoom()">Edit</button>
-                                                        <button type="button" class="btn btn-danger btn-sm" ng-click="deleteRoom(room.id)">Delete</button>
+                                                        <button type="button" class="btn btn-danger btn-sm" (click)="deleteRoom(room.id)">Delete</button>
                                                 </td>
                                             </tr>
                                         </tbody>
