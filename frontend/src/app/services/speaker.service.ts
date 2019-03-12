@@ -31,10 +31,7 @@ export class SpeakerService {
   
   writeSpeaker(firstName: string, lastName: string, email: string) {
     var obj = { 'firstName': firstName, 'lastName': lastName, 'email': email };
-    return this.http.post(this.apiUrl + '/speaker', {
-      headers: this.jsonHeaders,
-      body: JSON.stringify(obj)
-    });
+    return this.http.post(this.apiUrl + '/speaker', obj);
   }
 
   updateSpeakers(updatedSpeaker: Speaker) {

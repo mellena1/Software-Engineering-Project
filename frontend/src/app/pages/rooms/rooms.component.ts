@@ -3,6 +3,7 @@ import { RoomService } from '../../services/room.service'
 import { Room } from '../../data_models/room';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
+
 @Component({
   selector: 'app-rooms',
   templateUrl: './rooms.component.html',
@@ -11,15 +12,31 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class RoomsComponent implements OnInit {
   constructor(private roomService: RoomService) { }
   rooms: Room[];
-  newRoom: Room;
-  selectedRoom: Room;
   error: any;
-  public show: boolean = false;
-  public buttonName: any = "Add a Room"
-  roomForm: FormGroup;
+  room = new Room("", 0);
+  isEditable = false;
+  roomForm = new FormGroup({
+    roomName: new FormControl(''),
+    roomCapacity: new FormControl(''),
+  });
+
+
 
   ngOnInit() {
     this.getAllRooms();
+  }
+
+  deleteRoom(roomid): void {
+    if(confirm("Are you sure you want to remove it?"))
+    {
+      this.roomService
+      .deleteRoom(roomid)
+      .subscribe(
+        error => (this.error = error)
+      )
+      console.log("The following Room Deleted :", this.roomForm.value);
+      this.rooms = this.rooms.filter(item => item.id !== roomid);
+    }
   }
 
   getAllRooms(): void {
@@ -30,12 +47,20 @@ export class RoomsComponent implements OnInit {
         error => (this.error = error)
       )
   }
+  
 
-  writeRoom(name: string, capacity: number) {
+  onSubmit(): void{
+    var newRoom = new Room(this.room.name, this.room.capacity);
+
     this.roomService
-      .writeRoom(name,capacity)
+      .writeRoom(this.room.name,this.room.capacity)
       .subscribe(
-        error => (this.error = error)
+        error => (this.error = error),
+        id => (newRoom.id = id)
       )
-}
+    console.log("Room Submitted!", this.roomForm.value);
+    this.roomForm.reset();
+
+    this.rooms.push(newRoom);
+  }
 }
