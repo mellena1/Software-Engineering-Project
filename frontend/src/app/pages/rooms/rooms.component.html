@@ -1,61 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> 
-        <title>List of Rooms</title>
-    </head>
-    <body>
-        <div class="container">
-            <br />
-                    <h3 align="center">Rooms</h3><br />
-                    <div class ="table-responsive" ng-app="app-rooms" ng-init="getAllRooms()">
-                        <!--    
+  <head>
+    <meta charset="utf-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <title>List of Rooms</title>
+  </head>
+  <body>
+    <div class="container">
+      <br />
+      <h3 align="center">Rooms</h3>
+      <br />
+      <div class="table-responsive" ng-app="app-rooms" ng-init="getAllRooms()">
+        <!--    
                         <div class="alert alert-success alert-dismissible" ng-show="success" >
                                     <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">&times;</a>
                                     {{successMessage}}
                                 </div>
                             -->
-                                <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
-                                    <table class="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Room Name</th>
-                                                <th>Room Capacity</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><input type="text" formControlName="roomName" [(ngModel)] = "room.name" class="form-control" placeholder="Enter Room Name" ng-required="true" /></td>
-                                                <td><input type="number" formControlName="roomCapacity" [(ngModel)] = "room.capacity" class="form-control" placeholder="Enter Room Capacity" ng-required="true" /></td>
-                                                <td><button type="submit" class="btn btn-success btn-sm" ng-disabled="roomForm.$invalid">Add</button></td>
-                                            </tr>
-                                            <tr *ngFor="let room of rooms">
-                                                <td>
-                                                    <span>{{room.name}}</span>
-                                                </td>
-                                                <td>
-                                                    <span>{{room.capacity}}</span>
-                                                </td>
-                                                <td>
-                                                        <button type="button" class="btn btn-primary btn-sm" ng-click="editRoom()">Edit</button>
-                                                        <button type="button" class="btn btn-danger btn-sm" (click)="deleteRoom(room.id)">Delete</button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </form>
-                                <script type="text/ng-template" id="edit">
-                                    <td><input type="text" ng-model="formData.first_name" class="form-control" /></td>
-                                    <td><input type="text" ng-model="formData.last_name" class="form-control" /></td>
-                                    <td>
-                                        <input type="hidden" ng-model="formData.data.id" />
-                                        <button type="button" class="btn btn-info btn-sm" ng-click="editData()">Save</button>
-                                        <button type="button" class="btn btn-default btn-sm" ng-click="reset()">Cancel</button>
-                                    </td>
-                                </script>    
-                    </div>  
-            </div>
-        </body>
+        <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Room Name</th>
+                <th>Room Capacity</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    formControlName="roomName"
+                    [(ngModel)]="room.name"
+                    class="form-control"
+                    placeholder="Enter Room Name"
+                    ng-required="true"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    formControlName="roomCapacity"
+                    [(ngModel)]="room.capacity"
+                    class="form-control"
+                    placeholder="Enter Room Capacity"
+                    ng-required="true"
+                  />
+                </td>
+                <td>
+                  <button
+                    type="submit"
+                    class="btn btn-success btn-sm"
+                    ng-disabled="roomForm.$invalid"
+                  >
+                    Add
+                  </button>
+                </td>
+              </tr>
+              <tr *ngFor="let room of rooms">
+                <td>
+                  <span>{{ room.name }}</span>
+                </td>
+                <td>
+                  <span>{{ room.capacity }}</span>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    ng-click="editRoom()"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="deleteRoom(room.id)"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+        <script type="text/ng-template" id="edit">
+          <td><input type="text" ng-model="formData.first_name" class="form-control" /></td>
+          <td><input type="text" ng-model="formData.last_name" class="form-control" /></td>
+          <td>
+              <input type="hidden" ng-model="formData.data.id" />
+              <button type="button" class="btn btn-info btn-sm" ng-click="editData()">Save</button>
+              <button type="button" class="btn btn-default btn-sm" ng-click="reset()">Cancel</button>
+          </td>
+        </script>
+      </div>
+    </div>
+  </body>
 </html>
