@@ -30,10 +30,7 @@ export class RoomService {
 
   writeRoom(name: string, capacity: number) {
     var obj = { 'name': name, 'capacity': capacity };
-    return this.http.post(this.apiUrl + '/room', {
-      headers: this.jsonHeaders,
-      body: JSON.stringify(obj)
-    });
+    return this.http.post(this.apiUrl + '/room', obj);
   }
 
   updateRoom(updatedRoom: Room) {
