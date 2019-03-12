@@ -30,3 +30,10 @@ func getIDFromQueries(r *http.Request) (int64, error) {
 	}
 	return int64(requestedID), nil
 }
+
+// writeIDToClient writes the id back to the client as JSON
+func writeIDToClient(w http.ResponseWriter, id int64) {
+	response := map[string]int64{"id": id}
+	responseJSON, _ := json.Marshal(response)
+	w.Write(responseJSON)
+}

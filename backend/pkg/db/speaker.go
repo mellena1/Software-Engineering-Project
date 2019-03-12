@@ -34,7 +34,7 @@ type SpeakerReader interface {
 
 // SpeakerWriter implements all write related methods
 type SpeakerWriter interface {
-	WriteASpeaker(email string, firstName string, lastName string) error
+	WriteASpeaker(email string, firstName string, lastName string) (int64, error)
 }
 
 // SpeakerUpdater implements all update related methods
