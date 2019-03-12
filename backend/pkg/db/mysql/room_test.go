@@ -18,7 +18,7 @@ func TestReadAllRoomsValid(t *testing.T) {
 	}
 	defer mockdb.Close()
 
-	mock.ExpectQuery("SELECT * FROM room;").
+	mock.ExpectQuery("SELECT roomID, roomName, capacity FROM room;").
 		WillReturnRows(sqlmock.NewRows(roomColumns).FromCSVString("10,Room1,1\n20,Room2,2"))
 
 	// Execute ReadAllRooms

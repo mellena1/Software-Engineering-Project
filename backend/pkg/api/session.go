@@ -49,13 +49,13 @@ func (s sessionAPI) getASession(w http.ResponseWriter, r *http.Request) {
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
-		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param was not set", http.StatusBadRequest, w)
 		return
 	case ErrBadQuery:
-		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
 		return
 	case ErrBadQueryType:
-		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param is not a number", http.StatusBadRequest, w)
 		return
 	}
 
@@ -84,11 +84,7 @@ func (s sessionAPI) getAllSessions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	j, err := json.Marshal(sessions)
-	if err != nil {
-		ReportError(err, "Failed to create sessions json", http.StatusBadRequest, w)
-	}
-
+	j, _ := json.Marshal(sessions)
 	w.Write(j)
 }
 
@@ -118,7 +114,11 @@ func (s sessionAPI) writeASession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sessionRequest := writeASessionRequest{}
-	json.Unmarshal(j, &sessionRequest)
+	err = json.Unmarshal(j, &sessionRequest)
+	if err != nil {
+		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
+		return
+	}
 
 	id, err := s.sessionWriter.WriteASession(sessionRequest.SpeakerID, sessionRequest.RoomID, sessionRequest.TimeslotID, sessionRequest.SessionName)
 	if err != nil {
@@ -126,9 +126,7 @@ func (s sessionAPI) writeASession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := map[string]int64{"id": id}
-	responseJSON, _ := json.Marshal(response)
-	w.Write(responseJSON)
+	writeIDToClient(w, id)
 }
 
 // updateASessionRequest request for updateASession
@@ -158,26 +156,24 @@ func (s sessionAPI) updateASession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sessionRequest := updateASessionRequest{}
-	json.Unmarshal(j, &sessionRequest)
-
-	err = s.sessionUpdater.UpdateASession(sessionRequest.SessionID, sessionRequest.SpeakerID, sessionRequest.RoomID, sessionRequest.TimeslotID, sessionRequest.SessionName)
+	err = json.Unmarshal(j, &sessionRequest)
 	if err != nil {
-		var msg string
-		var status int
-		switch err {
-		case db.ErrNothingChanged:
-			msg = "nothing in the db was changed. id probably does not exist"
-			status = http.StatusBadRequest
-		default:
-			msg = "failed to access the db"
-			status = http.StatusServiceUnavailable
-		}
-
-		ReportError(err, msg, status, w)
+		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
 		return
 	}
 
-	w.Write(nil)
+	err = s.sessionUpdater.UpdateASession(sessionRequest.SessionID, sessionRequest.SpeakerID, sessionRequest.RoomID, sessionRequest.TimeslotID, sessionRequest.SessionName)
+	switch err {
+	case nil:
+		w.Write(nil)
+		return
+	case db.ErrNothingChanged:
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		return
+	default:
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		return
+	}
 }
 
 // deleteASession Delete an existing session in the db
@@ -204,21 +200,15 @@ func (s sessionAPI) deleteASession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = s.sessionDeleter.DeleteASession(requestedID)
-	if err != nil {
-		var msg string
-		var status int
-		switch err {
-		case db.ErrNothingChanged:
-			msg = "nothing in the db was changed. id probably does not exist"
-			status = http.StatusBadRequest
-		default:
-			msg = "failed to access the db"
-			status = http.StatusServiceUnavailable
-		}
-
-		ReportError(err, msg, status, w)
+	switch err {
+	case nil:
+		w.Write(nil)
+		return
+	case db.ErrNothingChanged:
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		return
+	default:
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
 		return
 	}
-
-	w.Write(nil)
 }

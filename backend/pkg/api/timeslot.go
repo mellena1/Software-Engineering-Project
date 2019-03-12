@@ -114,7 +114,7 @@ func (t timeslotAPI) writeATimeslot(w http.ResponseWriter, r *http.Request) {
 	}
 
 	timeslotRequest := writeATimeslotRequest{}
-	json.Unmarshal(j, &timeslotRequest)
+	err = json.Unmarshal(j, &timeslotRequest)
 
 	startTime, err := time.Parse(db.TimeFormat, timeslotRequest.StartTime)
 	if err != nil {
@@ -132,13 +132,11 @@ func (t timeslotAPI) writeATimeslot(w http.ResponseWriter, r *http.Request) {
 
 	id, err := t.timeslotWriter.WriteATimeslot(startTime, endTime)
 	if err != nil {
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to write a room", http.StatusServiceUnavailable, w)
 		return
 	}
 
-	response := map[string]int64{"id": id}
-	responseJSON, _ := json.Marshal(response)
-	w.Write(responseJSON)
+	writeIDToClient(w, id)
 }
 
 // updateATimeslotRequest request for updateATimeslot
@@ -166,7 +164,7 @@ func (t timeslotAPI) updateATimeslot(w http.ResponseWriter, r *http.Request) {
 	}
 
 	timeslotRequest := updateATimeslotRequest{}
-	json.Unmarshal(j, &timeslotRequest)
+	err = json.Unmarshal(j, &timeslotRequest)
 
 	startTime, err := time.Parse(db.TimeFormat, timeslotRequest.StartTime)
 	if err != nil {
@@ -183,23 +181,17 @@ func (t timeslotAPI) updateATimeslot(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = t.timeslotUpdater.UpdateATimeslot(timeslotRequest.ID, startTime, endTime)
-	if err != nil {
-		var msg string
-		var status int
-		switch err {
-		case db.ErrNothingChanged:
-			msg = "nothing in the db was changed. id probably does not exist"
-			status = http.StatusBadRequest
-		default:
-			msg = "failed to access the db"
-			status = http.StatusServiceUnavailable
-		}
-
-		ReportError(err, msg, status, w)
+	switch err {
+	case nil:
+		w.Write(nil)
+		return
+	case db.ErrNothingChanged:
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		return
+	default:
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
 		return
 	}
-
-	w.Write(nil)
 }
 
 // deleteATimeslotRequest request for deleteATimeslot
@@ -232,21 +224,15 @@ func (t timeslotAPI) deleteATimeslot(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = t.timeslotDeleter.DeleteATimeslot(requestedID)
-	if err != nil {
-		var msg string
-		var status int
-		switch err {
-		case db.ErrNothingChanged:
-			msg = "nothing in the db was changed. id probably does not exist"
-			status = http.StatusBadRequest
-		default:
-			msg = "failed to access the db"
-			status = http.StatusServiceUnavailable
-		}
-
-		ReportError(err, msg, status, w)
+	switch err {
+	case nil:
+		w.Write(nil)
+		return
+	case db.ErrNothingChanged:
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		return
+	default:
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
 		return
 	}
-
-	w.Write(nil)
 }
