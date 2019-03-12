@@ -59,10 +59,19 @@ func NewAPI(mySQLConfig mysqlDriver.Config, logWriter io.Writer) (*API, error) {
 
 // ListenAndServe basically runs http.ListenAndServe
 func (a API) ListenAndServe(addr string) error {
+	// Add logging if there is a logWriter defined
 	var handler http.Handler = a.router
 	if a.logWriter != nil {
 		handler = handlers.LoggingHandler(a.logWriter, a.router)
 	}
+
+	// Add CORS stuff
+	handler = handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}),
+		handlers.AllowedHeaders([]string{"Content-Type"}),
+	)(handler)
+
 	return http.ListenAndServe(addr, handler)
 }
 

@@ -1,40 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Timeslot List</title>
-    </head>
-    <body>
-      <div class="container-fluid mb-5">
-        <h1>Timeslots</h1>
-        <h2>Add a Timeslot</h2>
-        <form #selectedTimeslot="ngForm">
+  <head>
+    <meta charset="utf-8" />
+    <title>Timeslot List</title>
+  </head>
+  <body>
+    <div class="container-fluid mb-5">
+      <h1>Timeslots</h1>
+      <h2>Add a Timeslot</h2>
+      <form #selectedTimeslot="ngForm">
+        <div class="form-group">
+          <span>Start Time: </span>
+          <input
+            class="form-control"
+            type="time"
+            name="startTime"
+            [(ngModel)]="selectedTimeslot.startTime"
+            placeholder="HH:MM:SS"
+            required
+          />
+        </div>
+        <br />
+        <div class="form-group">
+          <span>End Time: </span>
+          <input
+            class="form-control"
+            type="time"
+            name="endTime"
+            [(ngModel)]="selectedTimeslot.endTime"
+            placeholder="HH:MM:SS"
+            required
+          />
+        </div>
+        <button (click)="addTimeslot(selectedTimeslot)">Add</button>
 
-          <div class="form-group"><span>Start Time:    </span> <input class="form-control" type="time" name ="startTime"
-          [(ngModel)]="selectedTimeslot.startTime" placeholder="HH:MM:SS" required> </div>
-          <br>
-          <div class="form-group"><span>End Time:  </span> <input class = "form-control" type="time"  name="endTime" 
-            [(ngModel)]="selectedTimeslot.endTime" placeholder="HH:MM:SS" required> </div>
-          <button (click)="addTimeslot(selectedTimeslot)"> Add </button>
-
-          <h2>List of Timeslots</h2> 
-          <ul class="Timeslots">
-            <li *ngFor="let timeslot of timeslots"
-              [class.selected]="timeslot == selectedTimeslot"
-              (click)="onSelect(timeslot)">
-              <span class="badge">{{ timeslot.startTime }} </span> {{ timeslot.endTime }}
-            </li>
-          </ul>
-          
-         </form>
-      </div>
-    </body>
-
-    <div *ngIf="selectedRoom">
-
-        <h2>Edit Timeslot:</h2>
-        <div><span>Start Time: </span> <input [(ngModel)]="selectedRoom.startTime"> </div>
-        <div><span>End Time:</span> <input [(ngModel)]="selectedRoom.endTime"> </div>
+        <h2>List of Timeslots</h2>
+        <ul class="Timeslots">
+          <li
+            *ngFor="let timeslot of timeslots"
+            [class.selected]="timeslot == selectedTimeslot"
+            (click)="onSelect(timeslot)"
+          >
+            <span class="badge">{{ timeslot.startTime }} </span>
+            {{ timeslot.endTime }}
+          </li>
+        </ul>
+      </form>
     </div>
+  </body>
 
+  <div *ngIf="selectedRoom">
+    <h2>Edit Timeslot:</h2>
+    <div>
+      <span>Start Time: </span> <input [(ngModel)]="selectedRoom.startTime" />
+    </div>
+    <div>
+      <span>End Time:</span> <input [(ngModel)]="selectedRoom.endTime" />
+    </div>
+  </div>
 </html>
