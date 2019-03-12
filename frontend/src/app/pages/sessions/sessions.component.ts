@@ -6,6 +6,7 @@ import { Speaker } from 'src/app/data_models/speaker';
 import { Timeslot } from 'src/app/data_models/timeslot';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
+import { RoomService } from 'src/app/services/room.service';
 
 @Component({
   selector: 'app-sessions',
