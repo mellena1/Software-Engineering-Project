@@ -29,7 +29,7 @@
                                             <tr>
                                                 <td><input type="text" formControlName="roomName" [(ngModel)] = "room.name" class="form-control" placeholder="Enter Room Name" ng-required="true" /></td>
                                                 <td><input type="number" formControlName="roomCapacity" [(ngModel)] = "room.capacity" class="form-control" placeholder="Enter Room Capacity" ng-required="true" /></td>
-                                                <td><button type="submit" class="btn btn-success btn-sm">Add</button></td>
+                                                <td><button type="submit" class="btn btn-success btn-sm" ng-disabled="roomForm.$invalid">Add</button></td>
                                             </tr>
                                             <tr *ngFor="let room of rooms">
                                                 <td>

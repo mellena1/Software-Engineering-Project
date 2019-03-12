@@ -29,6 +29,13 @@ export class RoomsComponent implements OnInit {
     this.getAllRooms();
   }
 
+  deleteRoom(): void {
+    if(confirm("Are you sure you want to remove it?"))
+    {
+      this.roomService
+    }
+  }
+
   getAllRooms(): void {
     this.roomService
       .getAllRooms()
@@ -38,9 +45,6 @@ export class RoomsComponent implements OnInit {
       )
   }
   
-  editRoom() {
-    this.isEditable = true;
-  }
 
   onSubmit(): void{
     this.roomService
