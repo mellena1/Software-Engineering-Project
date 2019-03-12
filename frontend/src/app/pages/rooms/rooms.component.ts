@@ -29,10 +29,16 @@ export class RoomsComponent implements OnInit {
     this.getAllRooms();
   }
 
-  deleteRoom(): void {
+  deleteRoom(roomid): void {
     if(confirm("Are you sure you want to remove it?"))
     {
       this.roomService
+      .deleteRoom(roomid)
+      .subscribe(
+        error => (this.error = error)
+      )
+      console.log("The following Room Deleted :", this.roomForm.value);
+      window.location.reload();
     }
   }
 
