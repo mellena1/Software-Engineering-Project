@@ -1,17 +1,17 @@
-import { NgModule }       from '@angular/core';
-import { BrowserModule }  from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule }    from '@angular/common/http';
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { HttpClientModule } from "@angular/common/http";
 
-import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { HttpClientInMemoryWebApiModule } from "angular-in-memory-web-api";
 
-import { AppRoutingModule }     from './app-routing.module';
+import { AppRoutingModule } from "./app-routing.module";
 
-import { AppComponent }         from './app.component';
-import { SessionsComponent }   from './pages/sessions/sessions.component';
-import { RoomsComponent } from './pages/rooms/rooms.component';
-import { SpeakersComponent } from './pages/speakers/speakers.component';
-import { TimeslotsComponent } from './pages/timeslots/timeslots.component';
+import { AppComponent } from "./app.component";
+import { SessionsComponent } from "./pages/sessions/sessions.component";
+import { RoomsComponent } from "./pages/rooms/rooms.component";
+import { SpeakersComponent } from "./pages/speakers/speakers.component";
+import { TimeslotsComponent } from "./pages/timeslots/timeslots.component";
 
 @NgModule({
   imports: [
@@ -26,8 +26,8 @@ import { TimeslotsComponent } from './pages/timeslots/timeslots.component';
     SessionsComponent,
     RoomsComponent,
     SpeakersComponent,
-    TimeslotsComponent,
+    TimeslotsComponent
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

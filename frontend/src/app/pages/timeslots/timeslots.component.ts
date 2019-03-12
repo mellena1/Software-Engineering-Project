@@ -1,19 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { Timeslot } from 'src/app/data_models/timeslot';
-import { TimeslotService } from 'src/app/services/timeslot.service';
+import { Component, OnInit } from "@angular/core";
+import { Timeslot } from "src/app/data_models/timeslot";
+import { TimeslotService } from "src/app/services/timeslot.service";
 
 @Component({
-  selector: 'app-timeslots',
-  templateUrl: './timeslots.component.html',
-  styleUrls: ['./timeslots.component.css']
+  selector: "app-timeslots",
+  templateUrl: "./timeslots.component.html",
+  styleUrls: ["./timeslots.component.css"]
 })
 export class TimeslotsComponent implements OnInit {
-  constructor(private timeslotService: TimeslotService) { }
+  constructor(private timeslotService: TimeslotService) {}
   timeslots: Timeslot[];
   selectedTimeslot: Timeslot;
   error: any;
   public show: boolean = false;
-  public buttonName: any = "Add a Timeslot"
+  public buttonName: any = "Add a Timeslot";
 
   ngOnInit() {
     this.getAllTimeslots();
@@ -25,18 +25,16 @@ export class TimeslotsComponent implements OnInit {
       .subscribe(
         timeslots => (this.timeslots = timeslots),
         error => (this.error = error)
-      )
+      );
   }
 
   addTimeslot(timeslot: Timeslot): void {
-    this.timeslotService
-      .writeTimeslot(timeslot.startTime, timeslot.endTime)
+    this.timeslotService.writeTimeslot(timeslot.startTime, timeslot.endTime);
     this.show = false;
   }
 
   updateTimeslot(updatedTimeslot: Timeslot): void {
-    this.timeslotService
-      .updateTimeslot(updatedTimeslot)
+    this.timeslotService.updateTimeslot(updatedTimeslot);
   }
 
   onSelect(timeslot: Timeslot): void {
@@ -48,8 +46,7 @@ export class TimeslotsComponent implements OnInit {
     this.show = !this.show;
     if (this.show) {
       this.buttonName = "Hide";
-    }
-    else {
+    } else {
       this.buttonName = "Add a Timeslot";
     }
   }
