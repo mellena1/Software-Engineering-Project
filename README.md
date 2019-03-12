@@ -14,3 +14,11 @@ Windows  | [https://download.docker.com/win/stable/Docker%20for%20Windows%20Inst
 
 ### Running the app
 To start the app run `docker-compose up`
+
+### Formatting
+Please run:
+`prettier --write "**/*.ts"`
+and
+`prettier --write "**/*.html"`
+from the root directory before making a pull request
+
