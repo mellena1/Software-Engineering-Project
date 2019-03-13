@@ -18,7 +18,7 @@
             ng-app="app-sessions" 
             ng-init="getAllSessions()">
                 
-                <form [formGroup]="sessionForm" ng-submit="onSubmit()">
+                <form [formGroup]="sessionForm" (ngSubmit)="onSubmit()">
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
