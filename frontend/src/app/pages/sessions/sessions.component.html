@@ -34,43 +34,44 @@
                                 <td>
                                     <input 
                                     type="text" 
-                                    ng-model="Session.name" 
+                                    formControlName="sessionName"
+                                    [(ngModel)]="session.name" 
                                     class="form-control" 
-                                    formControlName="name" 
                                     placeholder="Enter Presentation Name" 
                                     ng-required="true" />
                                 </td>
                                   
                                 <td>
                                     <select 
-                                    ng-model="Session.room"  
+                                    formControlName="sessionRoom"
+                                    [(ngModel)]="session.room"  
                                     class="form-control" 
-                                    id="Room"
-                                    formControlName="room" 
+                                    id="Room" 
                                     ng-required="true"> 
-                                        <option *ngFor="let session of sessions" [value]="session">{{session.room.name}}</option> 
+                                        <option *ngFor="let session of sessions" [ngValue]="session.room">{{session.room.name}}</option> 
                                     </select>
                                 
                                 </td>
 
                                 <td>
                                     <select 
-                                    ng-model="Session.speaker"
+                                    formControlName="sessionSpeaker"
+                                    [(ngModel)]="session.speaker"
                                     class="form-control" 
-                                    id="Speaker"
-                                    formControlName="speaker" 
+                                    id="Speaker" 
                                     ng-required="true"> 
-                                        <option *ngFor="let session of sessions" [value]="speaker">{{session.speaker.firstName}} {{session.speaker.lastName}}</option> 
+                                        <option *ngFor="let session of sessions" [ngValue]="session.speaker">{{session.speaker.firstName}} {{session.speaker.lastName}}</option> 
                                     </select>
                                 </td>
 
                                 <td>
                                     <select 
-                                    ng-model="Session.timeslot"
+                                    formControlName="sessionTimeslot" 
+                                    [(ngModel)]="session.timeslot"
                                     class="form-control" 
-                                    formControlName="timeslot" 
+                                    id="Timeslot"
                                     ng-required="true"> 
-                                        <option *ngFor="let session of sessions" [value]="timeslot">{{session.timeslot.startTime}} -- {{session.timeslot.endTime}}</option> 
+                                        <option *ngFor="let session of sessions" [ngValue]="session.timeslot">{{session.timeslot.startTime}} -- {{session.timeslot.endTime}}</option> 
                                     </select> 
                                 </td>
 

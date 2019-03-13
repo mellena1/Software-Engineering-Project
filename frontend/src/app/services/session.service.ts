@@ -46,10 +46,7 @@ export class SessionService {
       speakerID: speakerID,
       timeslotID: timeslotID
     };
-    return this.http.post<WriteResponse>(this.apiUrl + "session", {
-      headers: this.jsonHeaders,
-      body: JSON.stringify(obj)
-    });
+    return this.http.post<WriteResponse>(this.apiUrl + "/session", obj)
   }
 
   updateSession(updatedSession: Session) {

@@ -1,41 +1,29 @@
 import { Component, OnInit, NgModule } from "@angular/core";
 import { SessionService } from "../../services/session.service";
 import { Session } from "../../data_models/session";
-import {
-  FormGroup,
-  FormControl,
-  Validators,
-  ReactiveFormsModule
-} from "@angular/forms";
-import { FormsModule } from "@angular/forms";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 
 @Component({
   selector: "app-sessions",
   templateUrl: "./sessions.component.html",
   styleUrls: ["./sessions.component.css"]
 })
-@NgModule({
-  imports: [FormsModule, ReactiveFormsModule],
-  declarations: [SessionsComponent]
-})
 export class SessionsComponent implements OnInit {
-
   constructor(private sessionService: SessionService) {}
-  
   sessions: Session[];
   session = new Session("", {id: 0, name: "", capacity: 0}, {id: 0, firstName: "", lastName: "", email: ""}, {id: 0, startTime: "", endTime: ""});
   selectedSession: Session;
   error: any;
-  sessionForm: FormGroup;
+  isEditable = false;
+  sessionForm = new FormGroup({
+    sessionName: new FormControl(""),
+    sessionRoom: new FormControl(""),
+    sessionSpeaker: new FormControl(""),
+    sessionTimeslot: new FormControl("")
+  });
 
   ngOnInit() {
     this.getAllSessions();
-    this.sessionForm = new FormGroup({
-      name: new FormControl(""),
-      room: new FormControl(""),
-      speaker: new FormControl(""),
-      timeslot: new FormControl("")
-    });
   }
 
   getAllSessions(): void {
@@ -45,8 +33,7 @@ export class SessionsComponent implements OnInit {
         sessions => (this.sessions = sessions),
         error => (this.error = error)
       );
-  }
-
+    }
 
   getSession(id: number) {
     this.sessionService
@@ -73,7 +60,6 @@ export class SessionsComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log("In Submit now")
     var newSession = new Session(
       this.session.name,
       this.session.room,
