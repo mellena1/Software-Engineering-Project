@@ -10,6 +10,7 @@ import { Observable, throwError as observableThrowError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 import { Room } from "../data_models/room";
+import { WriteResponse } from "./writeResponse";
 
 @Injectable({
   providedIn: "root"
@@ -35,7 +36,7 @@ export class RoomService {
 
   writeRoom(name: string, capacity: number) {
     var obj = { name: name, capacity: capacity };
-    return this.http.post(this.apiUrl + "/room", obj);
+    return this.http.post<WriteResponse>(this.apiUrl + "/room", obj);
   }
 
   updateRoom(updatedRoom: Room) {

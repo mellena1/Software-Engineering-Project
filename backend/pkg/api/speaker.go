@@ -17,18 +17,6 @@ type speakerAPI struct {
 	speakerDeleter db.SpeakerDeleter
 }
 
-type writeASpeakerRequest struct {
-	Email     string
-	FirstName string
-	LastName  string
-}
-type updateASpeakerRequest struct {
-	ID        int64
-	Email     string
-	FirstName string
-	LastName  string
-}
-
 // CreateSpeakerRoutes makes all of the routes for speaker related calls
 func CreateSpeakerRoutes(speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) []Route {
 	speakAPI := speakerAPI{
@@ -64,11 +52,9 @@ func (a speakerAPI) getAllSpeakers(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Read from the backend failed"))
 		return
 	}
-	j, err := json.Marshal(speakers)
-	_, err = w.Write(j)
-	if err != nil {
-		log.Fatal("Failed to respond to getAllSpeakers")
-	}
+
+	j, _ := json.Marshal(speakers)
+	w.Write(j)
 }
 
 // getAllSpeakers Gets a speaker with the specified email from the db
@@ -84,25 +70,31 @@ func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
-		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param was not set", http.StatusBadRequest, w)
 		return
 	case ErrBadQuery:
-		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
 		return
 	case ErrBadQueryType:
-		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param is not a number", http.StatusBadRequest, w)
 		return
 	}
 
 	speaker, err := a.speakerReader.ReadASpeaker(requestedID)
 	if err != nil {
-		w.WriteHeader(http.StatusServiceUnavailable)
-		log.Printf("Failed to read speaker (%v) from the db: %v", requestedID, err)
-		w.Write([]byte("Read from the backend failed"))
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
 		return
 	}
-	j, err := json.Marshal(speaker)
+
+	j, _ := json.Marshal(speaker)
 	w.Write(j)
+}
+
+// writeASpeakerRequest request for writeASpeaker
+type writeASpeakerRequest struct {
+	Email     string `json:"email" example:"person@gmail.com"`
+	FirstName string `json:"firstName" example:"Bob"`
+	LastName  string `json:"lastName" example:"Smith"`
 }
 
 // writeASpeaker Inserts a speaker into the database
@@ -115,27 +107,34 @@ func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/speaker [post]
 func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
-	var data writeASpeakerRequest
-	body, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(body, &data)
-
+	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		ReportError(err, "unable to read body", http.StatusBadRequest, w)
 		return
 	}
 
-	err = a.speakerWriter.WriteASpeaker(data.Email, data.FirstName, data.LastName)
-
+	speakerRequest := writeASpeakerRequest{}
+	err = json.Unmarshal(body, &speakerRequest)
 	if err != nil {
-		w.WriteHeader(http.StatusServiceUnavailable)
-		log.Printf("Failed to write speaker (%v) to the db: %v", data.Email, err)
-		w.Write([]byte("Write failed"))
+		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
 		return
 	}
-	json, _ := json.Marshal(data.Email)
-	_, err = w.Write(json)
+
+	id, err := a.speakerWriter.WriteASpeaker(speakerRequest.Email, speakerRequest.FirstName, speakerRequest.LastName)
 	if err != nil {
-		log.Fatal("Failed to respond to writeASpeaker")
+		ReportError(err, "failed to write a room", http.StatusServiceUnavailable, w)
+		return
 	}
+
+	writeIDToClient(w, id)
+}
+
+// updateASpeakerRequest request for updateASpeaker
+type updateASpeakerRequest struct {
+	ID        int64  `json:"id" example:"1"`
+	Email     string `json:"email" example:"person@gmail.com"`
+	FirstName string `json:"firstName" example:"Bob"`
+	LastName  string `json:"lastName" example:"Smith"`
 }
 
 // updateASpeaker Edits a speaker already in the database
@@ -148,26 +147,30 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/speaker [put]
 func (a speakerAPI) updateASpeaker(w http.ResponseWriter, r *http.Request) {
-	var data updateASpeakerRequest
-	body, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(body, &data)
-
+	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		ReportError(err, "unable to read body", http.StatusBadRequest, w)
 		return
 	}
 
-	err = a.speakerUpdater.UpdateASpeaker(data.ID, data.Email, data.FirstName, data.LastName)
-
+	speakerRequest := updateASpeakerRequest{}
+	err = json.Unmarshal(body, &speakerRequest)
 	if err != nil {
-		w.WriteHeader(http.StatusServiceUnavailable)
-		log.Printf("Failed to update speaker (%v) to the db: %v", data.ID, err)
-		w.Write([]byte("Write failed"))
+		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
 		return
 	}
-	json, _ := json.Marshal(data.ID)
-	_, err = w.Write(json)
-	if err != nil {
-		log.Fatal("Failed to respond to writeASpeaker")
+
+	err = a.speakerUpdater.UpdateASpeaker(speakerRequest.ID, speakerRequest.Email, speakerRequest.FirstName, speakerRequest.LastName)
+	switch err {
+	case nil:
+		w.Write(nil)
+		return
+	case db.ErrNothingChanged:
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		return
+	default:
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		return
 	}
 }
 
@@ -184,21 +187,26 @@ func (a speakerAPI) deleteASpeaker(w http.ResponseWriter, r *http.Request) {
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
-		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param was not set", http.StatusBadRequest, w)
 		return
 	case ErrBadQuery:
-		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
 		return
 	case ErrBadQueryType:
-		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param is not a number", http.StatusBadRequest, w)
 		return
 	}
-	err = a.speakerDeleter.DeleteASpeaker(requestedID)
 
-	if err != nil {
-		w.WriteHeader(http.StatusServiceUnavailable)
-		log.Printf("Failed to delete speaker (%v) from the db: %v", requestedID, err)
-		w.Write([]byte("delete failed"))
+	err = a.speakerDeleter.DeleteASpeaker(requestedID)
+	switch err {
+	case nil:
+		w.Write(nil)
+		return
+	case db.ErrNothingChanged:
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		return
+	default:
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
 		return
 	}
 }

@@ -10,6 +10,7 @@ import { Observable, throwError as observableThrowError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 import { Speaker } from "../data_models/speaker";
+import { WriteResponse } from "./writeResponse";
 
 @Injectable({
   providedIn: "root"
@@ -35,7 +36,7 @@ export class SpeakerService {
 
   writeSpeaker(firstName: string, lastName: string, email: string) {
     var obj = { firstName: firstName, lastName: lastName, email: email };
-    return this.http.post(this.apiUrl + "/speaker", obj);
+    return this.http.post<WriteResponse>(this.apiUrl + "/speaker", obj);
   }
 
   updateSpeakers(updatedSpeaker: Speaker) {

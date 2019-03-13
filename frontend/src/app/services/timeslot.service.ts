@@ -10,6 +10,7 @@ import { Observable, throwError as observableThrowError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 import { Timeslot } from "../data_models/timeslot";
+import { WriteResponse } from "./writeResponse";
 
 @Injectable({
   providedIn: "root"
@@ -35,7 +36,7 @@ export class TimeslotService {
 
   writeTimeslot(startTime: string, endTime: string) {
     var obj = { startTime: startTime, endTime: endTime };
-    return this.http.post(this.apiUrl + "/timeslot", {
+    return this.http.post<WriteResponse>(this.apiUrl + "/timeslot", {
       headers: this.jsonHeaders,
       body: JSON.stringify(obj)
     });
