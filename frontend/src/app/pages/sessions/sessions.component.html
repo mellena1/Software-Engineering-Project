@@ -13,13 +13,11 @@
         <br/>
             <h2 style="text-align:center">Sesssion Manager</h2><br/>
 
+            
             <div class="table-responsive" 
             ng-app="app-sessions" 
             ng-init="getAllSessions()">
-                <div class="alert alert-success alert-dismissible" ng-show="success" >
-                    <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">&times;</a>
-                    {{successMessage}}
-                </div>
+                
                 <form name="sessionForm" ng-submit="onSubmit()">
                     <table class="table table-bordered table-striped">
                         <thead>
@@ -45,11 +43,11 @@
                                 <td>
                                     <select 
                                     ng-model="Session.Room"  
-                                    ng-options="sessions.room for room in Room" 
                                     class="form-control" 
+                                    id="Room"
                                     formControlName="sessionRoom" 
                                     ng-required="true"> 
-                                        <option [ngValue]="session.room">{{session.room}}</option> 
+                                        <option *ngFor="let room of sessions" [value]="room" formControlName="room">{{room.name}}</option> 
                                     </select>
                                 
                                 </td>
@@ -59,11 +57,12 @@
 
                                 <td>
                                     <select 
-                                    ng-model="Session.Speaker" 
-                                    ng-options="sessions.speaker for speaker in Speaker" 
-                                    class="form-control" formControlName="sessionSpeaker" 
+                                    ng-model="Session.Speaker"
+                                    class="form-control" 
+                                    id="Speaker"
+                                    formControlName="sessionSpeaker" 
                                     ng-required="true"> 
-                                        <option *ngFor="let session of sessions" [value]="session.speaker">Hello</option> 
+                                        <option *ngFor="let speaker of sessions" [value]="speaker" formControlName="speak">{{speaker}}</option> 
                                     </select>
                                 </td>
 
@@ -74,7 +73,7 @@
                                     class="form-control" 
                                     formControlName="sessionTime" 
                                     ng-required="true"> 
-                                        <option *ngFor="let session of sessions" [value]="session.timeslot">{{session.timeslot}}</option> 
+                                        <option *ngFor="let timeslot of sessions" [value]="timeslot" formControlName="time">{{timeslot}}</option> 
                                     </select> 
                                 </td>
 
@@ -91,14 +90,15 @@
                                     <td>
                                         <span>{{ session.name }}</span>
                                     </td>
+                                    
                                     <td>
-                                       <span>{{ session.room }}</span>
+                                       <span>{{ session.room.name }}</span>
                                     </td>
                                     <td>                                            
-                                        <span>{{ session.speaker }}</span>
+                                        <span>{{ session.speaker.firstName }} {{session.speaker.lastName}}</span>
                                     </td>
                                     <td>
-                                        <span>{{ session.timeslot }}</span>
+                                        <span>{{ session.timeslot.startTime }} -- {{session.timeslot.endTime}}</span>
                                     </td>
                                     <td>
                                         <button
@@ -116,6 +116,7 @@
                             
                         </tbody>
                     </table>
+
                 </form>
 
    </div>  
