@@ -4,6 +4,9 @@ import { Session } from "../../data_models/session";
 import { Room } from "src/app/data_models/room";
 import { Speaker } from "src/app/data_models/speaker";
 import { Timeslot } from "src/app/data_models/timeslot";
+import { RoomService } from "src/app/services/room.service";
+import { SpeakerService } from "src/app/services/speaker.service";
+import { TimeslotService } from "src/app/services/timeslot.service";
 import {
   FormGroup,
   FormControl,
@@ -23,8 +26,9 @@ import { FormsModule } from "@angular/forms";
 })
 export class SessionsComponent implements OnInit {
   constructor(private sessionService: SessionService) {}
+  
   sessions: Session[];
-  newSession: Session;
+  session = new Session("", null, null, null);
   selectedSession: Session;
   error: any;
   sessionForm: FormGroup;
@@ -32,14 +36,10 @@ export class SessionsComponent implements OnInit {
   ngOnInit() {
     this.getAllSessions();
     this.sessionForm = new FormGroup({
-      sessionName: new FormControl(this.newSession.name, [Validators.required]),
-      sessionRoom: new FormControl(this.newSession.room, [Validators.required]),
-      sessionSpeaker: new FormControl(this.newSession.speaker, [
-        Validators.required
-      ]),
-      sessionTime: new FormControl(this.newSession.timeslot, [
-        Validators.required
-      ])
+      name: new FormControl(""),
+      room: new FormControl(""),
+      speaker: new FormControl(""),
+      timeslot: new FormControl("")
     });
   }
 
@@ -52,14 +52,10 @@ export class SessionsComponent implements OnInit {
       );
   }
 
+
   getSession(id: number) {
     this.sessionService
       .getSession(id)
-  }
-
-  writeSession(name: string, roomID: number, speakerID: number, timeslotID: number) {
-    this.sessionService
-      .writeSession(name, roomID, speakerID, timeslotID)
   }
 
   updateSession(updatedSession: Session) {
@@ -68,11 +64,36 @@ export class SessionsComponent implements OnInit {
   }
 
   deleteSession(id: number) {
-    this.sessionService
-      .deleteSession(id)
+    if (confirm("Are you sure you want to remove it?")) {
+      this.sessionService
+        .deleteSession(id)
+        .subscribe(error => (this.error = error));
+      console.log("The following Session Deleted :", this.sessionForm.value);
+      this.sessions = this.sessions.filter(item => item.id !== id);
+    }
   }
 
   onSelect(session: Session): void {
     this.selectedSession = session;
+  }
+
+  onSubmit(): void {
+    var newSession = new Session(
+      this.session.name,
+      this.session.room,
+      this.session.speaker,
+      this.session.timeslot
+    );
+    this.sessionService
+        .writeSession(
+          this.session.name,
+          this.session.room.id,
+          this.session.speaker.id,
+          this.session.timeslot.id
+        )
+        .subscribe(error => (this.error = error), id => (newSession.id = id));
+      console.log("Speaker Submitted!", this.sessionForm.value);
+      this.sessionForm.reset();
+      this.sessions.push(newSession);
   }
 }

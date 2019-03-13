@@ -2,7 +2,10 @@
 <html lang="en">  
     <head>  
         <meta charset="utf-8">
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+        rel="stylesheet" 
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+        crossorigin="anonymous">
         <title>Sessions</title>  
     </head>  
     <body>  
@@ -10,12 +13,14 @@
         <br/>
             <h2 style="text-align:center">Sesssion Manager</h2><br/>
 
-            <div class="table-responsive" ng-app="liveApp" ng-controller="liveController" ng-init="getAllSessions()">
+            <div class="table-responsive" 
+            ng-app="app-sessions" 
+            ng-init="getAllSessions()">
                 <div class="alert alert-success alert-dismissible" ng-show="success" >
                     <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">&times;</a>
                     {{successMessage}}
                 </div>
-                <form name="sessionForm" ng-submit="writeSession()">
+                <form name="sessionForm" ng-submit="onSubmit()">
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -28,41 +33,91 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><input type="text" ng-model="Session.name" class="form-control" formControlName="sessionName" placeholder="Enter Presentation Name" ng-required="true" /></td>
-
-                                <td><select ng-model="Session.Room"  ng-options="sessions.room for room in Room" class="form-control" formControlName="sessionRoom" ng-required="true"> 
-                                        <option [ngValue]="">Select a Room</option> </select>
+                                <td>
+                                    <input 
+                                    type="text" 
+                                    ng-model="Session.name" 
+                                    class="form-control" 
+                                    formControlName="sessionName" 
+                                    placeholder="Enter Presentation Name" 
+                                    ng-required="true" /></td>
+                                  
+                                <td>
+                                    <select 
+                                    ng-model="Session.Room"  
+                                    ng-options="sessions.room for room in Room" 
+                                    class="form-control" 
+                                    formControlName="sessionRoom" 
+                                    ng-required="true"> 
+                                        <option [ngValue]="session.room">{{session.room}}</option> 
+                                    </select>
+                                
                                 </td>
 
-                                <td><select ng-model="Session.Speaker" ng-options="sessions.speaker for speaker in Speaker" class="form-control" formControlName="sessionSpeaker" ng-required="true"> 
-                                        <option [ngValue]="">Select a Speaker</option> </select>
+                                
+            
+
+                                <td>
+                                    <select 
+                                    ng-model="Session.Speaker" 
+                                    ng-options="sessions.speaker for speaker in Speaker" 
+                                    class="form-control" formControlName="sessionSpeaker" 
+                                    ng-required="true"> 
+                                        <option *ngFor="let session of sessions" [value]="session.speaker">Hello</option> 
+                                    </select>
                                 </td>
 
-                                <td><select ng-model="Session.Timeslot" ng-options="sessions.timelsot in Timeslot" class="form-control" formControlName="sessionTime" ng-required="true"> 
-                                        <option [ngValue]="">Select a Timeslot</option> </select> 
+                                <td>
+                                    <select 
+                                    ng-model="Session.Timeslot" 
+                                    ng-options="sessions.timelsot in Timeslot" 
+                                    class="form-control" 
+                                    formControlName="sessionTime" 
+                                    ng-required="true"> 
+                                        <option *ngFor="let session of sessions" [value]="session.timeslot">{{session.timeslot}}</option> 
+                                    </select> 
                                 </td>
 
-                                <td><button type="submit" class="btn btn-success btn-sm" ng-disabled="sessionForm.invalid">Add</button></td>
+                                <td>
+                                    <button 
+                                    type="submit" 
+                                    class="btn btn-success btn-sm" 
+                                    ng-disabled="sessionForm.invalid">Add
+                                    </button>
+                                </td>
                             </tr>
 
                             <tr *ngFor="let session of sessions">
                                     <td>
-                                        <span (blur)="getAllSessions()">{{session.name}}</span>
+                                        <span>{{ session.name }}</span>
                                     </td>
                                     <td>
-                                       <span (blur)="getAllSessions()">{{session.room}}</span>
+                                       <span>{{ session.room }}</span>
                                     </td>
                                     <td>                                            
-                                        <span (blur)="getAllSessions()">{{session.speaker}}</span>
+                                        <span>{{ session.speaker }}</span>
                                     </td>
                                     <td>
-                                        <span (blur)="getAllSessions()">{{session.timeslot}}</span>
+                                        <span>{{ session.timeslot }}</span>
+                                    </td>
+                                    <td>
+                                        <button
+                                            type="button"
+                                            class="btn btn-primary btn-sm"
+                                            ng-click="editSession()">Edit
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="btn btn-danger btn-sm"
+                                            (click)="deleteSession(session.id)">Delete
+                                        </button>
                                     </td>
                             </tr>
                             
                         </tbody>
                     </table>
                 </form>
+
    </div>  
   </div>
     </body>  
