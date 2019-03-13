@@ -18,7 +18,7 @@
             ng-app="app-sessions" 
             ng-init="getAllSessions()">
                 
-                <form name="sessionForm" ng-submit="onSubmit()">
+                <form [formGroup]="sessionForm" ng-submit="onSubmit()">
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -36,44 +36,41 @@
                                     type="text" 
                                     ng-model="Session.name" 
                                     class="form-control" 
-                                    formControlName="sessionName" 
+                                    formControlName="name" 
                                     placeholder="Enter Presentation Name" 
-                                    ng-required="true" /></td>
+                                    ng-required="true" />
+                                </td>
                                   
                                 <td>
                                     <select 
-                                    ng-model="Session.Room"  
+                                    ng-model="Session.room"  
                                     class="form-control" 
                                     id="Room"
-                                    formControlName="sessionRoom" 
+                                    formControlName="room" 
                                     ng-required="true"> 
-                                        <option *ngFor="let room of sessions" [value]="room" formControlName="room">{{room.name}}</option> 
+                                        <option *ngFor="let session of sessions" [value]="session">{{session.room.name}}</option> 
                                     </select>
                                 
                                 </td>
 
-                                
-            
-
                                 <td>
                                     <select 
-                                    ng-model="Session.Speaker"
+                                    ng-model="Session.speaker"
                                     class="form-control" 
                                     id="Speaker"
-                                    formControlName="sessionSpeaker" 
+                                    formControlName="speaker" 
                                     ng-required="true"> 
-                                        <option *ngFor="let speaker of sessions" [value]="speaker" formControlName="speak">{{speaker}}</option> 
+                                        <option *ngFor="let session of sessions" [value]="speaker">{{session.speaker.firstName}} {{session.speaker.lastName}}</option> 
                                     </select>
                                 </td>
 
                                 <td>
                                     <select 
-                                    ng-model="Session.Timeslot" 
-                                    ng-options="sessions.timelsot in Timeslot" 
+                                    ng-model="Session.timeslot"
                                     class="form-control" 
-                                    formControlName="sessionTime" 
+                                    formControlName="timeslot" 
                                     ng-required="true"> 
-                                        <option *ngFor="let timeslot of sessions" [value]="timeslot" formControlName="time">{{timeslot}}</option> 
+                                        <option *ngFor="let session of sessions" [value]="timeslot">{{session.timeslot.startTime}} -- {{session.timeslot.endTime}}</option> 
                                     </select> 
                                 </td>
 
