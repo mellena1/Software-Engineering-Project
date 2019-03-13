@@ -1,12 +1,6 @@
 import { Component, OnInit, NgModule } from "@angular/core";
 import { SessionService } from "../../services/session.service";
 import { Session } from "../../data_models/session";
-import { Room } from "src/app/data_models/room";
-import { Speaker } from "src/app/data_models/speaker";
-import { Timeslot } from "src/app/data_models/timeslot";
-import { RoomService } from "src/app/services/room.service";
-import { SpeakerService } from "src/app/services/speaker.service";
-import { TimeslotService } from "src/app/services/timeslot.service";
 import {
   FormGroup,
   FormControl,
@@ -25,10 +19,11 @@ import { FormsModule } from "@angular/forms";
   declarations: [SessionsComponent]
 })
 export class SessionsComponent implements OnInit {
+
   constructor(private sessionService: SessionService) {}
   
   sessions: Session[];
-  session = new Session("", null, null, null);
+  session = new Session("", {id: 0, name: "", capacity: 0}, {id: 0, firstName: "", lastName: "", email: ""}, {id: 0, startTime: "", endTime: ""});
   selectedSession: Session;
   error: any;
   sessionForm: FormGroup;
@@ -78,6 +73,7 @@ export class SessionsComponent implements OnInit {
   }
 
   onSubmit(): void {
+    console.log("In Submit now")
     var newSession = new Session(
       this.session.name,
       this.session.room,
@@ -91,8 +87,8 @@ export class SessionsComponent implements OnInit {
           this.session.speaker.id,
           this.session.timeslot.id
         )
-        .subscribe(error => (this.error = error), id => (newSession.id = id));
-      console.log("Speaker Submitted!", this.sessionForm.value);
+        .subscribe(response => (newSession.id = response.id), error => (this.error = error));
+      console.log("Session Submitted!", this.sessionForm.value);
       this.sessionForm.reset();
       this.sessions.push(newSession);
   }
