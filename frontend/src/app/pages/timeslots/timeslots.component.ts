@@ -13,6 +13,7 @@ export class TimeslotsComponent implements OnInit {
   timeslots: Timeslot[];
   error: any;
   timeslot = new Timeslot("", "");
+  currentTimeslot = new Timeslot("", "");
   //oldTimeslot = new Timeslot("", "");
   timeslotForm = new FormGroup({
     timeslotStart: new FormControl(""),
@@ -34,7 +35,7 @@ export class TimeslotsComponent implements OnInit {
 
   onSubmit(): void {
     if (this.timeslot.startTime == "" || this.timeslot.endTime == "") {
-      alert("Please enter a time and date for both fields");
+      alert("Please enter a date and time for both fields");
       this.timeslotForm.reset();
     }
 
@@ -52,7 +53,6 @@ export class TimeslotsComponent implements OnInit {
       .subscribe(error => (this.error = error), id => (newTimeslot.id = id));
     console.log("Timeslot Submitted!", this.timeslotForm.value);
     this.timeslotForm.reset();
-
     this.timeslots.push(newTimeslot);
   }
 
@@ -66,18 +66,35 @@ export class TimeslotsComponent implements OnInit {
     }
   }
 
-  updateTimeslot(timeslot: Timeslot): void {
+  updateTimeslot(): void {
+    if (this.timeslot.startTime == "" || this.timeslot.endTime == "") {
+      alert("Please enter a date and time for both fields");
+      this.timeslotForm.reset();
+    }
+
+    var seconds = ":00Z";
+    this.currentTimeslot.startTime = this.currentTimeslot.startTime.concat(
+      seconds
+    );
+    this.currentTimeslot.endTime = this.currentTimeslot.endTime.concat(seconds);
+
     if (confirm("Are you sure you want to update?")) {
       this.timeslotService
-        .updateTimeslot(timeslot)
-        .subscribe(error => (this.error = error));
+        .updateTimeslot(this.currentTimeslot)
+        .subscribe(
+          error => (this.error = error),
+          id => (this.currentTimeslot.id = id)
+        );
       console.log("The following Timeslot Udpated :", this.timeslotForm.value);
-      this.timeslots = this.timeslots.filter(item => item !== timeslot);
+      //this.timeslots = this.timeslots.filter(item => item.id !== timeslotid);
     }
+
+    this.timeslotForm.reset();
   }
 
   showEdit(timeslot: Timeslot): void {
     timeslot.isEditable = true;
+    this.currentTimeslot.id = timeslot.id;
   }
 
   cancel(timeslot: Timeslot): void {
