@@ -26,7 +26,8 @@ export class SessionsComponent implements OnInit {
   session = new Session("", {id: 0, name: "", capacity: 0}, {id: 0, firstName: "", lastName: "", email: ""}, {id: 0, startTime: "", endTime: ""});
   selectedSession: Session;
   error: any;
-  isEditable = false;
+  isEditable: boolean;
+  isCurrent: boolean;
   sessionForm = new FormGroup({
     sessionName: new FormControl(""),
     sessionRoom: new FormControl(""),
@@ -39,6 +40,8 @@ export class SessionsComponent implements OnInit {
     this.getAllRooms();
     this.getAllSpeakers();
     this.getAllTimeslots();
+    this.isEditable = false;
+    this.isCurrent = true;
   }
 
   getAllSessions(): void {
@@ -119,5 +122,13 @@ export class SessionsComponent implements OnInit {
       console.log("Session Submitted!", this.sessionForm.value);
       this.sessionForm.reset();
       this.sessions.push(newSession);
+  }
+
+  showEdit(t: Session): void {
+    t.isEditable = true;
+  }
+
+  cancel(t: Session): void {
+    t.isEditable = false;
   }
 }
