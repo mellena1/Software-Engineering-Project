@@ -64,12 +64,11 @@
                 </td>
               </tr>
 
-
               <tr *ngFor="let timeslot of timeslots">
                 <td *ngIf="!timeslot.isEditable">
                   <span>{{ timeslot.startTime }}</span>
                 </td>
-              
+
                 <td *ngIf="timeslot.isEditable">
                   <input
                     type="datetime-local"
@@ -117,7 +116,6 @@
                   <button
                     type="button"
                     class="btn btn-primary btn-sm"
-
                     (click)="updateTimeslot()"
                   >
                     Save

@@ -66,7 +66,6 @@ export class TimeslotsComponent implements OnInit {
     }
   }
 
-
   updateTimeslot(): void {
     if (this.timeslot.startTime == "" || this.timeslot.endTime == "") {
       alert("Please enter a date and time for both fields");
@@ -102,5 +101,4 @@ export class TimeslotsComponent implements OnInit {
     timeslot.isEditable = false;
     this.timeslotForm.reset();
   }
-
 }
