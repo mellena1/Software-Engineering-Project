@@ -102,7 +102,17 @@ func (r writeASpeakerRequest) Validate() error {
 	if r.Email == nil && r.FirstName == nil && r.LastName == nil {
 		return ErrInvalidRequest
 	}
-	if *r.Email == "" && *r.FirstName == "" && *r.LastName == "" {
+	email, fName, lName := "", "", ""
+	if r.Email != nil {
+		email = *r.Email
+	}
+	if r.FirstName != nil {
+		fName = *r.FirstName
+	}
+	if r.LastName != nil {
+		lName = *r.LastName
+	}
+	if email == "" && fName == "" && lName == "" {
 		return ErrInvalidRequest
 	}
 	return nil
@@ -161,7 +171,17 @@ func (r updateASpeakerRequest) Validate() error {
 	if r.Email == nil && r.FirstName == nil && r.LastName == nil {
 		return ErrInvalidRequest
 	}
-	if *r.Email == "" && *r.FirstName == "" && *r.LastName == "" {
+	email, fName, lName := "", "", ""
+	if r.Email != nil {
+		email = *r.Email
+	}
+	if r.FirstName != nil {
+		fName = *r.FirstName
+	}
+	if r.LastName != nil {
+		lName = *r.LastName
+	}
+	if email == "" && fName == "" && lName == "" {
 		return ErrInvalidRequest
 	}
 	return nil
