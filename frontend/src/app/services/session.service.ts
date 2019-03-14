@@ -41,22 +41,16 @@ export class SessionService {
     timeslotID: number
   ) {
     var obj = {
-      name: name,
+      sessionName: name,
       roomID: roomID,
       speakerID: speakerID,
       timeslotID: timeslotID
     };
-    return this.http.post<WriteResponse>(this.apiUrl + "session", {
-      headers: this.jsonHeaders,
-      body: JSON.stringify(obj)
-    });
+    return this.http.post<WriteResponse>(this.apiUrl + "/session", obj);
   }
 
   updateSession(updatedSession: Session) {
-    return this.http.post(this.apiUrl + "/session", {
-      headers: this.jsonHeaders,
-      body: JSON.stringify(updatedSession)
-    });
+    return this.http.post(this.apiUrl + "/session", updatedSession);
   }
 
   deleteSession(id: number) {

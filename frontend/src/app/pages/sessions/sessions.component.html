@@ -1,163 +1,223 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>List of Sessions</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <title>Sessions</title>
   </head>
   <body>
-    <h1>Session Manager</h1>
-
-    <h2>Create a Session</h2>
     <div class="container">
-      <form [formGroup]="sessionForm" #formDir="ngForm">
-        <div [hidden]="formDir.submitted">
-          <div class="form-group">
-            <span>Presentation Name: </span>
-            <input
-              ng-model="selectedSession.name"
-              placeholder="Name this session"
-              class="form-control"
-              formControlName="sessionName"
-              required
-            />
-          </div>
+      <br />
+      <h2 style="text-align:center">Sesssion Manager</h2>
+      <br />
 
-          <div>
-            <span>Room Name: </span>
-            <select
-              ng-model="selectedSession.Room"
-              ng-options="selectedSession.room for room in sessions"
-              class="form-control"
-              formControlName="sessionRoom"
-              required
-            >
-              <option [ngValue]="null">Select a Room</option>
-            </select>
-          </div>
-          <br />
-
-          <div>
-            <span>Speaker Name: </span>
-            <select
-              ng-model="selectedSession.Speaker"
-              ng-options="selectedSession.speaker for speaker in sessions"
-              class="form-control"
-              formControlName="sessionSpeaker"
-              required
-            >
-              <option [ngValue]="null">Select a Speaker</option>
-            </select>
-          </div>
-          <br />
-
-          <div>
-            <span>Timeslot: </span>
-            <select
-              ng-model="selectedSession.Timeslot"
-              ng-options="selectedSession.timelsot for timeslot in sessions"
-              class="form-control"
-              formControlName="sessionTime"
-              required
-            >
-              <option [ngValue]="null">Select a Timeslot</option>
-            </select>
-          </div>
-          <br />
-
-          <button
-            type="submit"
-            class="btn btn-default"
-            [disabled]="sessionForm.invalid"
-          >
-            Submit
-          </button>
-
-          <button
-            type="button"
-            class="btn btn-default"
-            (click)="formDir.resetForm({})"
-          >
-            Reset
-          </button>
-        </div>
-      </form>
-
-      <div class="submitted-message" *ngIf="formDir.submitted">
-        <p>You've submitted a new Session</p>
-        <button (click)="formDir.resetForm({})">Submit a new Session</button>
-      </div>
-    </div>
-
-    <h2>List of Sessions</h2>
-    <h4 style="text-align:left">(Select session to edit)</h4>
-    <ul class="sessions">
-      <li
-        *ngFor="let session of sessions"
-        [class.selected]="session == selectedSession"
-        (click)="onSelect(session)"
+      <div
+        class="table-responsive"
+        ng-app="app-sessions"
+        ng-init="getAllSessions()"
       >
-        <span class="badge">{{ session.id }} </span> {{ session.name }} --
-        {{ session.Room }} -- {{ session.Speaker }} -- {{ session.Timeslot }}
-      </li>
-    </ul>
+        <form [formGroup]="sessionForm" (ngSubmit)="onSubmit()">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Presentation Name</th>
+                <th>Room Name</th>
+                <th>Speaker Name</th>
+                <th>Timeslot</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    formControlName="sessionName"
+                    [(ngModel)]="session.name"
+                    class="form-control"
+                    placeholder="Enter Presentation Name"
+                    id="Name"
+                    ng-required="true"
+                  />
+                </td>
 
-    <div *ngIf="selectedSession">
-      <h2>Edit a Session:</h2>
+                <td>
+                  <select
+                    formControlName="sessionRoom"
+                    [(ngModel)]="session.room"
+                    class="form-control"
+                    id="Room"
+                    ng-required="true"
+                  >
+                    <option *ngFor="let room of rooms" [ngValue]="room">{{
+                      room.name
+                    }}</option>
+                  </select>
+                </td>
 
-      <br />
-      <button ng-click="updateSession">Update</button>
-    </div>
+                <td>
+                  <select
+                    formControlName="sessionSpeaker"
+                    [(ngModel)]="session.speaker"
+                    class="form-control"
+                    id="Speaker"
+                    ng-required="true"
+                  >
+                    <option *ngFor="let speaker of speakers" [ngValue]="speaker"
+                      >{{ speaker.firstName }} {{ speaker.lastName }}</option
+                    >
+                  </select>
+                </td>
 
-    <div *ngIf="selectedSession">
-      <h2>Edit or Delete a Session</h2>
-      <div>
-        <span>Presntation Name: </span>
-        <input ng-model="selectedSession.name" />
-      </div>
-      <div>
-        <span>Room Name: </span>
-        <select
-          ng-model="selectedSession.Room"
-          ng-options="sessions.Room for room in sessions"
-        ></select>
-      </div>
-      <div>
-        <span>Speaker Name: </span>
-        <select
-          ng-model="selectedSession.Speaker"
-          ng-options="sessions.Speaker for speaker in sessions"
-        ></select>
-      </div>
-      <div>
-        <span>Timeslot: </span>
-        <select
-          ng-model="selectedSession.Timeslot"
-          ng-options="sessions.Timeslot for timelsot in sessions"
-        ></select>
-      </div>
-      <br />
-      <button (click)="deleteSession()">Delete this Session</button>
-      <br />
-      <div>
-        <label>
-          Update:
-          <input
-            [(ngModel)]="selectedSession.sessionName"
-            placeholder="sessionName"
-          />
-          <input
-            [(ngModel)]="selectedSession.sessionRoom"
-            placeholder="sessionRoom"
-          />
-          <input
-            [(ngModel)]="selectedSession.sessionSpeaker"
-            placeholder="sessionSpeaker"
-          />
-          <input
-            [(ngModel)]="selectedSession.sessionTime"
-            placeholder="sessionTime"
-          />
-        </label>
+                <td>
+                  <select
+                    formControlName="sessionTimeslot"
+                    [(ngModel)]="session.timeslot"
+                    class="form-control"
+                    id="Timeslot"
+                    ng-required="true"
+                  >
+                    <option
+                      *ngFor="let timeslot of timeslots"
+                      [ngValue]="timeslot"
+                      >{{ timeslot.startTime }} --
+                      {{ timeslot.endTime }}</option
+                    >
+                  </select>
+                </td>
+
+                <td>
+                  <button
+                    type="submit"
+                    class="btn btn-success btn-sm"
+                    ng-disabled="sessionForm.$invalid"
+                  >
+                    Add
+                  </button>
+                </td>
+              </tr>
+
+              <tr *ngFor="let session of sessions">
+                <td *ngIf="!session.isEditable">
+                  <span>{{ session.name }}</span>
+                </td>
+
+                <td *ngIf="session.isEditable">
+                  <input
+                    type="text"
+                    formControlName="sessionName"
+                    [(ngModel)]="session.name"
+                    class="form-control"
+                    id="Name"
+                    ng-required="true"
+                  />
+                </td>
+
+                <td *ngIf="!session.isEditable">
+                  <span>{{ session.room.name }}</span>
+                </td>
+
+                <td *ngIf="session.isEditable">
+                  <select
+                    formControlName="sessionRoom"
+                    [(ngModel)]="session.room"
+                    class="form-control"
+                    id="Room"
+                    ng-required="true"
+                  >
+                    <option *ngFor="let room of rooms" [ngValue]="room">{{
+                      room.name
+                    }}</option>
+                  </select>
+                </td>
+
+                <td *ngIf="!session.isEditable">
+                  <span
+                    >{{ session.speaker.firstName }}
+                    {{ session.speaker.lastName }}</span
+                  >
+                </td>
+
+                <td *ngIf="session.isEditable">
+                  <select
+                    formControlName="sessionSpeaker"
+                    [(ngModel)]="session.speaker"
+                    class="form-control"
+                    id="Speaker"
+                    ng-required="true"
+                  >
+                    <option *ngFor="let speaker of speakers" [ngValue]="speaker"
+                      >{{ speaker.firstName }} {{ speaker.lastName }}</option
+                    >
+                  </select>
+                </td>
+
+                <td *ngIf="!session.isEditable">
+                  <span
+                    >{{ session.timeslot.startTime }} --
+                    {{ session.timeslot.endTime }}</span
+                  >
+                </td>
+
+                <td *ngIf="session.isEditable">
+                  <select
+                    formControlName="sessionTimeslot"
+                    [(ngModel)]="session.timeslot"
+                    class="form-control"
+                    id="Timeslot"
+                    ng-required="true"
+                  >
+                    <option
+                      *ngFor="let timeslot of timeslots"
+                      [ngValue]="timeslot"
+                      >{{ timeslot.startTime }} --
+                      {{ timeslot.endTime }}</option
+                    >
+                  </select>
+                </td>
+
+                <td *ngIf="!session.isEditable">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    (click)="showEdit(session)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="deleteSession(session.id)"
+                  >
+                    Delete
+                  </button>
+                </td>
+
+                <td *ngIf="session.isEditable">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    (ngClick)="updateSession(session)"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="cancel(session)"
+                  >
+                    Cancel
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
       </div>
     </div>
   </body>

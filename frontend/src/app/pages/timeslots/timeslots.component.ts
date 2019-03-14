@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { Timeslot } from "src/app/data_models/timeslot";
 import { TimeslotService } from "src/app/services/timeslot.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { currentId } from "async_hooks";
 
 @Component({
   selector: "app-timeslots",
@@ -54,7 +53,6 @@ export class TimeslotsComponent implements OnInit {
       .subscribe(error => (this.error = error), id => (newTimeslot.id = id));
     console.log("Timeslot Submitted!", this.timeslotForm.value);
     this.timeslotForm.reset();
-
     this.timeslots.push(newTimeslot);
   }
 
@@ -67,6 +65,7 @@ export class TimeslotsComponent implements OnInit {
       this.timeslots = this.timeslots.filter(item => item.id !== timeslotid);
     }
   }
+
 
   updateTimeslot(): void {
     if (this.timeslot.startTime == "" || this.timeslot.endTime == "") {
@@ -103,4 +102,5 @@ export class TimeslotsComponent implements OnInit {
     timeslot.isEditable = false;
     this.timeslotForm.reset();
   }
+
 }
