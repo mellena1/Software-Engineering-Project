@@ -16,6 +16,40 @@ func NewSessionMySQL(db *sql.DB) SessionMySQL {
 	return SessionMySQL{db}
 }
 
+// scanASession takes in a session pointer and scans a row into it
+func scanASession(session *db.Session, row rowScanner) error {
+	speakerID, roomID, timeslotID := sql.NullInt64{}, sql.NullInt64{}, sql.NullInt64{}
+	speakerEmail, speakerFirstName, speakerLastName := sql.NullString{}, sql.NullString{}, sql.NullString{}
+	roomCapacity := sql.NullInt64{}
+
+	err := row.Scan(&session.ID, &speakerID, &speakerEmail, &speakerFirstName,
+		&speakerLastName, &roomID, session.Room.Name,
+		&roomCapacity, &timeslotID, &session.Timeslot.StartTime,
+		&session.Timeslot.EndTime, session.Name)
+
+	if speakerID.Valid {
+		session.Speaker.ID = nullIntToInt(speakerID)
+		session.Speaker.Email, session.Speaker.FirstName, session.Speaker.LastName = nullStringToString(speakerEmail), nullStringToString(speakerFirstName), nullStringToString(speakerLastName)
+	} else {
+		session.Speaker = nil
+	}
+
+	if roomID.Valid {
+		session.Room.ID = nullIntToInt(roomID)
+		session.Room.Capacity = nullIntToInt(roomCapacity)
+	} else {
+		session.Room = nil
+	}
+
+	if timeslotID.Valid {
+		session.Timeslot.ID = nullIntToInt(timeslotID)
+	} else {
+		session.Timeslot = nil
+	}
+
+	return err
+}
+
 // ReadASession reads a session from the db given sessionID
 func (s SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
 	session := db.NewSession()
@@ -39,11 +73,7 @@ func (s SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
 	defer stmt.Close()
 
 	row := stmt.QueryRow(sessionID)
-
-	err = row.Scan(&session.ID, &session.Speaker.ID, session.Speaker.Email, session.Speaker.FirstName,
-		session.Speaker.LastName, &session.Room.ID, session.Room.Name,
-		session.Room.Capacity, &session.Timeslot.ID, &session.Timeslot.StartTime,
-		&session.Timeslot.EndTime, session.Name)
+	err = scanASession(&session, row)
 
 	return session, err
 }
@@ -72,10 +102,7 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 	sessions := []db.Session{}
 	for rows.Next() {
 		newSession := db.NewSession()
-		rows.Scan(&newSession.ID, &newSession.Speaker.ID, newSession.Speaker.Email, newSession.Speaker.FirstName,
-			newSession.Speaker.LastName, &newSession.Room.ID, newSession.Room.Name,
-			newSession.Room.Capacity, &newSession.Timeslot.ID, &newSession.Timeslot.StartTime,
-			&newSession.Timeslot.EndTime, newSession.Name)
+		scanASession(&newSession, rows)
 		sessions = append(sessions, newSession)
 	}
 
@@ -88,7 +115,7 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 }
 
 // WriteASession writes a session to the db
-func (s SessionMySQL) WriteASession(speakerID *int, roomID *int, timeslotID *int64, name *string) (int64, error) {
+func (s SessionMySQL) WriteASession(speakerID *int64, roomID *int64, timeslotID *int64, name *string) (int64, error) {
 	if s.db == nil {
 		return 0, ErrDBNotSet
 	}
@@ -99,7 +126,7 @@ func (s SessionMySQL) WriteASession(speakerID *int, roomID *int, timeslotID *int
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(speakerID, roomID, timeslotID, name)
+	result, err := stmt.Exec(intToNullInt(speakerID), intToNullInt(roomID), intToNullInt(timeslotID), stringToNullString(name))
 	if err != nil {
 		return 0, err
 	}
@@ -108,7 +135,7 @@ func (s SessionMySQL) WriteASession(speakerID *int, roomID *int, timeslotID *int
 }
 
 // UpdateASession updates a session in the db given a sessionID and the updated session
-func (s SessionMySQL) UpdateASession(sessionID int64, speakerID *int, roomID *int, timeslotID *int64, name *string) error {
+func (s SessionMySQL) UpdateASession(sessionID int64, speakerID *int64, roomID *int64, timeslotID *int64, name *string) error {
 	if s.db == nil {
 		return ErrDBNotSet
 	}
@@ -119,7 +146,7 @@ func (s SessionMySQL) UpdateASession(sessionID int64, speakerID *int, roomID *in
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(speakerID, roomID, timeslotID, name, sessionID)
+	result, err := stmt.Exec(intToNullInt(speakerID), intToNullInt(roomID), intToNullInt(timeslotID), stringToNullString(name), sessionID)
 	if err != nil {
 		return err
 	}

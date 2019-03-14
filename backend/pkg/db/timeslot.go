@@ -9,7 +9,7 @@ const (
 
 // Timeslot holds all data about a timeslot
 type Timeslot struct {
-	ID        int64     `json:"id" example:"1"`
+	ID        *int64    `json:"id" example:"1"`
 	StartTime time.Time `json:"startTime" example:"2019-02-18 21:00:00"`
 	EndTime   time.Time `json:"endTime" example:"2019-10-01 23:00:00"`
 }
@@ -17,7 +17,7 @@ type Timeslot struct {
 // NewTimeslot makes a new Timeslot with default values
 func NewTimeslot() Timeslot {
 	return Timeslot{
-		ID:        0,
+		ID:        Int64Ptr(0),
 		StartTime: time.Time{},
 		EndTime:   time.Time{},
 	}

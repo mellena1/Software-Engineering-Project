@@ -2,7 +2,7 @@ package db
 
 // Speaker holds all data about a speaker
 type Speaker struct {
-	ID        int64   `json:"id" example:"1"`
+	ID        *int64  `json:"id" example:"1"`
 	Email     *string `json:"email" example:"firstname.lastname@gmail.com"`
 	FirstName *string `json:"firstName" example:"Bob"`
 	LastName  *string `json:"lastName" example:"Smith"`
@@ -11,7 +11,7 @@ type Speaker struct {
 // NewSpeaker makes a new Speaker with default values
 func NewSpeaker() Speaker {
 	return Speaker{
-		ID:        0,
+		ID:        Int64Ptr(0),
 		Email:     StringPtr(""),
 		FirstName: StringPtr(""),
 		LastName:  StringPtr(""),
@@ -34,12 +34,12 @@ type SpeakerReader interface {
 
 // SpeakerWriter implements all write related methods
 type SpeakerWriter interface {
-	WriteASpeaker(email string, firstName string, lastName string) (int64, error)
+	WriteASpeaker(email *string, firstName *string, lastName *string) (int64, error)
 }
 
 // SpeakerUpdater implements all update related methods
 type SpeakerUpdater interface {
-	UpdateASpeaker(id int64, email string, firstName string, lastName string) error
+	UpdateASpeaker(id int64, email *string, firstName *string, lastName *string) error
 }
 
 // SpeakerDeleter implements all delete related methods
