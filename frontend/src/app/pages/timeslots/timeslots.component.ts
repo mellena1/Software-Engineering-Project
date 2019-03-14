@@ -13,8 +13,8 @@ export class TimeslotsComponent implements OnInit {
   timeslots: Timeslot[];
   error: any;
   timeslot = new Timeslot("", "");
+  oldTimeslot = new Timeslot("", "");
   isEditable: boolean;
-  isCurrent: boolean;
   timeslotForm = new FormGroup({
     timeslotStart: new FormControl(''),
     timeslotEnd: new FormControl(''),
@@ -23,7 +23,6 @@ export class TimeslotsComponent implements OnInit {
   ngOnInit() {
     this.getAllTimeslots();
     this.isEditable = false;
-    this.isCurrent = true;
   }
 
   getAllTimeslots(): void {
@@ -63,25 +62,27 @@ export class TimeslotsComponent implements OnInit {
     }
   }
 
-  updateTimeslot(timeslotid): void {
+  updateTimeslot(timeslot: Timeslot): void {
     if(confirm("Are you sure you want to update?"))
     {
       this.timeslotService
-      .updateTimeslot(timeslotid)
+      .updateTimeslot(timeslot)
       .subscribe(
         error => (this.error=error)
       )
       console.log("The following Timeslot Udpated :", this.timeslotForm.value);
-      this.timeslots = this.timeslots.filter(item => item.id !== timeslotid);
+      this.timeslots = this.timeslots.filter(item => item !== timeslot);
     }
   }
 
-  showEdit(t: Timeslot): void {
-    t.isEditable = true;
+  showEdit(timeslot: Timeslot): void {
+    this.oldTimeslot = timeslot;
+    timeslot.isEditable = true;
   }
 
-  cancel(t: Timeslot): void {
-    t.isEditable = false;
+  cancel(timeslot: Timeslot): void {
+    timeslot = this.oldTimeslot;
+    timeslot.isEditable = false;
   }
 
 }
