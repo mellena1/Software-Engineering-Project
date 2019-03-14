@@ -4,17 +4,16 @@ import { TimeslotService } from 'src/app/services/timeslot.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
-  selector: "app-timeslots",
-  templateUrl: "./timeslots.component.html",
-  styleUrls: ["./timeslots.component.css"]
+  selector: 'app-timeslots',
+  templateUrl: './timeslots.component.html',
+  styleUrls: ['./timeslots.component.css']
 })
 export class TimeslotsComponent implements OnInit {
-  constructor(private timeslotService: TimeslotService) {}
+  constructor(private timeslotService: TimeslotService) { }
   timeslots: Timeslot[];
   error: any;
   timeslot = new Timeslot("", "");
-  isEditable: boolean;
-  isCurrent: boolean;
+  //oldTimeslot = new Timeslot("", "");
   timeslotForm = new FormGroup({
     timeslotStart: new FormControl(''),
     timeslotEnd: new FormControl(''),
@@ -22,8 +21,6 @@ export class TimeslotsComponent implements OnInit {
 
   ngOnInit() {
     this.getAllTimeslots();
-    this.isEditable = false;
-    this.isCurrent = true;
   }
 
   getAllTimeslots(): void {
@@ -32,10 +29,20 @@ export class TimeslotsComponent implements OnInit {
       .subscribe(
         timeslots => (this.timeslots = timeslots),
         error => (this.error = error)
-      );
+      )
   }
 
   onSubmit(): void{
+
+    if(this.timeslot.startTime == "" || this.timeslot.endTime == ""){
+      alert("Please enter a time and date for both fields");
+      this.timeslotForm.reset();
+    }
+
+    var seconds = ":00Z";
+    this.timeslot.startTime = this.timeslot.startTime.concat(seconds);
+    this.timeslot.endTime = this.timeslot.endTime.concat(seconds);
+
     var newTimeslot = new Timeslot(this.timeslot.startTime, this.timeslot.endTime);
 
     this.timeslotService
@@ -63,25 +70,26 @@ export class TimeslotsComponent implements OnInit {
     }
   }
 
-  updateTimeslot(timeslotid): void {
+  updateTimeslot(timeslot: Timeslot): void {
     if(confirm("Are you sure you want to update?"))
     {
       this.timeslotService
-      .updateTimeslot(timeslotid)
+      .updateTimeslot(timeslot)
       .subscribe(
         error => (this.error=error)
       )
       console.log("The following Timeslot Udpated :", this.timeslotForm.value);
-      this.timeslots = this.timeslots.filter(item => item.id !== timeslotid);
+      this.timeslots = this.timeslots.filter(item => item !== timeslot);
     }
   }
 
-  showEdit(t: Timeslot): void {
-    t.isEditable = true;
+  showEdit(timeslot: Timeslot): void {
+    timeslot.isEditable = true;
   }
 
-  cancel(t: Timeslot): void {
-    t.isEditable = false;
+  cancel(timeslot: Timeslot): void {
+    timeslot.isEditable = false;
+    this.timeslotForm.reset();
   }
 
 }

@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> 
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <title>Timeslot List</title>
     </head>
     <body>
@@ -11,6 +11,7 @@
               <h3 align="center">Timeslots</h3><br />
               <div class="table-responsive" ng-app="app-timeslot" ng-init="getAllTimeslots()">
                 <form [formGroup] = "timeslotForm" (ngSubmit)="onSubmit()">
+                  {{timeslot | json}}
                   <table class="table table-bordered table-striped">
                     <thead>
                       <tr>
@@ -21,8 +22,8 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <td><input type="datetime-local" formControlName="timeslotStart" [(ngModel)]="timeslot.startTime" class="form-control" ng-required="true"></td>
-                        <td><input type="datetime-local" formControlName="timeslotEnd" [(ngModel)]="timeslot.endTime" class="form-control" ng-required="true"></td>
+                        <td><input type="datetime-local" formControlName="timeslotStart" [(ngModel)]="timeslot.startTime" name="start" class="form-control" ng-required="true"></td>
+                        <td><input type="datetime-local" formControlName="timeslotEnd" [(ngModel)]="timeslot.endTime" name="end" class="form-control" ng-required="true"></td>
                         <td><button type="submit" class="btn btn-success btn-sm" ng-disabled="timeslotForm.$invalid">Add</button></td>
                       </tr>
 
@@ -36,7 +37,7 @@
                       </tr>-->
 
                       <tr *ngFor="let timeslot of timeslots">
-                        
+
                         <td *ngIf="!timeslot.isEditable">
                           <span>{{timeslot.startTime}}</span>
                         </td>
@@ -62,7 +63,7 @@
                             <button type="button" class="btn btn-primary btn-sm" (click)="updateTimeslot(timesolt)">Save</button>
                             <button type="button" class="btn btn-danger btn-sm" (click)="cancel(timeslot)">Cancel</button>
                         </td>
-                        
+
                       </tr>
 
                     </tbody>
