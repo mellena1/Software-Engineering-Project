@@ -25,9 +25,7 @@ export class RoomsComponent implements OnInit {
 
   deleteRoom(id): void {
     if (confirm("Are you sure you want to remove it?")) {
-      this.roomService
-        .deleteRoom(id)
-        .subscribe(error => (this.error = error));
+      this.roomService.deleteRoom(id).subscribe(error => (this.error = error));
       console.log("The following Room Deleted :", this.roomForm.value);
       this.rooms = this.rooms.filter(item => item.id !== id);
     }
@@ -44,7 +42,10 @@ export class RoomsComponent implements OnInit {
 
     this.roomService
       .writeRoom(this.room.name, this.room.capacity)
-      .subscribe(response => (newRoom.id = response.id), error => (this.error = error));
+      .subscribe(
+        response => (newRoom.id = response.id),
+        error => (this.error = error)
+      );
     console.log("Room Submitted!", this.roomForm.value);
     this.roomForm.reset();
 

@@ -55,7 +55,10 @@ export class SpeakersComponent implements OnInit {
         this.speaker.lastName,
         this.speaker.email
       )
-      .subscribe(response => (newSpeaker.id = response.id), error => (this.error = error));
+      .subscribe(
+        response => (newSpeaker.id = response.id),
+        error => (this.error = error)
+      );
     console.log("Speaker Submitted!", this.speakerForm.value);
     this.speakerForm.reset();
     this.speakers.push(newSpeaker);
