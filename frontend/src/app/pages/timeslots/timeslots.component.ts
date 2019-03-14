@@ -1,6 +1,7 @@
-import { Component, OnInit } from "@angular/core";
-import { Timeslot } from "src/app/data_models/timeslot";
-import { TimeslotService } from "src/app/services/timeslot.service";
+import { Component, OnInit } from '@angular/core';
+import { Timeslot } from 'src/app/data_models/timeslot';
+import { TimeslotService } from 'src/app/services/timeslot.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: "app-timeslots",
@@ -10,13 +11,19 @@ import { TimeslotService } from "src/app/services/timeslot.service";
 export class TimeslotsComponent implements OnInit {
   constructor(private timeslotService: TimeslotService) {}
   timeslots: Timeslot[];
-  selectedTimeslot: Timeslot;
   error: any;
-  public show: boolean = false;
-  public buttonName: any = "Add a Timeslot";
+  timeslot = new Timeslot("", "");
+  isEditable: boolean;
+  isCurrent: boolean;
+  timeslotForm = new FormGroup({
+    timeslotStart: new FormControl(''),
+    timeslotEnd: new FormControl(''),
+  });
 
   ngOnInit() {
     this.getAllTimeslots();
+    this.isEditable = false;
+    this.isCurrent = true;
   }
 
   getAllTimeslots(): void {
@@ -28,26 +35,53 @@ export class TimeslotsComponent implements OnInit {
       );
   }
 
-  addTimeslot(timeslot: Timeslot): void {
-    this.timeslotService.writeTimeslot(timeslot.startTime, timeslot.endTime);
-    this.show = false;
+  onSubmit(): void{
+    var newTimeslot = new Timeslot(this.timeslot.startTime, this.timeslot.endTime);
+
+    this.timeslotService
+      .writeTimeslot(this.timeslot.startTime, this.timeslot.endTime)
+      .subscribe(
+        error => (this.error = error),
+        id => (newTimeslot.id = id)
+      )
+    console.log("Timeslot Submitted!", this.timeslotForm.value);
+    this.timeslotForm.reset();
+
+    this.timeslots.push(newTimeslot);
   }
 
-  updateTimeslot(updatedTimeslot: Timeslot): void {
-    this.timeslotService.updateTimeslot(updatedTimeslot);
-  }
-
-  onSelect(timeslot: Timeslot): void {
-    this.selectedTimeslot = timeslot;
-    this.addTimeslot(this.selectedTimeslot);
-  }
-
-  toggle() {
-    this.show = !this.show;
-    if (this.show) {
-      this.buttonName = "Hide";
-    } else {
-      this.buttonName = "Add a Timeslot";
+  deleteTimeslot(timeslotid): void {
+    if(confirm("Are you sure you want to remove it?"))
+    {
+      this.timeslotService
+      .deleteTimeslot(timeslotid)
+      .subscribe(
+        error => (this.error = error)
+      )
+      console.log("The following Timeslot Deleted :", this.timeslotForm.value);
+      this.timeslots = this.timeslots.filter(item => item.id !== timeslotid);
     }
   }
+
+  updateTimeslot(timeslotid): void {
+    if(confirm("Are you sure you want to update?"))
+    {
+      this.timeslotService
+      .updateTimeslot(timeslotid)
+      .subscribe(
+        error => (this.error=error)
+      )
+      console.log("The following Timeslot Udpated :", this.timeslotForm.value);
+      this.timeslots = this.timeslots.filter(item => item.id !== timeslotid);
+    }
+  }
+
+  showEdit(t: Timeslot): void {
+    t.isEditable = true;
+  }
+
+  cancel(t: Timeslot): void {
+    t.isEditable = false;
+  }
+
 }
