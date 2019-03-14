@@ -1,3 +1,3 @@
 export class WriteResponse {
-    id: number;
+  id: number;
 }
