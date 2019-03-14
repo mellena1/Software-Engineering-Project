@@ -86,18 +86,19 @@
                             </tr>
 
                             <tr *ngFor="let session of sessions">
+
                                     <td *ngIf="!session.isEditable">
                                         <span>{{session.name}}</span>
                                     </td>
                           
                                     <td *ngIf="session.isEditable">
-                                        <input
-                                            type="text" 
-                                            formControlName="sessionName"
-                                            [(ngModel)]="session.name"
-                                            class="form-control" 
-                                            placeholder="Enter Presentation Name" 
-                                            ng-required="true" />
+                                            <input
+                                                type="text" 
+                                                formControlName="sessionName"
+                                                [(ngModel)]="session.name"
+                                                class="form-control" 
+                                                id="Name" 
+                                                ng-required="true" />
                                     </td>
                           
                                     <td *ngIf="!session.isEditable">
@@ -151,7 +152,7 @@
                                     </td>
                           
                                     <td *ngIf="session.isEditable">
-                                        <button type="button" class="btn btn-primary btn-sm" (click)="updateSession(session)">Save</button>
+                                        <button type="button" class="btn btn-primary btn-sm" (ngClick)="updateSession(session)">Save</button>
                                         <button type="button" class="btn btn-danger btn-sm" (click)="cancel(session)">Cancel</button>
                                     </td>
                             </tr>

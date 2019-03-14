@@ -40,10 +40,7 @@ export class SpeakerService {
   }
 
   updateSpeakers(updatedSpeaker: Speaker) {
-    return this.http.post(this.apiUrl + "/speaker", {
-      headers: this.jsonHeaders,
-      body: JSON.stringify(updatedSpeaker)
-    });
+    return this.http.post(this.apiUrl + "/speaker", updatedSpeaker)
   }
 
   deleteSpeaker(id: number) {

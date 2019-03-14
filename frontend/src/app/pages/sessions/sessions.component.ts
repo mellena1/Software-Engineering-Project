@@ -85,9 +85,20 @@ export class SessionsComponent implements OnInit {
       .getSession(id)
   }
 
-  updateSession(updatedSession: Session) {
-    this.sessionService
+  updateSession(updatedSession: Session): void {
+    console.log("Yo")
+    if(confirm("Are you sure you want to update?"))
+    {
+      this.sessionService
       .updateSession(updatedSession)
+      .subscribe(
+        error => (this.error=error)
+      )
+      console.log("The following Session Udpated :", this.sessionForm.value);
+      this.sessions = this.sessions.filter(item => item !== updatedSession);
+      this.sessionForm.reset();
+      this.sessions.push(updatedSession);
+    }
   }
 
   deleteSession(id: number) {
@@ -124,11 +135,13 @@ export class SessionsComponent implements OnInit {
       this.sessions.push(newSession);
   }
 
-  showEdit(t: Session): void {
-    t.isEditable = true;
+  showEdit(session: Session): void {
+    console.log("Showing Edit")
+    session.isEditable = true;
   }
 
-  cancel(t: Session): void {
-    t.isEditable = false;
+  cancel(session: Session): void {
+    console.log("Showing Cancel")
+    session.isEditable = false;
   }
 }

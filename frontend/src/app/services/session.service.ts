@@ -50,10 +50,7 @@ export class SessionService {
   }
 
   updateSession(updatedSession: Session) {
-    return this.http.post(this.apiUrl + "/session", {
-      headers: this.jsonHeaders,
-      body: JSON.stringify(updatedSession)
-    });
+    return this.http.post(this.apiUrl + "/session", updatedSession) 
   }
 
   deleteSession(id: number) {
