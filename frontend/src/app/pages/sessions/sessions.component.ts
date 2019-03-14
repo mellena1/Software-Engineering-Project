@@ -1,6 +1,15 @@
 import { Component, OnInit, NgModule } from "@angular/core";
+
 import { SessionService } from "../../services/session.service";
+import { RoomService } from "../../services/room.service";
+import { SpeakerService } from "../../services/speaker.service";
+import { TimeslotService } from "../../services/timeslot.service";
+
 import { Session } from "../../data_models/session";
+import { Room } from "../../data_models/room";
+import { Speaker } from "../../data_models/speaker";
+import { Timeslot } from "../../data_models/timeslot";
+
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 
 @Component({
@@ -9,8 +18,11 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
   styleUrls: ["./sessions.component.css"]
 })
 export class SessionsComponent implements OnInit {
-  constructor(private sessionService: SessionService) {}
+  constructor(private sessionService: SessionService, private roomService: RoomService, private speakerService: SpeakerService, private timeslotService: TimeslotService) {}
   sessions: Session[];
+  rooms: Room[];
+  speakers: Speaker[];
+  timeslots: Timeslot[];
   session = new Session("", {id: 0, name: "", capacity: 0}, {id: 0, firstName: "", lastName: "", email: ""}, {id: 0, startTime: "", endTime: ""});
   selectedSession: Session;
   error: any;
@@ -24,6 +36,9 @@ export class SessionsComponent implements OnInit {
 
   ngOnInit() {
     this.getAllSessions();
+    this.getAllRooms();
+    this.getAllSpeakers();
+    this.getAllTimeslots();
   }
 
   getAllSessions(): void {
@@ -34,6 +49,33 @@ export class SessionsComponent implements OnInit {
         error => (this.error = error)
       );
     }
+
+  getAllRooms(): void {
+    this.roomService
+    .getAllRooms()
+    .subscribe(
+      rooms => (this.rooms = rooms),
+      error => (this.error = error)
+    );
+  }
+
+  getAllSpeakers(): void {
+    this.speakerService
+      .getAllSpeakers()
+      .subscribe(
+        speakers => (this.speakers = speakers),
+        error => (this.error = error)
+      );
+  }
+
+  getAllTimeslots(): void {
+    this.timeslotService
+      .getAllTimeslots()
+      .subscribe(
+        timeslots => (this.timeslots = timeslots),
+        error => (this.error = error)
+      );
+  }
 
   getSession(id: number) {
     this.sessionService

@@ -35,7 +35,7 @@
                                     <input 
                                     type="text" 
                                     formControlName="sessionName"
-                                    [(ngModel)]="session.name" 
+                                    [(ngModel)]="session.name"
                                     class="form-control" 
                                     placeholder="Enter Presentation Name" 
                                     ng-required="true" />
@@ -48,7 +48,7 @@
                                     class="form-control" 
                                     id="Room" 
                                     ng-required="true"> 
-                                        <option *ngFor="let session of sessions" [ngValue]="session.room">{{session.room.name}}</option> 
+                                        <option *ngFor="let room of rooms" [ngValue]="room">{{room.name}}</option> 
                                     </select>
                                 
                                 </td>
@@ -60,7 +60,7 @@
                                     class="form-control" 
                                     id="Speaker" 
                                     ng-required="true"> 
-                                        <option *ngFor="let session of sessions" [ngValue]="session.speaker">{{session.speaker.firstName}} {{session.speaker.lastName}}</option> 
+                                        <option *ngFor="let speaker of speakers" [ngValue]="speaker">{{speaker.firstName}} {{speaker.lastName}}</option> 
                                     </select>
                                 </td>
 
@@ -71,7 +71,7 @@
                                     class="form-control" 
                                     id="Timeslot"
                                     ng-required="true"> 
-                                        <option *ngFor="let session of sessions" [ngValue]="session.timeslot">{{session.timeslot.startTime}} -- {{session.timeslot.endTime}}</option> 
+                                        <option *ngFor="let timeslot of timeslots" [ngValue]="timeslot">{{timeslot.startTime}} -- {{timeslot.endTime}}</option> 
                                     </select> 
                                 </td>
 
