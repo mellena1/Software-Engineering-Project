@@ -13,14 +13,17 @@ export class TimeslotsComponent implements OnInit {
   timeslots: Timeslot[];
   error: any;
   timeslot = new Timeslot("", "");
-  isEditable = false;
+  isEditable: boolean;
+  isCurrent: boolean;
   timeslotForm = new FormGroup({
-    startTime: new FormControl(''),
-    endTime: new FormControl(''),
+    timeslotStart: new FormControl(''),
+    timeslotEnd: new FormControl(''),
   });
 
   ngOnInit() {
     this.getAllTimeslots();
+    this.isEditable = false;
+    this.isCurrent = true;
   }
 
   getAllTimeslots(): void {
@@ -73,10 +76,12 @@ export class TimeslotsComponent implements OnInit {
     }
   }
 
-  showEdit(timeslot): void {
-    this.isEditable = true;
-    var currentTimeslot = JSON.parse(JSON.stringify(timeslot));
+  showEdit(t: Timeslot): void {
+    t.isEditable = true;
+  }
 
+  cancel(t: Timeslot): void {
+    t.isEditable = false;
   }
 
 }

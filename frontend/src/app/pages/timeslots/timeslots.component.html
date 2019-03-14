@@ -9,8 +9,8 @@
         <div class="container">
             <br />
               <h3 align="center">Timeslots</h3><br />
-              <div class="table-responsive" ng-app="app-timeslots" ng-init="getAllTimeslots()">
-                <form [formGroup] = "timeslotFrom" (ngSubmit)="onSubmit()">
+              <div class="table-responsive" ng-app="app-timeslot" ng-init="getAllTimeslots()">
+                <form [formGroup] = "timeslotForm" (ngSubmit)="onSubmit()">
                   <table class="table table-bordered table-striped">
                     <thead>
                       <tr>
@@ -25,34 +25,49 @@
                         <td><input type="datetime-local" formControlName="timeslotEnd" [(ngModel)]="timeslot.endTime" class="form-control" ng-required="true"></td>
                         <td><button type="submit" class="btn btn-success btn-sm" ng-disabled="timeslotForm.$invalid">Add</button></td>
                       </tr>
-                      <tr *ngFor="let timeslot of timeslots">
-                        <td ng-click="showEdit(timeslot)">
-                          <span ng-hide="isEditable">{{timeslot.startTime}}</span>
-                          <input type="datetime-local" formControlName="timeslotStart" ng-show="isEditable" [(ngModel)]="timeslot.startTime" class="form-control" ng-required="true">
-                        </td>
-                        <td ng-click="showEdit(timeslot)">
-                          <span ng-hide="isEditable">{{timeslot.endTime}}</span>
-                          <input type="datetime-local" formControlName="timeslotEnd" ng-show="isEditable" [(ngModel)]="timeslot.endTime" class="form-control" ng-required="true">
-                        </td>
+
+                     <!--<tr *ngFor="let timeslot of timeslots">
+                        <td><span>{{timeslot.startTime}}</span></td>
+                        <td><span>{{timeslot.endTime}}</span></td>
                         <td>
-                          <button type="button" class="btn btn-primary btn-sm" ng-hide="isEditable" (ng-click)="showEdit(timeslot)">Edit</button>
-                          <button type="button" class="btn btn-danger btn-sm" ng-hide="isEditable" (ng-click)="deleteTimeslot(timeslot.id)">Delete</button>
-                          <button type="button" class="btn btn-primary btn-sm" ng-show="isEditable" (ng-click)="update(timeslot.id)">Update</button>
-                          <button type="button" class="btn btn-danger btn-sm" ng-show="isEditable" (ng-click)="cancel(timeslot.id)">Cancel</button>
+                            <button type="button" class="btn btn-primary btn-sm" ng-click="showEdit(timeslot)">Edit</button>
+                            <button type="button" class="btn btn-danger btn-sm" (click)="deleteRoom(timeslot.id)">Delete</button>
                         </td>
+                      </tr>-->
+
+                      <tr *ngFor="let timeslot of timeslots">
+                        
+                        <td *ngIf="!timeslot.isEditable">
+                          <span>{{timeslot.startTime}}</span>
+                        </td>
+
+                        <td *ngIf="timeslot.isEditable">
+                          <input type="datetime-local" formControlName="timeslotStart" [(ngModel)]="timeslot.startTime" class="form-control" ng-required="true">
+                        </td>
+
+                        <td *ngIf="!timeslot.isEditable">
+                          <span>{{timeslot.endTime}}</span>
+                        </td>
+
+                        <td *ngIf="timeslot.isEditable">
+                          <input type="datetime-local" formControlName="timeslotEnd" [(ngModel)]="timeslot.endTime" class="form-control" ng-required="true">
+                        </td>
+
+                        <td *ngIf="!timeslot.isEditable">
+                          <button type="button" class="btn btn-primary btn-sm" (click)="showEdit(timeslot)">Edit</button>
+                          <button type="button" class="btn btn-danger btn-sm" (click)="deleteTimeslot(timeslot.id)">Delete</button>
+                        </td>
+
+                        <td *ngIf="timeslot.isEditable">
+                            <button type="button" class="btn btn-primary btn-sm" (click)="updateTimeslot(timesolt)">Save</button>
+                            <button type="button" class="btn btn-danger btn-sm" (click)="cancel(timeslot)">Cancel</button>
+                        </td>
+                        
                       </tr>
+
                     </tbody>
                   </table>
                 </form>
-                <script type="text/ng-template" id="edit">
-                  <td><input type="text" ng-model="formData.startTime" class="form-control" /></td>
-                  <td><input type="text" ng-model="formData.startTime" class="form-control" /></td>
-                  <td>
-                      <input type="hidden" ng-model="formData.data.id" />
-                      <button type="button" class="btn btn-info btn-sm" ng-click="editData()">Save</button>
-                      <button type="button" class="btn btn-default btn-sm" ng-click="reset()">Cancel</button>
-                  </td>
-                </script>
               </div>
         </div>
     </body>
