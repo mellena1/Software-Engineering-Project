@@ -16,6 +16,14 @@ func NewRoomMySQL(db *sql.DB) RoomMySQL {
 	return RoomMySQL{db}
 }
 
+// scanARoom takes in a room pointer and scans a row into it
+func scanARoom(room *db.Room, row rowScanner) error {
+	capacity := sql.NullInt64{}
+	err := row.Scan(&room.ID, room.Name, &capacity)
+	room.Capacity = nullIntToInt(capacity)
+	return err
+}
+
 // ReadARoom reads a room from the db given roomID
 func (r RoomMySQL) ReadARoom(roomID int64) (db.Room, error) {
 	room := db.NewRoom()
@@ -32,7 +40,7 @@ func (r RoomMySQL) ReadARoom(roomID int64) (db.Room, error) {
 
 	row := stmt.QueryRow(roomID)
 
-	err = row.Scan(&room.ID, room.Name, room.Capacity)
+	err = scanARoom(&room, row)
 
 	return room, err
 }
@@ -54,7 +62,7 @@ func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 	rooms := []db.Room{}
 	for rows.Next() {
 		newRoom := db.NewRoom()
-		rows.Scan(&newRoom.ID, newRoom.Name, newRoom.Capacity)
+		scanARoom(&newRoom, rows)
 		rooms = append(rooms, newRoom)
 	}
 
@@ -67,7 +75,7 @@ func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 }
 
 // WriteARoom writes a room to the db
-func (r RoomMySQL) WriteARoom(name string, capacity int) (int64, error) {
+func (r RoomMySQL) WriteARoom(name string, capacity *int64) (int64, error) {
 	if r.db == nil {
 		return 0, ErrDBNotSet
 	}
@@ -77,7 +85,7 @@ func (r RoomMySQL) WriteARoom(name string, capacity int) (int64, error) {
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(name, capacity)
+	result, err := stmt.Exec(name, intToNullInt(capacity))
 	if err != nil {
 		return 0, err
 	}
@@ -86,7 +94,7 @@ func (r RoomMySQL) WriteARoom(name string, capacity int) (int64, error) {
 }
 
 // UpdateARoom updates a room in the db given a roomName and the updated room
-func (r RoomMySQL) UpdateARoom(id int64, name string, capacity int) error {
+func (r RoomMySQL) UpdateARoom(id int64, name string, capacity *int64) error {
 	if r.db == nil {
 		return ErrDBNotSet
 	}
@@ -97,7 +105,7 @@ func (r RoomMySQL) UpdateARoom(id int64, name string, capacity int) error {
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(name, capacity, id)
+	result, err := stmt.Exec(name, intToNullInt(capacity), id)
 	if err != nil {
 		return err
 	}

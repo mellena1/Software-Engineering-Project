@@ -90,8 +90,16 @@ func (a roomAPI) getARoom(w http.ResponseWriter, r *http.Request) {
 
 // writeARoomRequest request for writeARoom
 type writeARoomRequest struct {
-	Name     *string `json:"name" example:"Beatty"`
-	Capacity *int    `json:"capacity" example:"50"`
+	Name     string `json:"name" example:"Beatty"`
+	Capacity *int64 `json:"capacity" example:"50"`
+}
+
+// Validate validates a writeARoomRequest
+func (r writeARoomRequest) Validate() error {
+	if r.Name == "" {
+		return ErrInvalidRequest
+	}
+	return nil
 }
 
 // writeRoom Writes a room to the room table
@@ -118,13 +126,76 @@ func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := a.roomWriter.WriteARoom(*roomRequest.Name, *roomRequest.Capacity)
+	if err = roomRequest.Validate(); err != nil {
+		ReportError(err, "must set name for a room", http.StatusBadRequest, w)
+		return
+	}
+
+	id, err := a.roomWriter.WriteARoom(roomRequest.Name, roomRequest.Capacity)
 	if err != nil {
 		ReportError(err, "failed to write a room", http.StatusServiceUnavailable, w)
 		return
 	}
 
 	writeIDToClient(w, id)
+}
+
+// updateARoomRequest request for updateARoom
+type updateARoomRequest struct {
+	ID       *int64 `json:"id" example:"1"`
+	Name     string `json:"name" example:"Beatty"`
+	Capacity *int64 `json:"capacity" example:"50"`
+}
+
+// Validate validates a updateARoomRequest
+func (r updateARoomRequest) Validate() error {
+	if r.Name == "" || r.ID == nil {
+		return ErrInvalidRequest
+	}
+	return nil
+}
+
+// updateARoom update a room in the room table
+// @Summary Update a room in the db
+// @Description Update a room in the db
+// @Accept json
+// @Produce json
+// @param id query int true "the room to delete"
+// @Success 200 {boolean} nil
+// @Failure 400 {boolean} nil
+// @Router /api/v1/room [PUT]
+// @Param room body api.updateARoomRequest true "Room to update"
+func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+		return
+	}
+
+	updateRequest := updateARoomRequest{}
+	err = json.Unmarshal(body, &updateRequest)
+	if err != nil {
+		ReportError(err, "failed to unmarshal json", http.StatusBadRequest, w)
+		return
+	}
+
+	if err = updateRequest.Validate(); err != nil {
+		ReportError(err, "must set name for a room and pass an ID", http.StatusBadRequest, w)
+		return
+	}
+
+	err = a.roomUpdater.UpdateARoom(*updateRequest.ID, updateRequest.Name, updateRequest.Capacity)
+	switch err {
+	case nil:
+		w.Write(nil)
+		return
+	case db.ErrNothingChanged:
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		return
+	default:
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		return
+	}
 }
 
 // deleteARoom deletes a room from the room table
@@ -152,51 +223,6 @@ func (a roomAPI) deleteARoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = a.roomDeleter.DeleteARoom(requestedID)
-	switch err {
-	case nil:
-		w.Write(nil)
-		return
-	case db.ErrNothingChanged:
-		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
-		return
-	default:
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
-		return
-	}
-}
-
-// updateARoomRequest request for updateARoom
-type updateARoomRequest struct {
-	ID       int64   `json:"id" example:"1"`
-	Name     *string `json:"name" example:"Beatty"`
-	Capacity *int    `json:"capacity" example:"50"`
-}
-
-// updateARoom update a room in the room table
-// @Summary Update a room in the db
-// @Description Update a room in the db
-// @Accept json
-// @Produce json
-// @param id query int true "the room to delete"
-// @Success 200 {boolean} nil
-// @Failure 400 {boolean} nil
-// @Router /api/v1/room [PUT]
-// @Param room body api.updateARoomRequest true "Room to update"
-func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		ReportError(err, "unable to read body", http.StatusBadRequest, w)
-		return
-	}
-
-	updateRequest := updateARoomRequest{}
-	err = json.Unmarshal(body, &updateRequest)
-	if err != nil {
-		ReportError(err, "failed to unmarshal json", http.StatusBadRequest, w)
-		return
-	}
-
-	err = a.roomUpdater.UpdateARoom(updateRequest.ID, *updateRequest.Name, *updateRequest.Capacity)
 	switch err {
 	case nil:
 		w.Write(nil)
