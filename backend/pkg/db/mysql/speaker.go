@@ -16,6 +16,14 @@ func NewSpeakerMySQL(db *sql.DB) SpeakerMySQL {
 	return SpeakerMySQL{db}
 }
 
+// scanASpeaker takes in a speaker pointer and scans a row into it
+func scanASpeaker(speaker *db.Speaker, row rowScanner) error {
+	email, firstName, lastName := sql.NullString{}, sql.NullString{}, sql.NullString{}
+	err := row.Scan(&speaker.ID, &email, &firstName, &lastName)
+	speaker.Email, speaker.FirstName, speaker.LastName = nullStringToString(email), nullStringToString(firstName), nullStringToString(lastName)
+	return err
+}
+
 // ReadASpeaker reads a speaker from the db given email
 func (s SpeakerMySQL) ReadASpeaker(speakerID int64) (db.Speaker, error) {
 	speaker := db.NewSpeaker()
@@ -32,7 +40,7 @@ func (s SpeakerMySQL) ReadASpeaker(speakerID int64) (db.Speaker, error) {
 
 	row := stmt.QueryRow(speakerID)
 
-	err = row.Scan(&speaker.ID, speaker.Email, speaker.FirstName, speaker.LastName)
+	err = scanASpeaker(&speaker, row)
 
 	return speaker, err
 }
@@ -54,7 +62,7 @@ func (s SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
 	speakers := []db.Speaker{}
 	for rows.Next() {
 		newSpeaker := db.NewSpeaker()
-		rows.Scan(&newSpeaker.ID, newSpeaker.Email, newSpeaker.FirstName, newSpeaker.LastName)
+		scanASpeaker(&newSpeaker, rows)
 		speakers = append(speakers, newSpeaker)
 	}
 
@@ -67,7 +75,7 @@ func (s SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
 }
 
 // WriteASpeaker writes a speaker to the db
-func (s SpeakerMySQL) WriteASpeaker(email string, firstName string, lastName string) (int64, error) {
+func (s SpeakerMySQL) WriteASpeaker(email *string, firstName *string, lastName *string) (int64, error) {
 	if s.db == nil {
 		return 0, ErrDBNotSet
 	}
@@ -78,7 +86,7 @@ func (s SpeakerMySQL) WriteASpeaker(email string, firstName string, lastName str
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(email, firstName, lastName)
+	result, err := stmt.Exec(stringToNullString(email), stringToNullString(firstName), stringToNullString(lastName))
 	if err != nil {
 		return 0, err
 	}
@@ -87,7 +95,7 @@ func (s SpeakerMySQL) WriteASpeaker(email string, firstName string, lastName str
 }
 
 // UpdateASpeaker updates a speaker in the db given an email and the updated speaker
-func (s SpeakerMySQL) UpdateASpeaker(id int64, email string, firstName string, lastName string) error {
+func (s SpeakerMySQL) UpdateASpeaker(id int64, email *string, firstName *string, lastName *string) error {
 	if s.db == nil {
 		return ErrDBNotSet
 	}
@@ -98,7 +106,7 @@ func (s SpeakerMySQL) UpdateASpeaker(id int64, email string, firstName string, l
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(email, firstName, lastName, id)
+	result, err := stmt.Exec(stringToNullString(email), stringToNullString(firstName), stringToNullString(lastName), id)
 	if err != nil {
 		return err
 	}
