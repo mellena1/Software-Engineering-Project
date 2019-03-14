@@ -4,17 +4,16 @@ import { TimeslotService } from 'src/app/services/timeslot.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
-  selector: "app-timeslots",
-  templateUrl: "./timeslots.component.html",
-  styleUrls: ["./timeslots.component.css"]
+  selector: 'app-timeslots',
+  templateUrl: './timeslots.component.html',
+  styleUrls: ['./timeslots.component.css']
 })
 export class TimeslotsComponent implements OnInit {
-  constructor(private timeslotService: TimeslotService) {}
+  constructor(private timeslotService: TimeslotService) { }
   timeslots: Timeslot[];
   error: any;
   timeslot = new Timeslot("", "");
-  oldTimeslot = new Timeslot("", "");
-  isEditable: boolean;
+  //oldTimeslot = new Timeslot("", "");
   timeslotForm = new FormGroup({
     timeslotStart: new FormControl(''),
     timeslotEnd: new FormControl(''),
@@ -22,7 +21,6 @@ export class TimeslotsComponent implements OnInit {
 
   ngOnInit() {
     this.getAllTimeslots();
-    this.isEditable = false;
   }
 
   getAllTimeslots(): void {
@@ -31,10 +29,20 @@ export class TimeslotsComponent implements OnInit {
       .subscribe(
         timeslots => (this.timeslots = timeslots),
         error => (this.error = error)
-      );
+      )
   }
 
   onSubmit(): void{
+
+    if(this.timeslot.startTime == "" || this.timeslot.endTime == ""){
+      alert("Please enter a time and date for both fields");
+      this.timeslotForm.reset();
+    }
+
+    var seconds = ":00Z";
+    this.timeslot.startTime = this.timeslot.startTime.concat(seconds);
+    this.timeslot.endTime = this.timeslot.endTime.concat(seconds);
+
     var newTimeslot = new Timeslot(this.timeslot.startTime, this.timeslot.endTime);
 
     this.timeslotService
@@ -76,13 +84,12 @@ export class TimeslotsComponent implements OnInit {
   }
 
   showEdit(timeslot: Timeslot): void {
-    this.oldTimeslot = timeslot;
     timeslot.isEditable = true;
   }
 
   cancel(timeslot: Timeslot): void {
-    timeslot = this.oldTimeslot;
     timeslot.isEditable = false;
+    this.timeslotForm.reset();
   }
 
 }
