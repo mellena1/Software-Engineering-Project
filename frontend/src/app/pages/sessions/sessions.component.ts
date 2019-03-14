@@ -23,7 +23,7 @@ export class SessionsComponent implements OnInit {
   rooms: Room[];
   speakers: Speaker[];
   timeslots: Timeslot[];
-  session = new Session("", {id: 0, name: "", capacity: 0}, {id: 0, firstName: "", lastName: "", email: ""}, {id: 0, startTime: "", endTime: ""});
+  session = new Session("", new Room("", 0), new Speaker("", "", ""), new Timeslot("", ""));
   selectedSession: Session;
   error: any;
   isEditable = false;

@@ -41,7 +41,7 @@ export class SessionService {
     timeslotID: number
   ) {
     var obj = {
-      name: name,
+      sessionName: name,
       roomID: roomID,
       speakerID: speakerID,
       timeslotID: timeslotID
