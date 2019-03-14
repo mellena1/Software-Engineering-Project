@@ -38,6 +38,7 @@
                                     [(ngModel)]="session.name"
                                     class="form-control" 
                                     placeholder="Enter Presentation Name" 
+                                    id="Name"
                                     ng-required="true" />
                                 </td>
                                   
@@ -70,7 +71,7 @@
                                     [(ngModel)]="session.timeslot"
                                     class="form-control" 
                                     id="Timeslot"
-                                    ng-required="true"> 
+                                    ng-required="true">
                                         <option *ngFor="let timeslot of timeslots" [ngValue]="timeslot">{{timeslot.startTime}} -- {{timeslot.endTime}}</option> 
                                     </select> 
                                 </td>
@@ -146,7 +147,7 @@
                           
                                     <td *ngIf="!session.isEditable">
                                         <button type="button" class="btn btn-primary btn-sm" (click)="showEdit(session)">Edit</button>
-                                        <button type="button" class="btn btn-danger btn-sm" (click)="deleteTimeslot(session.id)">Delete</button>
+                                        <button type="button" class="btn btn-danger btn-sm" (click)="deleteSession(session.id)">Delete</button>
                                     </td>
                           
                                     <td *ngIf="session.isEditable">
@@ -160,7 +161,7 @@
 
                 </form>
 
-   </div>  
-  </div>
+            </div>  
+        </div>
     </body>  
 </html> 
