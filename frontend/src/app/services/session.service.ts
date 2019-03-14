@@ -46,11 +46,11 @@ export class SessionService {
       speakerID: speakerID,
       timeslotID: timeslotID
     };
-    return this.http.post<WriteResponse>(this.apiUrl + "/session", obj)
+    return this.http.post<WriteResponse>(this.apiUrl + "/session", obj);
   }
 
   updateSession(updatedSession: Session) {
-    return this.http.post(this.apiUrl + "/session", updatedSession) 
+    return this.http.post(this.apiUrl + "/session", updatedSession);
   }
 
   deleteSession(id: number) {

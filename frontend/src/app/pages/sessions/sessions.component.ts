@@ -18,12 +18,22 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
   styleUrls: ["./sessions.component.css"]
 })
 export class SessionsComponent implements OnInit {
-  constructor(private sessionService: SessionService, private roomService: RoomService, private speakerService: SpeakerService, private timeslotService: TimeslotService) {}
+  constructor(
+    private sessionService: SessionService,
+    private roomService: RoomService,
+    private speakerService: SpeakerService,
+    private timeslotService: TimeslotService
+  ) {}
   sessions: Session[];
   rooms: Room[];
   speakers: Speaker[];
   timeslots: Timeslot[];
-  session = new Session("", new Room("", 0), new Speaker("", "", ""), new Timeslot("", ""));
+  session = new Session(
+    "",
+    new Room("", 0),
+    new Speaker("", "", ""),
+    new Timeslot("", "")
+  );
   selectedSession: Session;
   error: any;
   isEditable: boolean;
@@ -51,15 +61,12 @@ export class SessionsComponent implements OnInit {
         sessions => (this.sessions = sessions),
         error => (this.error = error)
       );
-    }
+  }
 
   getAllRooms(): void {
     this.roomService
-    .getAllRooms()
-    .subscribe(
-      rooms => (this.rooms = rooms),
-      error => (this.error = error)
-    );
+      .getAllRooms()
+      .subscribe(rooms => (this.rooms = rooms), error => (this.error = error));
   }
 
   getAllSpeakers(): void {
@@ -81,19 +88,15 @@ export class SessionsComponent implements OnInit {
   }
 
   getSession(id: number) {
-    this.sessionService
-      .getSession(id)
+    this.sessionService.getSession(id);
   }
 
   updateSession(updatedSession: Session): void {
-    console.log("Yo")
-    if(confirm("Are you sure you want to update?"))
-    {
+    console.log("Yo");
+    if (confirm("Are you sure you want to update?")) {
       this.sessionService
-      .updateSession(updatedSession)
-      .subscribe(
-        error => (this.error=error)
-      )
+        .updateSession(updatedSession)
+        .subscribe(error => (this.error = error));
       console.log("The following Session Udpated :", this.sessionForm.value);
       this.sessions = this.sessions.filter(item => item !== updatedSession);
       this.sessionForm.reset();
@@ -123,25 +126,28 @@ export class SessionsComponent implements OnInit {
       this.session.timeslot
     );
     this.sessionService
-        .writeSession(
-          this.session.name,
-          this.session.room.id,
-          this.session.speaker.id,
-          this.session.timeslot.id
-        )
-        .subscribe(response => (newSession.id = response.id), error => (this.error = error));
-      console.log("Session Submitted!", this.sessionForm.value);
-      this.sessionForm.reset();
-      this.sessions.push(newSession);
+      .writeSession(
+        this.session.name,
+        this.session.room.id,
+        this.session.speaker.id,
+        this.session.timeslot.id
+      )
+      .subscribe(
+        response => (newSession.id = response.id),
+        error => (this.error = error)
+      );
+    console.log("Session Submitted!", this.sessionForm.value);
+    this.sessionForm.reset();
+    this.sessions.push(newSession);
   }
 
   showEdit(session: Session): void {
-    console.log("Showing Edit")
+    console.log("Showing Edit");
     session.isEditable = true;
   }
 
   cancel(session: Session): void {
-    console.log("Showing Cancel")
+    console.log("Showing Cancel");
     session.isEditable = false;
   }
 }
