@@ -32,12 +32,12 @@ type RoomReader interface {
 
 // RoomWriter implements all write related methods
 type RoomWriter interface {
-	WriteARoom(name *string, capacity *int) (int64, error)
+	WriteARoom(name string, capacity int) (int64, error)
 }
 
 // RoomUpdater implements all update related methods
 type RoomUpdater interface {
-	UpdateARoom(id int64, name *string, capacity *int) error
+	UpdateARoom(id int64, name string, capacity int) error
 }
 
 // RoomDeleter implements all delete related methods

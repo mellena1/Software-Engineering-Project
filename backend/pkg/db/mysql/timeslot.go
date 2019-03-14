@@ -29,6 +29,7 @@ func (t TimeslotMySQL) ReadATimeslot(id int64) (db.Timeslot, error) {
 	if err != nil {
 		return timeslot, err
 	}
+	defer stmt.Close()
 
 	row := stmt.QueryRow(id)
 
@@ -43,22 +44,26 @@ func (t TimeslotMySQL) ReadAllTimeslots() ([]db.Timeslot, error) {
 		return nil, ErrDBNotSet
 	}
 
-	stmt, err := t.db.Prepare("SELECT timeslotID, startTime, endTime FROM timeslot;")
-	if err != nil {
-		return nil, err
-	}
+	q := "SELECT timeslotID, startTime, endTime FROM timeslot;"
 
-	rows, err := stmt.Query()
+	rows, err := t.db.Query(q)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	timeslots := []db.Timeslot{}
 	for rows.Next() {
-		rowTimeslot := db.NewTimeslot()
-		rows.Scan(&rowTimeslot.ID, &rowTimeslot.StartTime, &rowTimeslot.EndTime)
-		timeslots = append(timeslots, rowTimeslot)
+		newTimeslot := db.NewTimeslot()
+		rows.Scan(&newTimeslot.ID, &newTimeslot.StartTime, &newTimeslot.EndTime)
+		timeslots = append(timeslots, newTimeslot)
 	}
+
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+
 	return timeslots, nil
 }
 
@@ -68,13 +73,13 @@ func (t TimeslotMySQL) WriteATimeslot(startTime, endTime time.Time) (int64, erro
 		return 0, ErrDBNotSet
 	}
 
-	statement, err := t.db.Prepare("INSERT INTO timeslot (`startTime`, `endTime`) VALUES (?, ?);")
+	stmt, err := t.db.Prepare("INSERT INTO timeslot (`startTime`, `endTime`) VALUES (?, ?);")
 	if err != nil {
 		return 0, err
 	}
-	defer statement.Close()
+	defer stmt.Close()
 
-	result, err := statement.Exec(startTime.Format(db.TimeFormat), endTime.Format(db.TimeFormat))
+	result, err := stmt.Exec(startTime.Format(db.TimeFormat), endTime.Format(db.TimeFormat))
 	if err != nil {
 		return 0, err
 	}
@@ -88,13 +93,13 @@ func (t TimeslotMySQL) UpdateATimeslot(id int64, startTime, endTime time.Time) e
 		return ErrDBNotSet
 	}
 
-	statement, err := t.db.Prepare("UPDATE timeslot SET startTime = ?, endTime = ? WHERE timeslotID = ?;")
+	stmt, err := t.db.Prepare("UPDATE timeslot SET startTime = ?, endTime = ? WHERE timeslotID = ?;")
 	if err != nil {
 		return err
 	}
-	defer statement.Close()
+	defer stmt.Close()
 
-	result, err := statement.Exec(startTime.Format(db.TimeFormat), endTime.Format(db.TimeFormat), id)
+	result, err := stmt.Exec(startTime.Format(db.TimeFormat), endTime.Format(db.TimeFormat), id)
 	if err != nil {
 		return err
 	}
@@ -114,13 +119,13 @@ func (t TimeslotMySQL) DeleteATimeslot(id int64) error {
 		return ErrDBNotSet
 	}
 
-	statement, err := t.db.Prepare("DELETE FROM timeslot WHERE timeslotID = ?;")
+	stmt, err := t.db.Prepare("DELETE FROM timeslot WHERE timeslotID = ?;")
 	if err != nil {
 		return err
 	}
-	defer statement.Close()
+	defer stmt.Close()
 
-	result, err := statement.Exec(id)
+	result, err := stmt.Exec(id)
 	if err != nil {
 		return err
 	}

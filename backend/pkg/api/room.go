@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
@@ -15,17 +14,6 @@ type roomAPI struct {
 	roomWriter  db.RoomWriter
 	roomUpdater db.RoomUpdater
 	roomDeleter db.RoomDeleter
-}
-
-type writeARoomRequest struct {
-	Name     *string
-	Capacity *int
-}
-
-type updateARoomRequest struct {
-	ID       int64
-	Name     *string
-	Capacity *int
 }
 
 // CreateRoomRoutes makes all of the routes for room related calls
@@ -59,17 +47,12 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 	rooms, err := a.roomReader.ReadAllRooms()
 	if err != nil {
-		w.WriteHeader(http.StatusServiceUnavailable)
-		log.Printf("Failed to read rooms from the db: %v", err)
-		w.Write([]byte("Read from the backend failed"))
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
 		return
 	}
-	j, _ := json.Marshal(rooms)
 
-	_, err = w.Write(j)
-	if err != nil {
-		log.Println("Failed to respond to Rooms")
-	}
+	j, _ := json.Marshal(rooms)
+	w.Write(j)
 }
 
 // getRoom Gets all rooms from the db
@@ -85,28 +68,30 @@ func (a roomAPI) getARoom(w http.ResponseWriter, r *http.Request) {
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
-		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param was not set", http.StatusBadRequest, w)
 		return
 	case ErrBadQuery:
-		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
 		return
 	case ErrBadQueryType:
-		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param is not a number", http.StatusBadRequest, w)
 		return
 	}
 
 	room, err := a.roomReader.ReadARoom(requestedID)
 	if err != nil {
-		w.WriteHeader(http.StatusServiceUnavailable)
-		log.Printf("Failed to read room (%v) from the db: %v", requestedID, err)
-		w.Write([]byte("Read from the backend failed"))
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
 		return
 	}
+
 	j, _ := json.Marshal(room)
-	_, err = w.Write(j)
-	if err != nil {
-		log.Println("Failed to respond to Room")
-	}
+	w.Write(j)
+}
+
+// writeARoomRequest request for writeARoom
+type writeARoomRequest struct {
+	Name     *string `json:"name" example:"Beatty"`
+	Capacity *int    `json:"capacity" example:"50"`
 }
 
 // writeRoom Writes a room to the room table
@@ -122,42 +107,24 @@ func (a roomAPI) getARoom(w http.ResponseWriter, r *http.Request) {
 func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		msg := "unable to read body"
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusBadRequest)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+		ReportError(err, "unable to read body", http.StatusBadRequest, w)
 		return
 	}
 
 	roomRequest := writeARoomRequest{}
 	err = json.Unmarshal(body, &roomRequest)
 	if err != nil {
-		msg := "failed to unmarshal json"
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusBadRequest)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+		ReportError(err, "failed to unmarshal json", http.StatusBadRequest, w)
 		return
 	}
 
-	id, err := a.roomWriter.WriteARoom(roomRequest.Name, roomRequest.Capacity)
+	id, err := a.roomWriter.WriteARoom(*roomRequest.Name, *roomRequest.Capacity)
 	if err != nil {
-		msg := "failed to write a room"
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusServiceUnavailable)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+		ReportError(err, "failed to write a room", http.StatusServiceUnavailable, w)
 		return
 	}
 
-	json, _ := json.Marshal(id)
-	_, err = w.Write(json)
-	if err != nil {
-		msg := "GET Room failed to write back"
-		log.Printf("%s: %v", msg, err)
-		return
-	}
+	writeIDToClient(w, id)
 }
 
 // deleteARoom deletes a room from the room table
@@ -174,33 +141,35 @@ func (a roomAPI) deleteARoom(w http.ResponseWriter, r *http.Request) {
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
-		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param was not set", http.StatusBadRequest, w)
 		return
 	case ErrBadQuery:
-		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
 		return
 	case ErrBadQueryType:
-		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param is not a number", http.StatusBadRequest, w)
 		return
 	}
 
 	err = a.roomDeleter.DeleteARoom(requestedID)
-	if err != nil {
-		msg := "failed to delete a room"
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusServiceUnavailable)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+	switch err {
+	case nil:
+		w.Write(nil)
+		return
+	case db.ErrNothingChanged:
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		return
+	default:
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
 		return
 	}
+}
 
-	json, _ := json.Marshal(true)
-	_, err = w.Write(json)
-	if err != nil {
-		msg := "DELETE Room failed to write back"
-		log.Printf("%s: %v", msg, err)
-		return
-	}
+// updateARoomRequest request for updateARoom
+type updateARoomRequest struct {
+	ID       int64   `json:"id" example:"1"`
+	Name     *string `json:"name" example:"Beatty"`
+	Capacity *int    `json:"capacity" example:"50"`
 }
 
 // updateARoom update a room in the room table
@@ -216,40 +185,27 @@ func (a roomAPI) deleteARoom(w http.ResponseWriter, r *http.Request) {
 func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		msg := "unable to read body"
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusBadRequest)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+		ReportError(err, "unable to read body", http.StatusBadRequest, w)
 		return
 	}
 
 	updateRequest := updateARoomRequest{}
 	err = json.Unmarshal(body, &updateRequest)
 	if err != nil {
-		msg := "failed to unmarshal json"
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusBadRequest)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+		ReportError(err, "failed to unmarshal json", http.StatusBadRequest, w)
 		return
 	}
 
-	err = a.roomUpdater.UpdateARoom(updateRequest.ID, updateRequest.Name, updateRequest.Capacity)
-	if err != nil {
-		msg := "failed to update a room"
-		log.Printf("%s: %v", msg, err)
-		w.WriteHeader(http.StatusServiceUnavailable)
-		response, _ := json.Marshal(msg)
-		w.Write(response)
+	err = a.roomUpdater.UpdateARoom(updateRequest.ID, *updateRequest.Name, *updateRequest.Capacity)
+	switch err {
+	case nil:
+		w.Write(nil)
 		return
-	}
-
-	json, _ := json.Marshal(true)
-	_, err = w.Write(json)
-	if err != nil {
-		msg := "PUT Room update failed to write back"
-		log.Printf("%s: %v", msg, err)
+	case db.ErrNothingChanged:
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		return
+	default:
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
 		return
 	}
 }

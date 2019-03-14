@@ -18,33 +18,34 @@ func NewSessionMySQL(db *sql.DB) SessionMySQL {
 
 // ReadASession reads a session from the db given sessionID
 func (s SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
+	session := db.NewSession()
+
 	if s.db == nil {
-		return db.Session{}, ErrDBNotSet
+		return session, ErrDBNotSet
 	}
 
-	statement, err := s.db.Prepare(`SELECT session.sessionID, speaker.*, room.*, timeslot.*, session.sessionName FROM session
+	stmt, err := s.db.Prepare(`
+		SELECT session.sessionID, speaker.speakerID, speaker.email, 
+			speaker.firstName, speaker.lastName, room.roomID, room.roomName, room.capacity, 
+			timeslot.timeslotID, timeslot.startTime, timeslot.endTime, session.sessionName 
+		FROM session
 		INNER JOIN speaker ON session.speakerID = speaker.speakerID
 		INNER JOIN room ON session.roomID = room.roomID
 		INNER JOIN timeslot ON session.timeslotID = timeslot.timeslotID
 		WHERE session.sessionID = ?;`)
 	if err != nil {
-		return db.Session{}, err
+		return session, err
 	}
-	defer statement.Close()
+	defer stmt.Close()
 
-	row := statement.QueryRow(sessionID)
-
-	session := db.NewSession()
+	row := stmt.QueryRow(sessionID)
 
 	err = row.Scan(&session.ID, &session.Speaker.ID, session.Speaker.Email, session.Speaker.FirstName,
 		session.Speaker.LastName, &session.Room.ID, session.Room.Name,
 		session.Room.Capacity, &session.Timeslot.ID, &session.Timeslot.StartTime,
 		&session.Timeslot.EndTime, session.Name)
-	if err != nil {
-		return db.Session{}, err
-	}
 
-	return session, nil
+	return session, err
 }
 
 // ReadAllSessions reads all sessions from the db
@@ -53,7 +54,11 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 		return nil, ErrDBNotSet
 	}
 
-	q := `SELECT session.sessionID, speaker.*, room.*, timeslot.*, session.sessionName FROM session
+	q := `
+		SELECT session.sessionID, speaker.speakerID, speaker.email, 
+			speaker.firstName, speaker.lastName, room.roomID, room.roomName, room.capacity, 
+			timeslot.timeslotID, timeslot.startTime, timeslot.endTime, session.sessionName 
+		FROM session
 		INNER JOIN speaker ON session.speakerID = speaker.speakerID
 		INNER JOIN room ON session.roomID = room.roomID
 		INNER JOIN timeslot ON session.timeslotID = timeslot.timeslotID;`
@@ -66,12 +71,12 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 
 	sessions := []db.Session{}
 	for rows.Next() {
-		session := db.NewSession()
-		rows.Scan(&session.ID, &session.Speaker.ID, session.Speaker.Email, session.Speaker.FirstName,
-			session.Speaker.LastName, &session.Room.ID, session.Room.Name,
-			session.Room.Capacity, &session.Timeslot.ID, &session.Timeslot.StartTime,
-			&session.Timeslot.EndTime, session.Name)
-		sessions = append(sessions, session)
+		newSession := db.NewSession()
+		rows.Scan(&newSession.ID, &newSession.Speaker.ID, newSession.Speaker.Email, newSession.Speaker.FirstName,
+			newSession.Speaker.LastName, &newSession.Room.ID, newSession.Room.Name,
+			newSession.Room.Capacity, &newSession.Timeslot.ID, &newSession.Timeslot.StartTime,
+			&newSession.Timeslot.EndTime, newSession.Name)
+		sessions = append(sessions, newSession)
 	}
 
 	err = rows.Err()
@@ -88,13 +93,13 @@ func (s SessionMySQL) WriteASession(speakerID *int, roomID *int, timeslotID *int
 		return 0, ErrDBNotSet
 	}
 
-	statement, err := s.db.Prepare("INSERT INTO session (`speakerID`, `roomID`, `timeslotID`, `sessionName`) VALUES (?, ?, ?, ?);")
+	stmt, err := s.db.Prepare("INSERT INTO session (`speakerID`, `roomID`, `timeslotID`, `sessionName`) VALUES (?, ?, ?, ?);")
 	if err != nil {
 		return 0, err
 	}
-	defer statement.Close()
+	defer stmt.Close()
 
-	result, err := statement.Exec(speakerID, roomID, timeslotID, name)
+	result, err := stmt.Exec(speakerID, roomID, timeslotID, name)
 	if err != nil {
 		return 0, err
 	}
@@ -108,13 +113,13 @@ func (s SessionMySQL) UpdateASession(sessionID int64, speakerID *int, roomID *in
 		return ErrDBNotSet
 	}
 
-	statement, err := s.db.Prepare("UPDATE session SET speakerID = ?, roomID = ?, timeslotID = ?, sessionName = ? WHERE sessionID = ?;")
+	stmt, err := s.db.Prepare("UPDATE session SET speakerID = ?, roomID = ?, timeslotID = ?, sessionName = ? WHERE sessionID = ?;")
 	if err != nil {
 		return err
 	}
-	defer statement.Close()
+	defer stmt.Close()
 
-	result, err := statement.Exec(speakerID, roomID, timeslotID, name, sessionID)
+	result, err := stmt.Exec(speakerID, roomID, timeslotID, name, sessionID)
 	if err != nil {
 		return err
 	}
@@ -134,13 +139,13 @@ func (s SessionMySQL) DeleteASession(sessionID int64) error {
 		return ErrDBNotSet
 	}
 
-	statement, err := s.db.Prepare("DELETE FROM session WHERE sessionID = ?;")
+	stmt, err := s.db.Prepare("DELETE FROM session WHERE sessionID = ?;")
 	if err != nil {
 		return err
 	}
-	defer statement.Close()
+	defer stmt.Close()
 
-	result, err := statement.Exec(sessionID)
+	result, err := stmt.Exec(sessionID)
 	if err != nil {
 		return err
 	}

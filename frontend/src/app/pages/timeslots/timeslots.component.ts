@@ -4,12 +4,12 @@ import { TimeslotService } from 'src/app/services/timeslot.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-timeslots',
-  templateUrl: './timeslots.component.html',
-  styleUrls: ['./timeslots.component.css']
+  selector: "app-timeslots",
+  templateUrl: "./timeslots.component.html",
+  styleUrls: ["./timeslots.component.css"]
 })
 export class TimeslotsComponent implements OnInit {
-  constructor(private timeslotService: TimeslotService) { }
+  constructor(private timeslotService: TimeslotService) {}
   timeslots: Timeslot[];
   error: any;
   timeslot = new Timeslot("", "");
@@ -31,7 +31,7 @@ export class TimeslotsComponent implements OnInit {
       .subscribe(
         timeslots => (this.timeslots = timeslots),
         error => (this.error = error)
-      )
+      );
   }
 
   onSubmit(): void{

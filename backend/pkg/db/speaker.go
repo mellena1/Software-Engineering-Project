@@ -2,7 +2,7 @@ package db
 
 // Speaker holds all data about a speaker
 type Speaker struct {
-	ID        int64
+	ID        int64   `json:"id" example:"1"`
 	Email     *string `json:"email" example:"firstname.lastname@gmail.com"`
 	FirstName *string `json:"firstName" example:"Bob"`
 	LastName  *string `json:"lastName" example:"Smith"`
@@ -34,7 +34,7 @@ type SpeakerReader interface {
 
 // SpeakerWriter implements all write related methods
 type SpeakerWriter interface {
-	WriteASpeaker(email string, firstName string, lastName string) error
+	WriteASpeaker(email string, firstName string, lastName string) (int64, error)
 }
 
 // SpeakerUpdater implements all update related methods
