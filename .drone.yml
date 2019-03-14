@@ -21,6 +21,14 @@ steps:
   - cd backend
   - go fmt ./... | [ $(wc -l) -eq 0 ]
 
+- name: Frontend-prettier
+  image: node
+  commands:
+  - cd frontend
+  - npm install --global prettier
+  - prettier --check "**/*.ts"
+  - prettier --check "**/*.html"
+  
 trigger:
   event:
   - pull_request
