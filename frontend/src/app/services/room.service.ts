@@ -40,10 +40,7 @@ export class RoomService {
   }
 
   updateRoom(updatedRoom: Room) {
-    return this.http.post(this.apiUrl + "/room", {
-      headers: this.jsonHeaders,
-      body: JSON.stringify(updatedRoom)
-    });
+    return this.http.post(this.apiUrl + "/room", updatedRoom);
   }
 
   deleteRoom(id: number) {

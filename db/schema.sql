@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS session,
 
 CREATE TABLE speaker (
     speakerID   INT          AUTO_INCREMENT NOT NULL,
-    email       VARCHAR(32)  NOT NULL,
+    email       VARCHAR(32),
     firstName   VARCHAR(32),
     lastName    VARCHAR(32),
     PRIMARY KEY (speakerID)
@@ -40,7 +40,7 @@ CREATE TABLE session (
     FOREIGN KEY (speakerID)  REFERENCES speaker (speakerID) ON DELETE SET NULL,
     FOREIGN KEY (timeslotID) REFERENCES timeslot (timeslotID) ON DELETE SET NULL,
     FOREIGN KEY (roomID)     REFERENCES room (roomID) ON DELETE SET NULL,
-    FOREIGN KEY (timeslotID) REFERENCES timeslot (timeslotID),
+    FOREIGN KEY (timeslotID) REFERENCES timeslot (timeslotID) ON DELETE SET NULL,
     PRIMARY KEY (sessionID)
 );
 

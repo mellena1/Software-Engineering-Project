@@ -2,60 +2,137 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
     <title>Timeslot List</title>
   </head>
   <body>
-    <div class="container-fluid mb-5">
-      <h1>Timeslots</h1>
-      <h2>Add a Timeslot</h2>
-      <form #selectedTimeslot="ngForm">
-        <div class="form-group">
-          <span>Start Time: </span>
-          <input
-            class="form-control"
-            type="time"
-            name="startTime"
-            [(ngModel)]="selectedTimeslot.startTime"
-            placeholder="HH:MM:SS"
-            required
-          />
-        </div>
-        <br />
-        <div class="form-group">
-          <span>End Time: </span>
-          <input
-            class="form-control"
-            type="time"
-            name="endTime"
-            [(ngModel)]="selectedTimeslot.endTime"
-            placeholder="HH:MM:SS"
-            required
-          />
-        </div>
-        <button (click)="addTimeslot(selectedTimeslot)">Add</button>
+    <div class="container">
+      <br />
+      <h3 align="center">Timeslots</h3>
+      <br />
+      <div
+        class="table-responsive"
+        ng-app="app-timeslot"
+        ng-init="getAllTimeslots()"
+      >
+        <form [formGroup]="timeslotForm" (ngSubmit)="onSubmit()">
+          <!--{{timeslot | json}}
+                  {{currentTimeslot | json}}-->
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input
+                    type="datetime-local"
+                    formControlName="timeslotStart"
+                    [(ngModel)]="timeslot.startTime"
+                    name="start"
+                    class="form-control"
+                    ng-required="true"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="datetime-local"
+                    formControlName="timeslotEnd"
+                    [(ngModel)]="timeslot.endTime"
+                    name="end"
+                    class="form-control"
+                    ng-required="true"
+                  />
+                </td>
+                <td>
+                  <button
+                    type="submit"
+                    class="btn btn-success btn-sm"
+                    ng-disabled="timeslotForm.$invalid"
+                  >
+                    Add
+                  </button>
+                </td>
+              </tr>
 
-        <h2>List of Timeslots</h2>
-        <ul class="Timeslots">
-          <li
-            *ngFor="let timeslot of timeslots"
-            [class.selected]="timeslot == selectedTimeslot"
-            (click)="onSelect(timeslot)"
-          >
-            <span class="badge">{{ timeslot.startTime }} </span>
-            {{ timeslot.endTime }}
-          </li>
-        </ul>
-      </form>
+              <tr *ngFor="let timeslot of timeslots">
+                <td *ngIf="!timeslot.isEditable">
+                  <span>{{ timeslot.startTime }}</span>
+                </td>
+
+                <td *ngIf="timeslot.isEditable">
+                  <input
+                    type="datetime-local"
+                    formControlName="timeslotStart"
+                    [(ngModel)]="currentTimeslot.startTime"
+                    name="currentStart"
+                    class="form-control"
+                    ng-required="true"
+                  />
+                </td>
+
+                <td *ngIf="!timeslot.isEditable">
+                  <span>{{ timeslot.endTime }}</span>
+                </td>
+
+                <td *ngIf="timeslot.isEditable">
+                  <input
+                    type="datetime-local"
+                    formControlName="timeslotEnd"
+                    [(ngModel)]="currentTimeslot.endTime"
+                    name="currentEnd"
+                    class="form-control"
+                    ng-required="true"
+                  />
+                </td>
+
+                <td *ngIf="!timeslot.isEditable">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    (click)="showEdit(timeslot)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="deleteTimeslot(timeslot.id)"
+                  >
+                    Delete
+                  </button>
+                </td>
+
+                <td *ngIf="timeslot.isEditable">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    (click)="updateTimeslot()"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="cancel(timeslot)"
+                  >
+                    Cancel
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
     </div>
   </body>
-
-  <div *ngIf="selectedRoom">
-    <h2>Edit Timeslot:</h2>
-    <div>
-      <span>Start Time: </span> <input [(ngModel)]="selectedRoom.startTime" />
-    </div>
-    <div>
-      <span>End Time:</span> <input [(ngModel)]="selectedRoom.endTime" />
-    </div>
-  </div>
 </html>

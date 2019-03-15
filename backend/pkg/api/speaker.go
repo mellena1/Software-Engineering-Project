@@ -92,9 +92,20 @@ func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
 
 // writeASpeakerRequest request for writeASpeaker
 type writeASpeakerRequest struct {
-	Email     string `json:"email" example:"person@gmail.com"`
-	FirstName string `json:"firstName" example:"Bob"`
-	LastName  string `json:"lastName" example:"Smith"`
+	Email     *string `json:"email" example:"person@gmail.com"`
+	FirstName *string `json:"firstName" example:"Bob"`
+	LastName  *string `json:"lastName" example:"Smith"`
+}
+
+// Validate validates a writeASpeakerRequest
+func (r writeASpeakerRequest) Validate() error {
+	if r.Email == nil && r.FirstName == nil && r.LastName == nil {
+		return ErrInvalidRequest
+	}
+	if *r.Email == "" && *r.FirstName == "" && *r.LastName == "" {
+		return ErrInvalidRequest
+	}
+	return nil
 }
 
 // writeASpeaker Inserts a speaker into the database
@@ -120,6 +131,11 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err = speakerRequest.Validate(); err != nil {
+		ReportError(err, "one of email, firstName, and lastName must be set", http.StatusBadRequest, w)
+		return
+	}
+
 	id, err := a.speakerWriter.WriteASpeaker(speakerRequest.Email, speakerRequest.FirstName, speakerRequest.LastName)
 	if err != nil {
 		ReportError(err, "failed to write a room", http.StatusServiceUnavailable, w)
@@ -131,10 +147,24 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 
 // updateASpeakerRequest request for updateASpeaker
 type updateASpeakerRequest struct {
-	ID        int64  `json:"id" example:"1"`
-	Email     string `json:"email" example:"person@gmail.com"`
-	FirstName string `json:"firstName" example:"Bob"`
-	LastName  string `json:"lastName" example:"Smith"`
+	ID        *int64  `json:"id" example:"1"`
+	Email     *string `json:"email" example:"person@gmail.com"`
+	FirstName *string `json:"firstName" example:"Bob"`
+	LastName  *string `json:"lastName" example:"Smith"`
+}
+
+// Validate validates a updateASpeakerRequest
+func (r updateASpeakerRequest) Validate() error {
+	if r.ID == nil {
+		return ErrInvalidRequest
+	}
+	if r.Email == nil && r.FirstName == nil && r.LastName == nil {
+		return ErrInvalidRequest
+	}
+	if *r.Email == "" && *r.FirstName == "" && *r.LastName == "" {
+		return ErrInvalidRequest
+	}
+	return nil
 }
 
 // updateASpeaker Edits a speaker already in the database
@@ -160,7 +190,12 @@ func (a speakerAPI) updateASpeaker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = a.speakerUpdater.UpdateASpeaker(speakerRequest.ID, speakerRequest.Email, speakerRequest.FirstName, speakerRequest.LastName)
+	if err = speakerRequest.Validate(); err != nil {
+		ReportError(err, "must pass an id and one of email, firstName, and lastName must be set", http.StatusBadRequest, w)
+		return
+	}
+
+	err = a.speakerUpdater.UpdateASpeaker(*speakerRequest.ID, speakerRequest.Email, speakerRequest.FirstName, speakerRequest.LastName)
 	switch err {
 	case nil:
 		w.Write(nil)

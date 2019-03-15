@@ -2,7 +2,7 @@ package db
 
 // Session holds all data about a session
 type Session struct {
-	ID       int64     `json:"id" example:"1"`
+	ID       *int64    `json:"id" example:"1"`
 	Timeslot *Timeslot `json:"timeslot"`
 	Name     *string   `json:"name" example:"Session Name"`
 	Speaker  *Speaker  `json:"speaker"`
@@ -15,7 +15,7 @@ func NewSession() Session {
 	speaker := NewSpeaker()
 	timeslot := NewTimeslot()
 	return Session{
-		ID:       0,
+		ID:       Int64Ptr(0),
 		Timeslot: &timeslot,
 		Name:     StringPtr(""),
 		Speaker:  &speaker,
@@ -39,12 +39,12 @@ type SessionReader interface {
 
 // SessionWriter implements all write related methods
 type SessionWriter interface {
-	WriteASession(speakerID *int, roomID *int, timeslotID *int64, name *string) (int64, error)
+	WriteASession(speakerID *int64, roomID *int64, timeslotID *int64, name *string) (int64, error)
 }
 
 // SessionUpdater implements all update related methods
 type SessionUpdater interface {
-	UpdateASession(sessionID int64, speakerID *int, roomID *int, timeslotID *int64, name *string) error
+	UpdateASession(sessionID int64, speakerID *int64, roomID *int64, timeslotID *int64, name *string) error
 }
 
 // SessionDeleter implements all delete related methods
