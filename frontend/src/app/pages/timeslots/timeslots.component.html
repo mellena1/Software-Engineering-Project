@@ -21,7 +21,8 @@
         ng-init="getAllTimeslots()"
       >
         <form [formGroup]="timeslotForm" (ngSubmit)="onSubmit()">
-          {{ timeslot | json }}
+          <!--{{timeslot | json}}
+                  {{currentTimeslot | json}}-->
           <table class="table table-bordered table-striped">
             <thead>
               <tr>
@@ -63,15 +64,6 @@
                 </td>
               </tr>
 
-              <!--<tr *ngFor="let timeslot of timeslots">
-                        <td><span>{{timeslot.startTime}}</span></td>
-                        <td><span>{{timeslot.endTime}}</span></td>
-                        <td>
-                            <button type="button" class="btn btn-primary btn-sm" ng-click="showEdit(timeslot)">Edit</button>
-                            <button type="button" class="btn btn-danger btn-sm" (click)="deleteRoom(timeslot.id)">Delete</button>
-                        </td>
-                      </tr>-->
-
               <tr *ngFor="let timeslot of timeslots">
                 <td *ngIf="!timeslot.isEditable">
                   <span>{{ timeslot.startTime }}</span>
@@ -81,7 +73,8 @@
                   <input
                     type="datetime-local"
                     formControlName="timeslotStart"
-                    [(ngModel)]="timeslot.startTime"
+                    [(ngModel)]="currentTimeslot.startTime"
+                    name="currentStart"
                     class="form-control"
                     ng-required="true"
                   />
@@ -95,7 +88,8 @@
                   <input
                     type="datetime-local"
                     formControlName="timeslotEnd"
-                    [(ngModel)]="timeslot.endTime"
+                    [(ngModel)]="currentTimeslot.endTime"
+                    name="currentEnd"
                     class="form-control"
                     ng-required="true"
                   />
@@ -122,7 +116,7 @@
                   <button
                     type="button"
                     class="btn btn-primary btn-sm"
-                    (click)="updateTimeslot(timesolt)"
+                    (click)="updateTimeslot()"
                   >
                     Save
                   </button>
