@@ -88,14 +88,13 @@ func (a roomAPI) getARoom(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
-// writeARoomRequest request for writeARoom
-type writeARoomRequest struct {
+// WriteARoomRequest request for writeARoom
+type WriteARoomRequest struct {
 	Name     string `json:"name" example:"Beatty"`
 	Capacity *int64 `json:"capacity" example:"50"`
 }
 
-// Validate validates a writeARoomRequest
-func (r writeARoomRequest) Validate() error {
+// Validate validates a WriteARoomRequest
 	if r.Name == "" {
 		return ErrInvalidRequest
 	}
@@ -107,7 +106,7 @@ func (r writeARoomRequest) Validate() error {
 // @Description Write a room to the db
 // @Accept json
 // @Produce json
-// @Param room body api.writeARoomRequest true "Room to write"
+// @Param room body api.WriteARoomRequest true "Room to write"
 // @Success 200 {int} nil
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
@@ -119,7 +118,7 @@ func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	roomRequest := writeARoomRequest{}
+	roomRequest := WriteARoomRequest{}
 	err = json.Unmarshal(body, &roomRequest)
 	if err != nil {
 		ReportError(err, "failed to unmarshal json", http.StatusBadRequest, w)
@@ -140,15 +139,15 @@ func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
 	writeIDToClient(w, id)
 }
 
-// updateARoomRequest request for updateARoom
-type updateARoomRequest struct {
+// UpdateARoomRequest request for updateARoom
+type UpdateARoomRequest struct {
 	ID       *int64 `json:"id" example:"1"`
 	Name     string `json:"name" example:"Beatty"`
 	Capacity *int64 `json:"capacity" example:"50"`
 }
 
-// Validate validates a updateARoomRequest
-func (r updateARoomRequest) Validate() error {
+// Validate validates a UpdateARoomRequest
+func (r UpdateARoomRequest) Validate() error {
 	if r.Name == "" || r.ID == nil {
 		return ErrInvalidRequest
 	}
@@ -161,10 +160,11 @@ func (r updateARoomRequest) Validate() error {
 // @Accept json
 // @Produce json
 // @param id query int true "the room to delete"
-// @Success 200 {boolean} nil
-// @Failure 400 {boolean} nil
+// @Success 200 "Updated properly"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/room [PUT]
-// @Param room body api.updateARoomRequest true "Room to update"
+// @Param room body api.UpdateARoomRequest true "Room to update"
 func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -172,7 +172,7 @@ func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	updateRequest := updateARoomRequest{}
+	updateRequest := UpdateARoomRequest{}
 	err = json.Unmarshal(body, &updateRequest)
 	if err != nil {
 		ReportError(err, "failed to unmarshal json", http.StatusBadRequest, w)

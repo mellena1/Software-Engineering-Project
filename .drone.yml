@@ -11,9 +11,14 @@ steps:
 
 - name: Backend-Run-go-tests
   image: golang:1.11.5
+  environment:
+    CODECAMP_DBUSER: root
+    CODECAMP_DBPASS: codecamp
+    CODECAMP_DBADDR: mysqlDB
+    CODECAMP_DBNET: tcp
   commands:
   - cd backend
-  - go test -v ./...
+  - go test -v -tags=integration ./...
 
 - name: Backend-gofmt
   image: golang:1.11.5
@@ -29,6 +34,12 @@ steps:
   - prettier --check "**/*.ts"
   - prettier --check "**/*.html"
   
+services:
+- name: mysqlDB
+  image: mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: codecamp
+
 trigger:
   event:
   - pull_request
