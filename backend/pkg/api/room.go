@@ -95,6 +95,7 @@ type WriteARoomRequest struct {
 }
 
 // Validate validates a WriteARoomRequest
+func (r WriteARoomRequest) Validate() error {
 	if r.Name == "" {
 		return ErrInvalidRequest
 	}
