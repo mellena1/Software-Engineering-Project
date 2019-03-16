@@ -51,12 +51,12 @@ func TestAddRoom(t *testing.T) {
 		JSON(map[string]int{"id": 1}).
 		Done()
 
-	row := apiObj.db.QueryRow("SELECT roomID, roomName, capacity FROM room WHERE roomID = 1;")
 	expected := db.Room{
 		ID:       db.Int64Ptr(1),
 		Name:     db.StringPtr("beatty"),
 		Capacity: db.Int64Ptr(100),
 	}
+	row := apiObj.db.QueryRow("SELECT roomID, roomName, capacity FROM room WHERE roomID = 1;")
 	actual := db.NewRoom()
 	err := row.Scan(actual.ID, actual.Name, actual.Capacity)
 	if err != nil {
@@ -81,12 +81,12 @@ func TestUpdateRoom(t *testing.T) {
 		Status(200).
 		Done()
 
-	row := apiObj.db.QueryRow("SELECT roomID, roomName, capacity FROM room WHERE roomID = 1;")
 	expected := db.Room{
 		ID:       db.Int64Ptr(1),
 		Name:     db.StringPtr("wentworth"),
 		Capacity: db.Int64Ptr(25),
 	}
+	row := apiObj.db.QueryRow("SELECT roomID, roomName, capacity FROM room WHERE roomID = 1;")
 	actual := db.NewRoom()
 	err := row.Scan(actual.ID, actual.Name, actual.Capacity)
 	if err != nil {
