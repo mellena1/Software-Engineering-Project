@@ -10,11 +10,24 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 })
 export class TimeslotsComponent implements OnInit {
   constructor(private timeslotService: TimeslotService) {}
+  
   timeslots: Timeslot[];
   error: any;
   timeslot = new Timeslot("", "");
   currentTimeslot = new Timeslot("", "");
-  //oldTimeslot = new Timeslot("", "");
+  timeFormat: any;
+  checked: any;
+
+  startHour: any;
+  startMin: any;
+  endHour: any;
+  endMin: any;
+
+  currentStartHour: any;
+  currentStartMin: any;
+  currentEndHour: any;
+  currentEndMin: any;
+
   timeslotForm = new FormGroup({
     timeslotStart: new FormControl(""),
     timeslotEnd: new FormControl("")
@@ -22,6 +35,16 @@ export class TimeslotsComponent implements OnInit {
 
   ngOnInit() {
     this.getAllTimeslots();
+    this.timeFormat = "12hour";
+    this.checked = true;
+    this.startHour = "00";
+    this.startMin = "00";
+    this.endHour = "00";
+    this.endMin = "00";
+    this.currentStartHour = "00";
+    this.currentStartMin = "00";
+    this.currentEndHour = "00";
+    this.currentEndMin = "00";
   }
 
   getAllTimeslots(): void {
@@ -33,15 +56,37 @@ export class TimeslotsComponent implements OnInit {
       );
   }
 
+  onSelect(): void{
+    if(this.timeFormat == "12hour"){
+      this.checked = true;
+    }
+    else{
+      this.checked = false;
+    }
+  }
+
   onSubmit(): void {
+    var fullStart = "";
+    var fullEnd = "";
+    //var seconds = ":00Z";
+
+    if(!this.checked){
+
+      fullStart = fullStart.concat(this.startHour).concat(":").concat(this.startMin);
+      fullEnd = fullEnd.concat(this.endHour).concat(":").concat(this.endMin);
+
+      this.timeslot.startTime = fullStart;
+      this.timeslot.endTime = fullEnd;
+      
+    }
+
     if (this.timeslot.startTime == "" || this.timeslot.endTime == "") {
       alert("Please enter a date and time for both fields");
       this.timeslotForm.reset();
     }
 
-    var seconds = ":00Z";
-    this.timeslot.startTime = this.timeslot.startTime.concat(seconds);
-    this.timeslot.endTime = this.timeslot.endTime.concat(seconds);
+    //this.timeslot.startTime = this.timeslot.startTime.concat(seconds);
+    //this.timeslot.endTime = this.timeslot.endTime.concat(seconds);
 
     var newTimeslot = new Timeslot(
       this.timeslot.startTime,
