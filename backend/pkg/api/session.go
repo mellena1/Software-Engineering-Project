@@ -90,10 +90,18 @@ func (s sessionAPI) getAllSessions(w http.ResponseWriter, r *http.Request) {
 
 // writeASessionRequest request for writeASession
 type writeASessionRequest struct {
-	SpeakerID   *int    `json:"speakerID" example:"1"`
-	RoomID      *int    `json:"roomID" example:"1"`
+	SpeakerID   *int64  `json:"speakerID" example:"1"`
+	RoomID      *int64  `json:"roomID" example:"1"`
 	TimeslotID  *int64  `json:"timeslotID" example:"1"`
 	SessionName *string `json:"sessionName" example:"Microservices"`
+}
+
+// Validate validates a writeASessionRequest
+func (r writeASessionRequest) Validate() error {
+	if r.SpeakerID == nil && r.RoomID == nil && r.TimeslotID == nil && r.SessionName == nil {
+		return ErrInvalidRequest
+	}
+	return nil
 }
 
 // writeASession Add a session to the db
@@ -120,6 +128,11 @@ func (s sessionAPI) writeASession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err = sessionRequest.Validate(); err != nil {
+		ReportError(err, "must set one of speakerID, roomID, timeslotID, sessionName", http.StatusBadRequest, w)
+		return
+	}
+
 	id, err := s.sessionWriter.WriteASession(sessionRequest.SpeakerID, sessionRequest.RoomID, sessionRequest.TimeslotID, sessionRequest.SessionName)
 	if err != nil {
 		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
@@ -131,11 +144,22 @@ func (s sessionAPI) writeASession(w http.ResponseWriter, r *http.Request) {
 
 // updateASessionRequest request for updateASession
 type updateASessionRequest struct {
-	SessionID   int64   `json:"sessionID" example:"1"`
-	SpeakerID   *int    `json:"speakerID" example:"1"`
-	RoomID      *int    `json:"roomID" example:"1"`
+	SessionID   *int64  `json:"sessionID" example:"1"`
+	SpeakerID   *int64  `json:"speakerID" example:"1"`
+	RoomID      *int64  `json:"roomID" example:"1"`
 	TimeslotID  *int64  `json:"timeslotID" example:"1"`
 	SessionName *string `json:"sessionName" example:"Microservices"`
+}
+
+// Validate validates a updateASessionRequest
+func (r updateASessionRequest) Validate() error {
+	if r.SessionID == nil {
+		return ErrInvalidRequest
+	}
+	if r.SpeakerID == nil && r.RoomID == nil && r.TimeslotID == nil && r.SessionName == nil {
+		return ErrInvalidRequest
+	}
+	return nil
 }
 
 // updateASession Update an existing session in the db
@@ -162,7 +186,12 @@ func (s sessionAPI) updateASession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.sessionUpdater.UpdateASession(sessionRequest.SessionID, sessionRequest.SpeakerID, sessionRequest.RoomID, sessionRequest.TimeslotID, sessionRequest.SessionName)
+	if err = sessionRequest.Validate(); err != nil {
+		ReportError(err, "must set sessionID and must set one of speakerID, roomID, timeslotID, sessionName", http.StatusBadRequest, w)
+		return
+	}
+
+	err = s.sessionUpdater.UpdateASession(*sessionRequest.SessionID, sessionRequest.SpeakerID, sessionRequest.RoomID, sessionRequest.TimeslotID, sessionRequest.SessionName)
 	switch err {
 	case nil:
 		w.Write(nil)

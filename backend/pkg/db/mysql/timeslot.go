@@ -17,6 +17,11 @@ func NewTimeslotMySQL(db *sql.DB) TimeslotMySQL {
 	return TimeslotMySQL{db}
 }
 
+// scanATimeslot takes in a timeslot pointer and scans a row into it
+func scanATimeslot(timeslot *db.Timeslot, row rowScanner) error {
+	return row.Scan(&timeslot.ID, &timeslot.StartTime, &timeslot.EndTime)
+}
+
 // ReadATimeslot reads a timeslot from the db given an id
 func (t TimeslotMySQL) ReadATimeslot(id int64) (db.Timeslot, error) {
 	timeslot := db.NewTimeslot()
@@ -33,7 +38,7 @@ func (t TimeslotMySQL) ReadATimeslot(id int64) (db.Timeslot, error) {
 
 	row := stmt.QueryRow(id)
 
-	err = row.Scan(&timeslot.ID, &timeslot.StartTime, &timeslot.EndTime)
+	err = scanATimeslot(&timeslot, row)
 
 	return timeslot, err
 }
@@ -55,7 +60,7 @@ func (t TimeslotMySQL) ReadAllTimeslots() ([]db.Timeslot, error) {
 	timeslots := []db.Timeslot{}
 	for rows.Next() {
 		newTimeslot := db.NewTimeslot()
-		rows.Scan(&newTimeslot.ID, &newTimeslot.StartTime, &newTimeslot.EndTime)
+		scanATimeslot(&newTimeslot, rows)
 		timeslots = append(timeslots, newTimeslot)
 	}
 

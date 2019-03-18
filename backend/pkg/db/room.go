@@ -2,17 +2,17 @@ package db
 
 // Room holds all data about a room
 type Room struct {
-	ID       int64   `json:"id" example:"1"`
+	ID       *int64  `json:"id" example:"1"`
 	Name     *string `json:"name" example:"My Room Name"`
-	Capacity *int    `json:"capacity" example:"50"`
+	Capacity *int64  `json:"capacity" example:"50"`
 }
 
 // NewRoom makes a new Room with default values
 func NewRoom() Room {
 	return Room{
-		ID:       0,
+		ID:       Int64Ptr(0),
 		Name:     StringPtr(""),
-		Capacity: IntPtr(0),
+		Capacity: Int64Ptr(0),
 	}
 }
 
@@ -32,12 +32,12 @@ type RoomReader interface {
 
 // RoomWriter implements all write related methods
 type RoomWriter interface {
-	WriteARoom(name string, capacity int) (int64, error)
+	WriteARoom(name string, capacity *int64) (int64, error)
 }
 
 // RoomUpdater implements all update related methods
 type RoomUpdater interface {
-	UpdateARoom(id int64, name string, capacity int) error
+	UpdateARoom(id int64, name string, capacity *int64) error
 }
 
 // RoomDeleter implements all delete related methods

@@ -9,4 +9,6 @@ var (
 	ErrBadQuery = errors.New("a query in the HTTP request is invalid")
 	// ErrBadQueryType a query passed is not the right type
 	ErrBadQueryType = errors.New("a query is not the right type")
+	// ErrInvalidRequest the body request is invalid (body requests)
+	ErrInvalidRequest = errors.New("the body request is invalid")
 )
