@@ -54,6 +54,7 @@
                     id="Room"
                     ng-required="true"
                   >
+                    <option label = " "></option> 
                     <option *ngFor="let room of rooms" [ngValue]="room">{{
                       room.name
                     }}</option>
@@ -68,6 +69,7 @@
                     id="Speaker"
                     ng-required="true"
                   >
+                    <option label = " "></option> 
                     <option *ngFor="let speaker of speakers" [ngValue]="speaker"
                       >{{ speaker.firstName }} {{ speaker.lastName }}</option
                     >
@@ -82,6 +84,7 @@
                     id="Timeslot"
                     ng-required="true"
                   >
+                    <option label = " "></option> 
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
@@ -130,6 +133,7 @@
                     id="Room"
                     ng-required="true"
                   >
+                    <option label = " "></option> 
                     <option *ngFor="let room of rooms" [ngValue]="room">{{
                       room.name
                     }}</option>
@@ -151,6 +155,7 @@
                     id="Speaker"
                     ng-required="true"
                   >
+                    <option label = " "></option> 
                     <option *ngFor="let speaker of speakers" [ngValue]="speaker"
                       >{{ speaker.firstName }} {{ speaker.lastName }}</option
                     >
@@ -172,6 +177,7 @@
                     id="Timeslot"
                     ng-required="true"
                   >
+                    <option label = " "></option> 
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
