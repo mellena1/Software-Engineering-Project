@@ -16,6 +16,8 @@ import (
 var apiObj *API
 var apiTester *baloo.Client
 
+var dbSchemaCommands []string
+
 func init() {
 	var err error
 	apiObj, err = NewAPI(*config.Values.MySQLConfig, nil)
@@ -23,28 +25,32 @@ func init() {
 		panic(err)
 	}
 
-	resetDB(apiObj)
+	dbSchemaCommands = readDBSchema()
+
+	resetDB()
 
 	httpTester := httptest.NewServer(apiObj.getHandler())
 	apiTester = baloo.New(httpTester.URL)
 }
 
-func resetDB(api *API) {
-	dat, err := ioutil.ReadFile("../../../../db/schema.sql")
-	if err != nil {
-		panic(err)
-	}
-
-	requests := strings.Split(string(dat), ";")
-
-	for _, request := range requests {
+func resetDB() {
+	for _, request := range dbSchemaCommands {
 		if len(strings.TrimSpace(request)) == 0 {
 			continue
 		}
-		_, err = api.db.Exec(request)
+		_, err := apiObj.db.Exec(request)
 		if err != nil {
 			fmt.Println("-----Probably not pointing to an alive DB. Make sure all environment variables are set right-----")
 			panic(err)
 		}
 	}
+}
+
+func readDBSchema() []string {
+	dat, err := ioutil.ReadFile("../../../../db/schema.sql")
+	if err != nil {
+		panic(err)
+	}
+
+	return strings.Split(string(dat), ";")
 }

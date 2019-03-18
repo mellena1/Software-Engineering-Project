@@ -20,7 +20,7 @@ func insertValidRoom() error {
 }
 
 func TestGetRoom(t *testing.T) {
-	resetDB(apiObj)
+	resetDB()
 
 	insertValidRoom()
 
@@ -38,7 +38,7 @@ func TestGetRoom(t *testing.T) {
 }
 
 func TestAddRoom(t *testing.T) {
-	resetDB(apiObj)
+	resetDB()
 
 	val := api.WriteARoomRequest{
 		Name:     "beatty",
@@ -66,7 +66,7 @@ func TestAddRoom(t *testing.T) {
 }
 
 func TestUpdateRoom(t *testing.T) {
-	resetDB(apiObj)
+	resetDB()
 
 	insertValidRoom()
 
@@ -96,7 +96,7 @@ func TestUpdateRoom(t *testing.T) {
 }
 
 func TestDeleteRoom(t *testing.T) {
-	resetDB(apiObj)
+	resetDB()
 
 	insertValidRoom()
 
