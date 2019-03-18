@@ -13,7 +13,9 @@ export class RoomsComponent implements OnInit {
   rooms: Room[];
   error: any;
   room = new Room("", 0);
-  isEditable = false;
+  currentRoom = new Room("",0);
+
+//  isEditable = false;
   roomForm = new FormGroup({
     roomName: new FormControl(""),
     roomCapacity: new FormControl("")
@@ -34,7 +36,9 @@ export class RoomsComponent implements OnInit {
   getAllRooms(): void {
     this.roomService
       .getAllRooms()
-      .subscribe(rooms => (this.rooms = rooms), error => (this.error = error));
+      .subscribe(
+      rooms => (this.rooms = rooms), 
+      error => (this.error = error));
   }
 
   onSubmit(): void {
@@ -48,7 +52,31 @@ export class RoomsComponent implements OnInit {
       );
     console.log("Room Submitted!", this.roomForm.value);
     this.roomForm.reset();
-
     this.rooms.push(newRoom);
   }
+
+  updateRoom(room: Room): void {
+    room.isEditable=false;
+    if (confirm("Are you sure you want to update this?")) {
+      this.roomService
+        .updateRoom(this.currentRoom)
+        .subscribe(
+          error => (this.error = error),
+          id => (this.currentRoom.id = id)
+        );
+      console.log("The following Rooms Updated :", this.roomForm.value);
+    }
+   // this.roomForm.reset();
+  }
+
+  showEdit(room: Room): void {
+    room.isEditable = true;
+    this.currentRoom.id = room.id;
+  }
+
+  cancel(room: Room): void {
+    room.isEditable = false;
+    this.roomForm.reset();
+  }
+
 }

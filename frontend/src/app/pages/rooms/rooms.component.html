@@ -8,20 +8,18 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
-    <title>List of Rooms</title>
+    <title>Rooms List</title>
   </head>
   <body>
     <div class="container">
       <br />
       <h3 align="center">Rooms</h3>
       <br />
-      <div class="table-responsive" ng-app="app-rooms" ng-init="getAllRooms()">
-        <!--    
-                        <div class="alert alert-success alert-dismissible" ng-show="success" >
-                                    <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">&times;</a>
-                                    {{successMessage}}
-                                </div>
-                            -->
+      <div
+        class="table-responsive"
+        ng-app="app-rooms"
+        ng-init="getAllRooms()"
+      >
         <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
           <table class="table table-bordered table-striped">
             <thead>
@@ -39,7 +37,6 @@
                     formControlName="roomName"
                     [(ngModel)]="room.name"
                     class="form-control"
-                    placeholder="Enter Room Name"
                     ng-required="true"
                   />
                 </td>
@@ -49,7 +46,6 @@
                     formControlName="roomCapacity"
                     [(ngModel)]="room.capacity"
                     class="form-control"
-                    placeholder="Enter Room Capacity"
                     ng-required="true"
                   />
                 </td>
@@ -63,18 +59,41 @@
                   </button>
                 </td>
               </tr>
+
               <tr *ngFor="let room of rooms">
-                <td>
+                <td *ngIf="!room.isEditable">
                   <span>{{ room.name }}</span>
                 </td>
-                <td>
+
+                <td *ngIf="room.isEditable">
+                  <input
+                    type="text"
+                    formControlName="roomName"
+                    [(ngModel)]="currentRoom.name"
+                    class="form-control"
+                    ng-required="true"
+                  />
+                </td>
+
+                <td *ngIf="!room.isEditable">
                   <span>{{ room.capacity }}</span>
                 </td>
-                <td>
+
+                <td *ngIf="room.isEditable">
+                  <input
+                    type="number"
+                    formControlName="roomCapacity"
+                    [(ngModel)]="currentRoom.Capacity"
+                    class="form-control"
+                    ng-required="true"
+                  />
+                </td>
+
+                <td *ngIf="!room.isEditable">
                   <button
                     type="button"
                     class="btn btn-primary btn-sm"
-                    ng-click="editRoom()"
+                    (click)="showEdit(room)"
                   >
                     Edit
                   </button>
@@ -86,19 +105,27 @@
                     Delete
                   </button>
                 </td>
+
+                <td *ngIf="room.isEditable">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    (click)="updateRoom(room)"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="cancel(room)"
+                  >
+                    Cancel
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
         </form>
-        <script type="text/ng-template" id="edit">
-          <td><input type="text" ng-model="formData.first_name" class="form-control" /></td>
-          <td><input type="text" ng-model="formData.last_name" class="form-control" /></td>
-          <td>
-              <input type="hidden" ng-model="formData.data.id" />
-              <button type="button" class="btn btn-info btn-sm" ng-click="editData()">Save</button>
-              <button type="button" class="btn btn-default btn-sm" ng-click="reset()">Cancel</button>
-          </td>
-        </script>
       </div>
     </div>
   </body>
