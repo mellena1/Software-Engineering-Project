@@ -21,7 +21,7 @@ type API struct {
 }
 
 // NewAPI returns a new API given a mysqlDriver.Config
-// passing nil to logWriter logs to stdout
+// passing nil to logWriter means no access log
 func NewAPI(mySQLConfig mysqlDriver.Config, logWriter io.Writer) (*API, error) {
 	db, err := sql.Open("mysql", mySQLConfig.FormatDSN())
 	if err != nil {
