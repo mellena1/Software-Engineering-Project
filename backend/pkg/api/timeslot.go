@@ -92,8 +92,8 @@ func (t timeslotAPI) getATimeslot(w http.ResponseWriter, r *http.Request) {
 
 // WriteATimeslotRequest request for writeATimeslot
 type WriteATimeslotRequest struct {
-	StartTime *string `json:"startTime" example:"2019-02-18 21:00:00"`
-	EndTime   *string `json:"endTime" example:"2019-10-01 23:00:00"`
+	StartTime *string `json:"startTime" example:"2019-02-18T21:00:00Z"`
+	EndTime   *string `json:"endTime" example:"2019-10-01T23:00:00Z"`
 }
 
 // Validate validates a WriteATimeslotRequest
@@ -159,8 +159,8 @@ func (t timeslotAPI) writeATimeslot(w http.ResponseWriter, r *http.Request) {
 // UpdateATimeslotRequest request for updateATimeslot
 type UpdateATimeslotRequest struct {
 	ID        *int64  `json:"id" example:"1"`
-	StartTime *string `json:"startTime" example:"2019-02-18 21:00:00"`
-	EndTime   *string `json:"endTime" example:"2019-10-01 23:00:00"`
+	StartTime *string `json:"startTime" example:"2019-02-18T21:00:00Z"`
+	EndTime   *string `json:"endTime" example:"2019-10-01T23:00:00Z"`
 }
 
 // Validate validates a UpdateATimeslotRequest

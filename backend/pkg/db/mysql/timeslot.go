@@ -7,6 +7,10 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
+const (
+	mysqlTimeformat = "2006-01-02 15:04:05"
+)
+
 // TimeslotMySQL implements TimeslotReaderWriterUpdaterDeleter
 type TimeslotMySQL struct {
 	db *sql.DB
@@ -83,7 +87,7 @@ func (t TimeslotMySQL) WriteATimeslot(startTime, endTime time.Time) (int64, erro
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(startTime.Format(db.TimeFormat), endTime.Format(db.TimeFormat))
+	result, err := stmt.Exec(startTime.Format(mysqlTimeformat), endTime.Format(mysqlTimeformat))
 	if err != nil {
 		return 0, err
 	}
@@ -103,7 +107,7 @@ func (t TimeslotMySQL) UpdateATimeslot(id int64, startTime, endTime time.Time) e
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(startTime.Format(db.TimeFormat), endTime.Format(db.TimeFormat), id)
+	result, err := stmt.Exec(startTime.Format(mysqlTimeformat), endTime.Format(mysqlTimeformat), id)
 	if err != nil {
 		return err
 	}
