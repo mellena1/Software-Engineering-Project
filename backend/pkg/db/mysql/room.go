@@ -20,24 +20,23 @@ func NewRoomMySQL(db *sql.DB) RoomMySQL {
 func scanARoom(room *db.Room, row rowScanner) error {
 	capacity := sql.NullInt64{}
 	err := row.Scan(&room.ID, room.Name, &capacity)
-	room.Capacity = nullIntToInt(capacity)
+	room.Capacity = NullIntToInt(capacity)
 	return err
 }
 
 // ReadARoom reads a room from the db given roomID
 func (r RoomMySQL) ReadARoom(roomID int64) (db.Room, error) {
-	room := db.NewRoom()
-
 	if r.db == nil {
-		return room, ErrDBNotSet
+		return db.Room{}, ErrDBNotSet
 	}
 
 	stmt, err := r.db.Prepare("SELECT roomID, roomName, capacity FROM room WHERE roomID = ?;")
 	if err != nil {
-		return room, err
+		return db.Room{}, err
 	}
 	defer stmt.Close()
 
+	room := db.NewRoom()
 	row := stmt.QueryRow(roomID)
 
 	err = scanARoom(&room, row)
@@ -85,7 +84,7 @@ func (r RoomMySQL) WriteARoom(name string, capacity *int64) (int64, error) {
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(name, intToNullInt(capacity))
+	result, err := stmt.Exec(name, IntToNullInt(capacity))
 	if err != nil {
 		return 0, err
 	}
@@ -105,7 +104,7 @@ func (r RoomMySQL) UpdateARoom(id int64, name string, capacity *int64) error {
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(name, intToNullInt(capacity), id)
+	result, err := stmt.Exec(name, IntToNullInt(capacity), id)
 	if err != nil {
 		return err
 	}

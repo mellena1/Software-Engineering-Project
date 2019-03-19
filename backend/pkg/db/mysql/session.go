@@ -28,21 +28,21 @@ func scanASession(session *db.Session, row rowScanner) error {
 		&session.Timeslot.EndTime, session.Name)
 
 	if speakerID.Valid {
-		session.Speaker.ID = nullIntToInt(speakerID)
-		session.Speaker.Email, session.Speaker.FirstName, session.Speaker.LastName = nullStringToString(speakerEmail), nullStringToString(speakerFirstName), nullStringToString(speakerLastName)
+		session.Speaker.ID = NullIntToInt(speakerID)
+		session.Speaker.Email, session.Speaker.FirstName, session.Speaker.LastName = NullStringToString(speakerEmail), NullStringToString(speakerFirstName), NullStringToString(speakerLastName)
 	} else {
 		session.Speaker = nil
 	}
 
 	if roomID.Valid {
-		session.Room.ID = nullIntToInt(roomID)
-		session.Room.Capacity = nullIntToInt(roomCapacity)
+		session.Room.ID = NullIntToInt(roomID)
+		session.Room.Capacity = NullIntToInt(roomCapacity)
 	} else {
 		session.Room = nil
 	}
 
 	if timeslotID.Valid {
-		session.Timeslot.ID = nullIntToInt(timeslotID)
+		session.Timeslot.ID = NullIntToInt(timeslotID)
 	} else {
 		session.Timeslot = nil
 	}
@@ -52,10 +52,8 @@ func scanASession(session *db.Session, row rowScanner) error {
 
 // ReadASession reads a session from the db given sessionID
 func (s SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
-	session := db.NewSession()
-
 	if s.db == nil {
-		return session, ErrDBNotSet
+		return db.Session{}, ErrDBNotSet
 	}
 
 	stmt, err := s.db.Prepare(`
@@ -68,10 +66,11 @@ func (s SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
 		INNER JOIN timeslot ON session.timeslotID = timeslot.timeslotID
 		WHERE session.sessionID = ?;`)
 	if err != nil {
-		return session, err
+		return db.Session{}, err
 	}
 	defer stmt.Close()
 
+	session := db.NewSession()
 	row := stmt.QueryRow(sessionID)
 	err = scanASession(&session, row)
 
@@ -126,7 +125,7 @@ func (s SessionMySQL) WriteASession(speakerID *int64, roomID *int64, timeslotID 
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(intToNullInt(speakerID), intToNullInt(roomID), intToNullInt(timeslotID), stringToNullString(name))
+	result, err := stmt.Exec(IntToNullInt(speakerID), IntToNullInt(roomID), IntToNullInt(timeslotID), StringToNullString(name))
 	if err != nil {
 		return 0, err
 	}
@@ -146,7 +145,7 @@ func (s SessionMySQL) UpdateASession(sessionID int64, speakerID *int64, roomID *
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(intToNullInt(speakerID), intToNullInt(roomID), intToNullInt(timeslotID), stringToNullString(name), sessionID)
+	result, err := stmt.Exec(IntToNullInt(speakerID), IntToNullInt(roomID), IntToNullInt(timeslotID), StringToNullString(name), sessionID)
 	if err != nil {
 		return err
 	}
