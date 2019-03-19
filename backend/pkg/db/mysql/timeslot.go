@@ -7,6 +7,10 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
+const (
+	mysqlTimeformat = "2006-01-02 15:04:05"
+)
+
 // TimeslotMySQL implements TimeslotReaderWriterUpdaterDeleter
 type TimeslotMySQL struct {
 	db *sql.DB
@@ -15,6 +19,11 @@ type TimeslotMySQL struct {
 // NewTimeslotMySQL makes a new TimeslotMySQL object given a db
 func NewTimeslotMySQL(db *sql.DB) TimeslotMySQL {
 	return TimeslotMySQL{db}
+}
+
+// scanATimeslot takes in a timeslot pointer and scans a row into it
+func scanATimeslot(timeslot *db.Timeslot, row rowScanner) error {
+	return row.Scan(&timeslot.ID, &timeslot.StartTime, &timeslot.EndTime)
 }
 
 // ReadATimeslot reads a timeslot from the db given an id
@@ -33,7 +42,7 @@ func (t TimeslotMySQL) ReadATimeslot(id int64) (db.Timeslot, error) {
 
 	row := stmt.QueryRow(id)
 
-	err = row.Scan(&timeslot.ID, &timeslot.StartTime, &timeslot.EndTime)
+	err = scanATimeslot(&timeslot, row)
 
 	return timeslot, err
 }
@@ -55,7 +64,7 @@ func (t TimeslotMySQL) ReadAllTimeslots() ([]db.Timeslot, error) {
 	timeslots := []db.Timeslot{}
 	for rows.Next() {
 		newTimeslot := db.NewTimeslot()
-		rows.Scan(&newTimeslot.ID, &newTimeslot.StartTime, &newTimeslot.EndTime)
+		scanATimeslot(&newTimeslot, rows)
 		timeslots = append(timeslots, newTimeslot)
 	}
 
@@ -79,7 +88,7 @@ func (t TimeslotMySQL) WriteATimeslot(startTime, endTime time.Time) (int64, erro
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(startTime.Format(db.TimeFormat), endTime.Format(db.TimeFormat))
+	result, err := stmt.Exec(startTime.Format(mysqlTimeformat), endTime.Format(mysqlTimeformat))
 	if err != nil {
 		return 0, err
 	}
@@ -99,7 +108,7 @@ func (t TimeslotMySQL) UpdateATimeslot(id int64, startTime, endTime time.Time) e
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(startTime.Format(db.TimeFormat), endTime.Format(db.TimeFormat), id)
+	result, err := stmt.Exec(startTime.Format(mysqlTimeformat), endTime.Format(mysqlTimeformat), id)
 	if err != nil {
 		return err
 	}

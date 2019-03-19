@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { Timeslot } from "src/app/data_models/timeslot";
 import { TimeslotService } from "src/app/services/timeslot.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { format } from "url";
 
 @Component({
   selector: "app-timeslots",
@@ -11,7 +10,7 @@ import { format } from "url";
 })
 export class TimeslotsComponent implements OnInit {
   constructor(private timeslotService: TimeslotService) {}
-  
+
   timeslots: Timeslot[];
   error: any;
   timeslot = new Timeslot("", "");
@@ -80,7 +79,7 @@ export class TimeslotsComponent implements OnInit {
 
       fullStart = fullStart.concat(this.startHour).concat(":").concat(this.startMin).concat(this.seconds);
       fullEnd = fullEnd.concat(this.endHour).concat(":").concat(this.endMin).concat(this.seconds);
-        
+
     }
     else {
 
@@ -88,7 +87,7 @@ export class TimeslotsComponent implements OnInit {
       fullEnd = fullEnd.concat(this.timeslot.endTime).concat(this.seconds);
 
     }
-    
+
     this.timeslot.startTime = fullStart;
     this.timeslot.endTime = fullEnd;
 
@@ -109,7 +108,6 @@ export class TimeslotsComponent implements OnInit {
       .subscribe(error => (this.error = error), id => (newTimeslot.id = id));
     console.log("Timeslot Submitted!", this.timeslotForm.value);
     this.timeslotForm.reset();
-
     this.timeslots.push(newTimeslot);
   }
 
@@ -132,7 +130,7 @@ export class TimeslotsComponent implements OnInit {
 
       fullStart = fullStart.concat(this.currentStartHour).concat(":").concat(this.currentStartMin).concat(this.seconds);
       fullEnd = fullEnd.concat(this.currentEndHour).concat(":").concat(this.currentEndMin).concat(this.seconds);
-      
+
     }
     else {
 

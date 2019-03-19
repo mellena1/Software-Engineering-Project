@@ -92,8 +92,16 @@ func (t timeslotAPI) getATimeslot(w http.ResponseWriter, r *http.Request) {
 
 // writeATimeslotRequest request for writeATimeslot
 type writeATimeslotRequest struct {
-	StartTime string `json:"startTime" example:"2019-02-18 21:00:00"`
-	EndTime   string `json:"endTime" example:"2019-10-01 23:00:00"`
+	StartTime *string `json:"startTime" example:"2019-02-18T21:00:00Z"`
+	EndTime   *string `json:"endTime" example:"2019-10-01T23:00:00Z"`
+}
+
+// Validate validates a writeATimeslotRequest
+func (r writeATimeslotRequest) Validate() error {
+	if r.StartTime == nil || r.EndTime == nil {
+		return ErrInvalidRequest
+	}
+	return nil
 }
 
 // writeATimeslot Add a timeslot to the db
@@ -115,15 +123,24 @@ func (t timeslotAPI) writeATimeslot(w http.ResponseWriter, r *http.Request) {
 
 	timeslotRequest := writeATimeslotRequest{}
 	err = json.Unmarshal(j, &timeslotRequest)
+	if err != nil {
+		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
+		return
+	}
 
-	startTime, err := time.Parse(db.TimeFormat, timeslotRequest.StartTime)
+	if err = timeslotRequest.Validate(); err != nil {
+		ReportError(err, "must set both startTime and endTime", http.StatusBadRequest, w)
+		return
+	}
+
+	startTime, err := time.Parse(db.TimeFormat, *timeslotRequest.StartTime)
 	if err != nil {
 		msg := fmt.Sprintf("start time invalid. please use the format %s", db.TimeFormat)
 		ReportError(err, msg, http.StatusBadRequest, w)
 		return
 	}
 
-	endTime, err := time.Parse(db.TimeFormat, timeslotRequest.EndTime)
+	endTime, err := time.Parse(db.TimeFormat, *timeslotRequest.EndTime)
 	if err != nil {
 		msg := fmt.Sprintf("end time invalid. please use the format %s", db.TimeFormat)
 		ReportError(err, msg, http.StatusBadRequest, w)
@@ -141,9 +158,20 @@ func (t timeslotAPI) writeATimeslot(w http.ResponseWriter, r *http.Request) {
 
 // updateATimeslotRequest request for updateATimeslot
 type updateATimeslotRequest struct {
-	ID        int64  `json:"id" example:"1"`
-	StartTime string `json:"startTime" example:"2019-02-18 21:00:00"`
-	EndTime   string `json:"endTime" example:"2019-10-01 23:00:00"`
+	ID        *int64  `json:"id" example:"1"`
+	StartTime *string `json:"startTime" example:"2019-02-18T21:00:00Z"`
+	EndTime   *string `json:"endTime" example:"2019-10-01T23:00:00Z"`
+}
+
+// Validate validates a updateATimeslotRequest
+func (r updateATimeslotRequest) Validate() error {
+	if r.ID == nil {
+		return ErrInvalidRequest
+	}
+	if r.StartTime == nil || r.EndTime == nil {
+		return ErrInvalidRequest
+	}
+	return nil
 }
 
 // updateATimeslot Update an existing timeslot in the db
@@ -165,22 +193,31 @@ func (t timeslotAPI) updateATimeslot(w http.ResponseWriter, r *http.Request) {
 
 	timeslotRequest := updateATimeslotRequest{}
 	err = json.Unmarshal(j, &timeslotRequest)
+	if err != nil {
+		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
+		return
+	}
 
-	startTime, err := time.Parse(db.TimeFormat, timeslotRequest.StartTime)
+	if err = timeslotRequest.Validate(); err != nil {
+		ReportError(err, "must set both startTime and endTime", http.StatusBadRequest, w)
+		return
+	}
+
+	startTime, err := time.Parse(db.TimeFormat, *timeslotRequest.StartTime)
 	if err != nil {
 		msg := fmt.Sprintf("start time invalid. please use the format %s", db.TimeFormat)
 		ReportError(err, msg, http.StatusBadRequest, w)
 		return
 	}
 
-	endTime, err := time.Parse(db.TimeFormat, timeslotRequest.EndTime)
+	endTime, err := time.Parse(db.TimeFormat, *timeslotRequest.EndTime)
 	if err != nil {
 		msg := fmt.Sprintf("end time invalid. please use the format %s", db.TimeFormat)
 		ReportError(err, msg, http.StatusBadRequest, w)
 		return
 	}
 
-	err = t.timeslotUpdater.UpdateATimeslot(timeslotRequest.ID, startTime, endTime)
+	err = t.timeslotUpdater.UpdateATimeslot(*timeslotRequest.ID, startTime, endTime)
 	switch err {
 	case nil:
 		w.Write(nil)

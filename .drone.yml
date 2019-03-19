@@ -2,8 +2,20 @@ kind: pipeline
 name: default
 
 steps:
-- name: Generate-Swagger-Docs
+- name: Backend-Go-Mod-Download
   image: golang:1.11.5
+  volumes:
+  - name: gomod_cache
+    path: /go/pkg/mod
+  commands:
+  - cd backend
+  - go mod download
+
+- name: Backend-Gen-Swagger-Docs
+  image: golang:1.11.5
+  volumes:
+  - name: gomod_cache
+    path: /go/pkg/mod
   commands:
   - go get -u github.com/swaggo/swag/cmd/swag
   - cd backend
@@ -11,15 +23,33 @@ steps:
 
 - name: Backend-Run-go-tests
   image: golang:1.11.5
+  volumes:
+  - name: gomod_cache
+    path: /go/pkg/mod
   commands:
   - cd backend
   - go test -v ./...
 
 - name: Backend-gofmt
   image: golang:1.11.5
+  volumes:
+  - name: gomod_cache
+    path: /go/pkg/mod
   commands:
   - cd backend
   - go fmt ./... | [ $(wc -l) -eq 0 ]
+
+- name: Frontend-prettier
+  image: node
+  commands:
+  - cd frontend
+  - npm install --global prettier
+  - prettier --check "**/*.ts"
+  - prettier --check "**/*.html"
+  
+volumes:
+- name: gomod_cache
+  temp: {}
 
 trigger:
   event:
