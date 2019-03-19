@@ -64,6 +64,33 @@ func TestGetTimeslot(t *testing.T) {
 		Done()
 }
 
+func TestGetAllTimeslots(t *testing.T) {
+	resetDB()
+
+	err := insertValidTimeslot()
+	if err != nil {
+		t.Error(err)
+	}
+	err = insertValidTimeslot()
+	if err != nil {
+		t.Error(err)
+	}
+
+	expected := []db.Timeslot{
+		validTimeslotTest,
+		db.Timeslot{
+			ID:        db.Int64Ptr(2),
+			StartTime: parseTime(time.RFC3339, "2019-02-18T21:00:00Z"),
+			EndTime:   parseTime(time.RFC3339, "2019-02-18T22:00:00Z"),
+		},
+	}
+	apiTester.Get("/api/v1/timeslots").
+		Expect(t).
+		Status(200).
+		JSON(expected).
+		Done()
+}
+
 func TestGetInvalidTimeslotNotExist(t *testing.T) {
 	resetDB()
 

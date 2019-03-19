@@ -108,6 +108,34 @@ func TestGetInvalidSpeakerBadQuery(t *testing.T) {
 		Done()
 }
 
+func TestGetAllSpeakers(t *testing.T) {
+	resetDB()
+
+	err := insertValidSpeaker()
+	if err != nil {
+		t.Error(err)
+	}
+	err = insertValidSpeakerWithNulls()
+	if err != nil {
+		t.Error(err)
+	}
+
+	expected := []db.Speaker{
+		validSpeakerTest,
+		db.Speaker{
+			ID:        db.Int64Ptr(2),
+			Email:     db.StringPtr("test@test.com"),
+			FirstName: nil,
+			LastName:  nil,
+		},
+	}
+	apiTester.Get("/api/v1/speakers").
+		Expect(t).
+		Status(200).
+		JSON(expected).
+		Done()
+}
+
 func TestAddSpeaker(t *testing.T) {
 	resetDB()
 

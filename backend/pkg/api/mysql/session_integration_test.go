@@ -188,6 +188,35 @@ func TestGetInvalidSessionBadQuery(t *testing.T) {
 		Done()
 }
 
+func TestGetAllSessions(t *testing.T) {
+	resetDB()
+
+	err := insertValidSession()
+	if err != nil {
+		t.Error(err)
+	}
+	err = insertValidSessionNulls()
+	if err != nil {
+		t.Error(err)
+	}
+
+	expected := []db.Session{
+		validSessionTest,
+		db.Session{
+			ID:       db.Int64Ptr(2),
+			Timeslot: nil,
+			Speaker:  nil,
+			Room:     nil,
+			Name:     db.StringPtr("session 1"),
+		},
+	}
+	apiTester.Get("/api/v1/sessions").
+		Expect(t).
+		Status(200).
+		JSON(expected).
+		Done()
+}
+
 func TestAddSession(t *testing.T) {
 	resetDB()
 

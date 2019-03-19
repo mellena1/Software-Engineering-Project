@@ -106,6 +106,33 @@ func TestGetInvalidRoomBadQuery(t *testing.T) {
 		Done()
 }
 
+func TestGetAllRooms(t *testing.T) {
+	resetDB()
+
+	err := insertValidRoom()
+	if err != nil {
+		t.Error(err)
+	}
+	err = insertValidRoomWithNullCapacity()
+	if err != nil {
+		t.Error(err)
+	}
+
+	expected := []db.Room{
+		validRoomTest,
+		db.Room{
+			ID:       db.Int64Ptr(2),
+			Name:     db.StringPtr("beatty"),
+			Capacity: nil,
+		},
+	}
+	apiTester.Get("/api/v1/rooms").
+		Expect(t).
+		Status(200).
+		JSON(expected).
+		Done()
+}
+
 func TestAddRoom(t *testing.T) {
 	resetDB()
 
