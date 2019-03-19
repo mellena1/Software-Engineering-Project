@@ -13,4 +13,4 @@ CODECAMP_DBPASS="codecamp"
 CODECAMP_DBADDR="localhost"
 CODECAMP_DBNET="tcp"
 
-go test -v -tags=integration ./pkg/api/mysql
+go test -v -tags=integration ./...

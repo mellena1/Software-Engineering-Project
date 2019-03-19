@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
@@ -17,15 +18,21 @@ func NewSessionMySQL(db *sql.DB) SessionMySQL {
 }
 
 // scanASession takes in a session pointer and scans a row into it
+// must be in order: session.ID, speakerID, speakerEmail, speakerFirstName,
+//					 speakerLastName, roomID, roomName,
+//					 roomCapacity, timeslotID, timeslotStartTime,
+//					 timeslotEndTime, sessionName
 func scanASession(session *db.Session, row rowScanner) error {
 	speakerID, roomID, timeslotID := sql.NullInt64{}, sql.NullInt64{}, sql.NullInt64{}
 	speakerEmail, speakerFirstName, speakerLastName := sql.NullString{}, sql.NullString{}, sql.NullString{}
-	roomCapacity := sql.NullInt64{}
+	roomName, roomCapacity := sql.NullString{}, sql.NullInt64{}
+	timeslotStartTime, timeslotEndTime := sql.NullString{}, sql.NullString{}
+	sessionName := sql.NullString{}
 
 	err := row.Scan(&session.ID, &speakerID, &speakerEmail, &speakerFirstName,
-		&speakerLastName, &roomID, session.Room.Name,
-		&roomCapacity, &timeslotID, &session.Timeslot.StartTime,
-		&session.Timeslot.EndTime, session.Name)
+		&speakerLastName, &roomID, &roomName,
+		&roomCapacity, &timeslotID, &timeslotStartTime,
+		&timeslotEndTime, &sessionName)
 
 	if speakerID.Valid {
 		session.Speaker.ID = NullIntToInt(speakerID)
@@ -36,6 +43,7 @@ func scanASession(session *db.Session, row rowScanner) error {
 
 	if roomID.Valid {
 		session.Room.ID = NullIntToInt(roomID)
+		session.Room.Name = NullStringToString(roomName)
 		session.Room.Capacity = NullIntToInt(roomCapacity)
 	} else {
 		session.Room = nil
@@ -43,9 +51,18 @@ func scanASession(session *db.Session, row rowScanner) error {
 
 	if timeslotID.Valid {
 		session.Timeslot.ID = NullIntToInt(timeslotID)
+
+		// I think the time vals are in RFC3339 because we set ParseTime = true on the mysql-driver
+		sTime := NullStringToString(timeslotStartTime)                   // should never be null
+		session.Timeslot.StartTime, _ = time.Parse(time.RFC3339, *sTime) // mysql time will always be in this format
+
+		eTime := NullStringToString(timeslotEndTime)                   // should never be null
+		session.Timeslot.EndTime, _ = time.Parse(time.RFC3339, *eTime) // mysql time will always be in this format
 	} else {
 		session.Timeslot = nil
 	}
+
+	session.Name = NullStringToString(sessionName)
 
 	return err
 }
