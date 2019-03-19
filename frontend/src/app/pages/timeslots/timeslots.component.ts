@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Timeslot } from "src/app/data_models/timeslot";
 import { TimeslotService } from "src/app/services/timeslot.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { format } from "url";
 
 @Component({
   selector: "app-timeslots",
@@ -15,6 +16,9 @@ export class TimeslotsComponent implements OnInit {
   error: any;
   timeslot = new Timeslot("", "");
   currentTimeslot = new Timeslot("", "");
+  date = new Date();
+  currentDate: any;
+  seconds: any;
   timeFormat: any;
   checked: any;
 
@@ -35,6 +39,8 @@ export class TimeslotsComponent implements OnInit {
 
   ngOnInit() {
     this.getAllTimeslots();
+    this.currentDate = this.getCurrentDate();
+    this.seconds = ":00";
     this.timeFormat = "12hour";
     this.checked = true;
     this.startHour = "00";
@@ -66,27 +72,32 @@ export class TimeslotsComponent implements OnInit {
   }
 
   onSubmit(): void {
-    var fullStart = "";
-    var fullEnd = "";
-    //var seconds = ":00Z";
 
-    if(!this.checked){
+    var fullStart = this.currentDate.concat(" ");
+    var fullEnd = this.currentDate.concat(" ");
 
-      fullStart = fullStart.concat(this.startHour).concat(":").concat(this.startMin);
-      fullEnd = fullEnd.concat(this.endHour).concat(":").concat(this.endMin);
+    if(!this.checked) {
 
-      this.timeslot.startTime = fullStart;
-      this.timeslot.endTime = fullEnd;
-      
+      fullStart = fullStart.concat(this.startHour).concat(":").concat(this.startMin).concat(this.seconds);
+      fullEnd = fullEnd.concat(this.endHour).concat(":").concat(this.endMin).concat(this.seconds);
+        
     }
+    else {
+
+      fullStart = fullStart.concat(this.timeslot.startTime).concat(this.seconds);
+      fullEnd = fullEnd.concat(this.timeslot.endTime).concat(this.seconds);
+
+    }
+    
+    this.timeslot.startTime = fullStart;
+    this.timeslot.endTime = fullEnd;
 
     if (this.timeslot.startTime == "" || this.timeslot.endTime == "") {
       alert("Please enter a date and time for both fields");
       this.timeslotForm.reset();
     }
 
-    //this.timeslot.startTime = this.timeslot.startTime.concat(seconds);
-    //this.timeslot.endTime = this.timeslot.endTime.concat(seconds);
+    console.log(this.timeslot.startTime);
 
     var newTimeslot = new Timeslot(
       this.timeslot.startTime,
@@ -112,29 +123,40 @@ export class TimeslotsComponent implements OnInit {
     }
   }
 
-  updateTimeslot(): void {
-    if (this.timeslot.startTime == "" || this.timeslot.endTime == "") {
+  updateTimeslot(timeslot: Timeslot): void {
+    this.currentTimeslot.isEditable = false;
+
+    var fullStart = this.currentDate.concat(" ");
+    var fullEnd = this.currentDate.concat(" ");
+    if(!this.checked) {
+
+      fullStart = fullStart.concat(this.currentStartHour).concat(":").concat(this.currentStartMin).concat(this.seconds);
+      fullEnd = fullEnd.concat(this.currentEndHour).concat(":").concat(this.currentEndMin).concat(this.seconds);
+      
+    }
+    else {
+
+      fullStart = fullStart.concat(this.timeslot.startTime).concat(this.seconds);
+      fullEnd = fullEnd.concat(this.timeslot.endTime).concat(this.seconds);
+
+    }
+
+    this.currentTimeslot.startTime = fullStart;
+    this.currentTimeslot.endTime = fullEnd;
+
+    if (this.currentTimeslot.startTime == "" || this.currentTimeslot.endTime == "") {
       alert("Please enter a date and time for both fields");
       this.timeslotForm.reset();
     }
 
-    var seconds = ":00Z";
-    this.currentTimeslot.startTime = this.currentTimeslot.startTime.concat(
-      seconds
-    );
-    this.currentTimeslot.endTime = this.currentTimeslot.endTime.concat(seconds);
-
-    if (confirm("Are you sure you want to update?")) {
-      this.timeslotService
-        .updateTimeslot(this.currentTimeslot)
-        .subscribe(
+    this.timeslotService
+       .updateTimeslot(this.currentTimeslot)
+       .subscribe(
           error => (this.error = error),
           id => (this.currentTimeslot.id = id)
         );
-      console.log("The following Timeslot Udpated :", this.timeslotForm.value);
-      //this.timeslots = this.timeslots.filter(item => item.id !== timeslotid);
-    }
-
+    console.log("The following Timeslot Udpated :", this.timeslotForm.value);
+    //this.timeslots = this.timeslots.filter(item => item.id !== timeslotid);
     this.timeslotForm.reset();
   }
 
@@ -146,5 +168,21 @@ export class TimeslotsComponent implements OnInit {
   cancel(timeslot: Timeslot): void {
     timeslot.isEditable = false;
     this.timeslotForm.reset();
+  }
+
+  getCurrentDate(): String{
+    var year = this.date.getUTCFullYear().toString();
+    var day = this.date.getDate().toString();
+    var m = this.date.getUTCMonth() + 1;
+    var month = m.toString();
+
+    if(Number(day) < 10){
+      day = "0".concat(day);
+    }
+    if(Number(month) < 10){
+      month = "0".concat(month);
+    }
+
+    return year.concat("-").concat(month).concat("-").concat(day);
   }
 }

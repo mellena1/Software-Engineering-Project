@@ -19,14 +19,11 @@
         class="table-responsive"
         ng-app="app-timeslot"
         ng-init="getAllTimeslots()"
-      > <!--{{timeFormat | json}}-->
+      > 
+        <h4 align="center">{{currentDate | date: "longDate"}}</h4>
         <input type="radio" name="timeformat" value="12hour" [(ngModel)]="timeFormat" (change)="onSelect()"> 12 Hour
         <input type="radio" name="timeformat" value="24hour" [(ngModel)]="timeFormat" (change)="onSelect()"> 24 Hour
         <form [formGroup]="timeslotForm" (ngSubmit)="onSubmit()">
-          {{currentStartHour | json}}
-          {{currentStartMin | json}}
-          <!--{{timeslot | json}}
-                  {{currentTimeslot | json}}-->
           <table class="table table-bordered table-striped">
             <thead>
               <tr>
@@ -259,8 +256,12 @@
               </tr>
 
               <tr *ngFor="let timeslot of timeslots">
-                <td *ngIf="!timeslot.isEditable">
-                  <span>{{ timeslot.startTime }}</span>
+                <td *ngIf="!timeslot.isEditable && checked">
+                  <span>{{ timeslot.startTime | date: "h:mma"}}</span>
+                </td>
+
+                <td *ngIf="!timeslot.isEditable && !checked">
+                  <span>{{ timeslot.startTime | date: "HH:mm"}}</span>
                 </td>
 
                 <td *ngIf="timeslot.isEditable && checked">
@@ -370,8 +371,12 @@
                     </select>
                 </td>
 
-                <td *ngIf="!timeslot.isEditable">
-                  <span>{{ timeslot.endTime }}</span>
+                <td *ngIf="!timeslot.isEditable && checked">
+                  <span>{{ timeslot.endTime | date: "h:mma"}}</span>
+                </td>
+
+                <td *ngIf="!timeslot.isEditable && !checked">
+                  <span>{{ timeslot.endTime | date: "HH:mm"}}</span>
                 </td>
 
                 <td *ngIf="timeslot.isEditable && checked">
