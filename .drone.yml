@@ -57,6 +57,8 @@ services:
   image: mysql
   environment:
     MYSQL_ROOT_PASSWORD: codecamp
+  ports:
+  - 3306
 
 volumes:
 - name: gomod_cache
