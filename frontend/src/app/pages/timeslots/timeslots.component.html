@@ -260,7 +260,7 @@
 
               <tr *ngFor="let timeslot of timeslots">
                 <td *ngIf="!timeslot.isEditable">
-                  <span>{{ timeslot.startTime }}</span>
+                  <span>{{ timeslot.startTime | date: "h:mma"}}</span>
                 </td>
 
                 <td *ngIf="timeslot.isEditable && checked">
@@ -371,7 +371,7 @@
                 </td>
 
                 <td *ngIf="!timeslot.isEditable">
-                  <span>{{ timeslot.endTime }}</span>
+                  <span>{{ timeslot.endTime | date: "h:mma"}}</span>
                 </td>
 
                 <td *ngIf="timeslot.isEditable && checked">

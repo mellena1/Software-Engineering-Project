@@ -88,8 +88,8 @@
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
-                      >{{ timeslot.startTime }} --
-                      {{ timeslot.endTime }}</option
+                      >{{ timeslot.startTime | date: "h:mma"}} -
+                      {{ timeslot.endTime | date: "h:mma"}}</option
                     >
                   </select>
                 </td>
@@ -114,9 +114,9 @@
                   <input
                     type="text"
                     formControlName="sessionName"
-                    [(ngModel)]="session.name"
+                    [(ngModel)]="currentSession.name"
                     class="form-control"
-                    id="Name"
+                    id="Current Name"
                     ng-required="true"
                   />
                 </td>
@@ -128,9 +128,9 @@
                 <td *ngIf="session.isEditable">
                   <select
                     formControlName="sessionRoom"
-                    [(ngModel)]="session.room"
+                    [(ngModel)]="currentSession.room"
                     class="form-control"
-                    id="Room"
+                    id="Current Room"
                     ng-required="true"
                   >
                     <option label = " "></option> 
@@ -150,9 +150,9 @@
                 <td *ngIf="session.isEditable">
                   <select
                     formControlName="sessionSpeaker"
-                    [(ngModel)]="session.speaker"
+                    [(ngModel)]="currentSession.speaker"
                     class="form-control"
-                    id="Speaker"
+                    id="Current Speaker"
                     ng-required="true"
                   >
                     <option label = " "></option> 
@@ -164,25 +164,25 @@
 
                 <td *ngIf="!session.isEditable">
                   <span
-                    >{{ session.timeslot.startTime }} --
-                    {{ session.timeslot.endTime }}</span
+                    >{{ session.timeslot.startTime | date: "h:mma"}} -
+                    {{ session.timeslot.endTime | date: "h:mma"}}</span
                   >
                 </td>
 
                 <td *ngIf="session.isEditable">
                   <select
                     formControlName="sessionTimeslot"
-                    [(ngModel)]="session.timeslot"
+                    [(ngModel)]="currentSession.timeslot"
                     class="form-control"
-                    id="Timeslot"
+                    id="Current Timeslot"
                     ng-required="true"
                   >
                     <option label = " "></option> 
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
-                      >{{ timeslot.startTime }} --
-                      {{ timeslot.endTime }}</option
+                      >{{ timeslot.startTime | date: "h:mma"}} -
+                      {{ timeslot.endTime | date: "h:mma"}}</option
                     >
                   </select>
                 </td>
@@ -208,7 +208,7 @@
                   <button
                     type="button"
                     class="btn btn-primary btn-sm"
-                    (ngClick)="updateSession(session)"
+                    (click)="updateSession(session)"
                   >
                     Save
                   </button>

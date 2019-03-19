@@ -24,7 +24,9 @@ export class SessionsComponent implements OnInit {
     private speakerService: SpeakerService,
     private timeslotService: TimeslotService
   ) {}
+
   sessions: Session[];
+  error: any;
   rooms: Room[];
   speakers: Speaker[];
   timeslots: Timeslot[];
@@ -34,10 +36,14 @@ export class SessionsComponent implements OnInit {
     new Speaker("", "", ""),
     new Timeslot("", "")
   );
+  currentSession = new Session(
+    "",
+    new Room("", 0),
+    new Speaker("", "", ""),
+    new Timeslot("", "")
+  );
   selectedSession: Session;
-  error: any;
-  isEditable: boolean;
-  isCurrent: boolean;
+
   sessionForm = new FormGroup({
     sessionName: new FormControl(""),
     sessionRoom: new FormControl(""),
@@ -50,8 +56,6 @@ export class SessionsComponent implements OnInit {
     this.getAllRooms();
     this.getAllSpeakers();
     this.getAllTimeslots();
-    this.isEditable = false;
-    this.isCurrent = true;
   }
 
   getAllSessions(): void {
@@ -92,10 +96,9 @@ export class SessionsComponent implements OnInit {
   }
 
   updateSession(updatedSession: Session): void {
-    console.log("Yo");
     if (confirm("Are you sure you want to update?")) {
       this.sessionService
-        .updateSession(updatedSession)
+        .updateSession(this.currentSession)
         .subscribe(error => (this.error = error));
       console.log("The following Session Udpated :", this.sessionForm.value);
       this.sessions = this.sessions.filter(item => item !== updatedSession);
@@ -138,16 +141,16 @@ export class SessionsComponent implements OnInit {
       );
     console.log("Session Submitted!", this.sessionForm.value);
     this.sessionForm.reset();
+    this.session.isEditable = false;
     this.sessions.push(newSession);
   }
 
   showEdit(session: Session): void {
-    console.log("Showing Edit");
     session.isEditable = true;
+    this.currentSession.id = session.id;
   }
 
   cancel(session: Session): void {
-    console.log("Showing Cancel");
     session.isEditable = false;
   }
 }
