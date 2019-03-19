@@ -61,9 +61,9 @@ func (s SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
 			speaker.firstName, speaker.lastName, room.roomID, room.roomName, room.capacity, 
 			timeslot.timeslotID, timeslot.startTime, timeslot.endTime, session.sessionName 
 		FROM session
-		INNER JOIN speaker ON session.speakerID = speaker.speakerID
-		INNER JOIN room ON session.roomID = room.roomID
-		INNER JOIN timeslot ON session.timeslotID = timeslot.timeslotID
+		LEFT JOIN speaker ON session.speakerID = speaker.speakerID
+		LEFT JOIN room ON session.roomID = room.roomID
+		LEFT JOIN timeslot ON session.timeslotID = timeslot.timeslotID
 		WHERE session.sessionID = ?;`)
 	if err != nil {
 		return db.Session{}, err
@@ -88,9 +88,9 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 			speaker.firstName, speaker.lastName, room.roomID, room.roomName, room.capacity, 
 			timeslot.timeslotID, timeslot.startTime, timeslot.endTime, session.sessionName 
 		FROM session
-		INNER JOIN speaker ON session.speakerID = speaker.speakerID
-		INNER JOIN room ON session.roomID = room.roomID
-		INNER JOIN timeslot ON session.timeslotID = timeslot.timeslotID;`
+		LEFT JOIN speaker ON session.speakerID = speaker.speakerID
+		LEFT JOIN room ON session.roomID = room.roomID
+		LEFT JOIN timeslot ON session.timeslotID = timeslot.timeslotID;`
 
 	rows, err := s.db.Query(q)
 	if err != nil {

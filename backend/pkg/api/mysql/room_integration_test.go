@@ -12,8 +12,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var validRoomTest = db.Room{
+	ID:       db.Int64Ptr(1),
+	Name:     db.StringPtr("beatty"),
+	Capacity: db.Int64Ptr(100),
+}
+
 func insertValidRoom() error {
-	_, err := apiObj.db.Exec("INSERT INTO room(`roomName`, `capacity`) VALUES (\"beatty\", 100);")
+	_, err := apiObj.db.Exec("INSERT INTO room(`roomName`, `capacity`) VALUES (?, ?);", validRoomTest.Name, validRoomTest.Capacity)
 	if err != nil {
 		return err
 	}
@@ -45,13 +51,12 @@ func getRoom1() (db.Room, error) {
 func TestGetRoom(t *testing.T) {
 	resetDB()
 
-	insertValidRoom()
-
-	expected := db.Room{
-		ID:       db.Int64Ptr(1),
-		Name:     db.StringPtr("beatty"),
-		Capacity: db.Int64Ptr(100),
+	err := insertValidRoom()
+	if err != nil {
+		t.Error(err)
 	}
+
+	expected := validRoomTest
 	apiTester.Get("/api/v1/room").
 		AddQuery("id", "1").
 		Expect(t).
@@ -63,7 +68,10 @@ func TestGetRoom(t *testing.T) {
 func TestGetRoomNullCapacity(t *testing.T) {
 	resetDB()
 
-	insertValidRoomWithNullCapacity()
+	err := insertValidRoomWithNullCapacity()
+	if err != nil {
+		t.Error(err)
+	}
 
 	expected := db.Room{
 		ID:       db.Int64Ptr(1),
@@ -80,8 +88,6 @@ func TestGetRoomNullCapacity(t *testing.T) {
 
 func TestGetInvalidRoomNotExist(t *testing.T) {
 	resetDB()
-
-	insertValidRoom()
 
 	apiTester.Get("/api/v1/room").
 		AddQuery("id", "2").
@@ -104,8 +110,8 @@ func TestAddRoom(t *testing.T) {
 	resetDB()
 
 	val := api.WriteARoomRequest{
-		Name:     "beatty",
-		Capacity: db.Int64Ptr(100),
+		Name:     *validRoomTest.Name,
+		Capacity: validRoomTest.Capacity,
 	}
 	apiTester.Post("/api/v1/room").
 		JSON(val).
@@ -114,11 +120,7 @@ func TestAddRoom(t *testing.T) {
 		JSON(map[string]int{"id": 1}).
 		Done()
 
-	expected := db.Room{
-		ID:       db.Int64Ptr(1),
-		Name:     db.StringPtr("beatty"),
-		Capacity: db.Int64Ptr(100),
-	}
+	expected := validRoomTest
 	actual, err := getRoom1()
 	if err != nil {
 		t.Error(err)
@@ -169,7 +171,10 @@ func TestAddInvalidRoomEmptyName(t *testing.T) {
 func TestUpdateRoom(t *testing.T) {
 	resetDB()
 
-	insertValidRoom()
+	err := insertValidRoom()
+	if err != nil {
+		t.Error(err)
+	}
 
 	val := api.UpdateARoomRequest{
 		ID:       db.Int64Ptr(1),
@@ -197,7 +202,10 @@ func TestUpdateRoom(t *testing.T) {
 func TestUpdateRoomNullCapacity(t *testing.T) {
 	resetDB()
 
-	insertValidRoom()
+	err := insertValidRoom()
+	if err != nil {
+		t.Error(err)
+	}
 
 	val := api.UpdateARoomRequest{
 		ID:       db.Int64Ptr(1),
@@ -225,8 +233,6 @@ func TestUpdateRoomNullCapacity(t *testing.T) {
 func TestUpdateInvalidRoomNullID(t *testing.T) {
 	resetDB()
 
-	insertValidRoom()
-
 	val := api.UpdateARoomRequest{
 		ID:       nil,
 		Name:     "wentworth",
@@ -241,8 +247,6 @@ func TestUpdateInvalidRoomNullID(t *testing.T) {
 
 func TestUpdateInvalidRoomNotExist(t *testing.T) {
 	resetDB()
-
-	insertValidRoom()
 
 	val := api.UpdateARoomRequest{
 		ID:       db.Int64Ptr(2),
@@ -259,7 +263,10 @@ func TestUpdateInvalidRoomNotExist(t *testing.T) {
 func TestDeleteRoom(t *testing.T) {
 	resetDB()
 
-	insertValidRoom()
+	err := insertValidRoom()
+	if err != nil {
+		t.Error(err)
+	}
 
 	apiTester.Delete("/api/v1/room").
 		AddQuery("id", "1").
@@ -267,15 +274,12 @@ func TestDeleteRoom(t *testing.T) {
 		Status(200).
 		Done()
 
-	row := apiObj.db.QueryRow("SELECT roomID, roomName, capacity FROM room WHERE roomID = 1;")
-	err := row.Scan()
+	_, err = getRoom1()
 	assert.Equal(t, sql.ErrNoRows, err)
 }
 
 func TestDeleteInvalidRoomNotExist(t *testing.T) {
 	resetDB()
-
-	insertValidRoom()
 
 	apiTester.Delete("/api/v1/room").
 		AddQuery("id", "2").
@@ -286,8 +290,6 @@ func TestDeleteInvalidRoomNotExist(t *testing.T) {
 
 func TestDeleteInvalidRoomBadQuery(t *testing.T) {
 	resetDB()
-
-	insertValidRoom()
 
 	apiTester.Delete("/api/v1/room").
 		AddQuery("id", "NaN").

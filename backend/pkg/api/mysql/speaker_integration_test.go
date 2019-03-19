@@ -12,8 +12,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var validSpeakerTest = db.Speaker{
+	ID:        db.Int64Ptr(1),
+	Email:     db.StringPtr("test@test.com"),
+	FirstName: db.StringPtr("Bob"),
+	LastName:  db.StringPtr("Smith"),
+}
+
 func insertValidSpeaker() error {
-	_, err := apiObj.db.Exec("INSERT INTO speaker(`email`, `firstName`, `lastName`) VALUES (\"test@test.com\", \"Bob\", \"Smith\");")
+	_, err := apiObj.db.Exec("INSERT INTO speaker(`email`, `firstName`, `lastName`) VALUES (?, ?, ?);",
+		validSpeakerTest.Email, validSpeakerTest.FirstName, validSpeakerTest.LastName)
 	if err != nil {
 		return err
 	}
@@ -44,14 +52,12 @@ func getSpeaker1() (db.Speaker, error) {
 func TestGetSpeaker(t *testing.T) {
 	resetDB()
 
-	insertValidSpeaker()
-
-	expected := db.Speaker{
-		ID:        db.Int64Ptr(1),
-		Email:     db.StringPtr("test@test.com"),
-		FirstName: db.StringPtr("Bob"),
-		LastName:  db.StringPtr("Smith"),
+	err := insertValidSpeaker()
+	if err != nil {
+		t.Error(err)
 	}
+
+	expected := validSpeakerTest
 	apiTester.Get("/api/v1/speaker").
 		AddQuery("id", "1").
 		Expect(t).
@@ -63,7 +69,10 @@ func TestGetSpeaker(t *testing.T) {
 func TestGetSpeakerWithNulls(t *testing.T) {
 	resetDB()
 
-	insertValidSpeakerWithNulls()
+	err := insertValidSpeakerWithNulls()
+	if err != nil {
+		t.Error(err)
+	}
 
 	expected := db.Speaker{
 		ID:        db.Int64Ptr(1),
@@ -81,8 +90,6 @@ func TestGetSpeakerWithNulls(t *testing.T) {
 
 func TestGetInvalidSpeakerNotExist(t *testing.T) {
 	resetDB()
-
-	insertValidSpeaker()
 
 	apiTester.Get("/api/v1/speaker").
 		AddQuery("id", "2").
@@ -105,9 +112,9 @@ func TestAddSpeaker(t *testing.T) {
 	resetDB()
 
 	val := api.WriteASpeakerRequest{
-		Email:     db.StringPtr("test@test.com"),
-		FirstName: db.StringPtr("Bob"),
-		LastName:  db.StringPtr("Smith"),
+		Email:     validSpeakerTest.Email,
+		FirstName: validSpeakerTest.FirstName,
+		LastName:  validSpeakerTest.LastName,
 	}
 	apiTester.Post("/api/v1/speaker").
 		JSON(val).
@@ -116,12 +123,7 @@ func TestAddSpeaker(t *testing.T) {
 		JSON(map[string]int{"id": 1}).
 		Done()
 
-	expected := db.Speaker{
-		ID:        db.Int64Ptr(1),
-		Email:     db.StringPtr("test@test.com"),
-		FirstName: db.StringPtr("Bob"),
-		LastName:  db.StringPtr("Smith"),
-	}
+	expected := validSpeakerTest
 	actual, err := getSpeaker1()
 	if err != nil {
 		t.Error(err)
@@ -175,7 +177,10 @@ func TestAddSpeakerInvalidAllNulls(t *testing.T) {
 func TestUpdateSpeaker(t *testing.T) {
 	resetDB()
 
-	insertValidSpeaker()
+	err := insertValidSpeaker()
+	if err != nil {
+		t.Error(err)
+	}
 
 	val := api.UpdateASpeakerRequest{
 		ID:        db.Int64Ptr(1),
@@ -205,7 +210,10 @@ func TestUpdateSpeaker(t *testing.T) {
 func TestUpdateSpeakerNulls(t *testing.T) {
 	resetDB()
 
-	insertValidSpeaker()
+	err := insertValidSpeaker()
+	if err != nil {
+		t.Error(err)
+	}
 
 	val := api.UpdateASpeakerRequest{
 		ID:        db.Int64Ptr(1),
@@ -235,8 +243,6 @@ func TestUpdateSpeakerNulls(t *testing.T) {
 func TestUpdateInvalidSpeakerNullID(t *testing.T) {
 	resetDB()
 
-	insertValidSpeaker()
-
 	val := api.UpdateASpeakerRequest{
 		ID:        nil,
 		Email:     db.StringPtr("test123@test.com"),
@@ -252,8 +258,6 @@ func TestUpdateInvalidSpeakerNullID(t *testing.T) {
 
 func TestUpdateInvalidSpeakerNotExist(t *testing.T) {
 	resetDB()
-
-	insertValidSpeaker()
 
 	val := api.UpdateASpeakerRequest{
 		ID:        db.Int64Ptr(2),
@@ -271,7 +275,10 @@ func TestUpdateInvalidSpeakerNotExist(t *testing.T) {
 func TestDeleteSpeaker(t *testing.T) {
 	resetDB()
 
-	insertValidSpeaker()
+	err := insertValidSpeaker()
+	if err != nil {
+		t.Error(err)
+	}
 
 	apiTester.Delete("/api/v1/speaker").
 		AddQuery("id", "1").
@@ -279,14 +286,12 @@ func TestDeleteSpeaker(t *testing.T) {
 		Status(200).
 		Done()
 
-	_, err := getSpeaker1()
+	_, err = getSpeaker1()
 	assert.Equal(t, sql.ErrNoRows, err)
 }
 
 func TestDeleteInvalidSpeakerNotExist(t *testing.T) {
 	resetDB()
-
-	insertValidSpeaker()
 
 	apiTester.Delete("/api/v1/speaker").
 		AddQuery("id", "2").
@@ -297,8 +302,6 @@ func TestDeleteInvalidSpeakerNotExist(t *testing.T) {
 
 func TestDeleteInvalidSpeakerBadQuery(t *testing.T) {
 	resetDB()
-
-	insertValidSpeaker()
 
 	apiTester.Delete("/api/v1/speaker").
 		AddQuery("id", "NaN").

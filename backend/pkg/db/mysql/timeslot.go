@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	mysqlTimeformat = "2006-01-02 15:04:05"
+	// MySQLTimeFormat format used to write to the mysql db
+	MySQLTimeFormat = "2006-01-02 15:04:05"
 )
 
 // TimeslotMySQL implements TimeslotReaderWriterUpdaterDeleter
@@ -87,7 +88,7 @@ func (t TimeslotMySQL) WriteATimeslot(startTime, endTime time.Time) (int64, erro
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(startTime.Format(mysqlTimeformat), endTime.Format(mysqlTimeformat))
+	result, err := stmt.Exec(startTime.Format(MySQLTimeFormat), endTime.Format(MySQLTimeFormat))
 	if err != nil {
 		return 0, err
 	}
@@ -107,7 +108,7 @@ func (t TimeslotMySQL) UpdateATimeslot(id int64, startTime, endTime time.Time) e
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(startTime.Format(mysqlTimeformat), endTime.Format(mysqlTimeformat), id)
+	result, err := stmt.Exec(startTime.Format(MySQLTimeFormat), endTime.Format(MySQLTimeFormat), id)
 	if err != nil {
 		return err
 	}
