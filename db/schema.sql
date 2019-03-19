@@ -7,7 +7,8 @@ DROP TABLE IF EXISTS session,
                      timeslot,
                      room,
                      speaker,
-                     count;
+                     count,
+                     user;
 
 CREATE TABLE speaker (
     speakerID   INT          AUTO_INCREMENT NOT NULL,
@@ -51,4 +52,10 @@ CREATE TABLE count (
     sessionID INT,
     FOREIGN KEY (sessionID) REFERENCES session (sessionID) ON DELETE CASCADE,
     PRIMARY KEY (sessionID)
+);
+
+CREATE TABLE user (
+    userID  int   AUTO_INCREMENT NOT NULL,
+    name    VARCHAR(32)          NOT NULL,
+    PRIMARY KEY (userID)
 );
