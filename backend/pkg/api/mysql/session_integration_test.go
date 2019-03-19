@@ -168,6 +168,35 @@ func TestGetSessionNulls(t *testing.T) {
 		Done()
 }
 
+func TestGetSessionAfterDeleteOtherEntities(t *testing.T) {
+	resetDB()
+
+	insertValidSession()
+
+	// Delete everything else
+	_, err := apiObj.db.Exec("DELETE FROM room WHERE roomID = 1;")
+	if err != nil {
+		t.Error(err)
+	}
+	_, err = apiObj.db.Exec("DELETE FROM speaker WHERE speakerID = 1;")
+	if err != nil {
+		t.Error(err)
+	}
+	_, err = apiObj.db.Exec("DELETE FROM timeslot WHERE timeslotID = 1;")
+	if err != nil {
+		t.Error(err)
+	}
+
+	expected := validSessionTest
+	expected.Room, expected.Speaker, expected.Timeslot = nil, nil, nil
+	apiTester.Get("/api/v1/session").
+		AddQuery("id", "1").
+		Expect(t).
+		Status(200).
+		JSON(expected).
+		Done()
+}
+
 func TestGetInvalidSessionNotExist(t *testing.T) {
 	resetDB()
 
