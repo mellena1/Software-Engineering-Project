@@ -257,11 +257,11 @@
 
               <tr *ngFor="let timeslot of timeslots">
                 <td *ngIf="!timeslot.isEditable && checked">
-                  <span>{{ timeslot.startTime | date: "h:mma"}}</span>
+                  <span>{{ makeDate(timeslot.startTime) | date: "h:mma" }}</span>
                 </td>
 
                 <td *ngIf="!timeslot.isEditable && !checked">
-                  <span>{{ timeslot.startTime | date: "HH:mm"}}</span>
+                  <span>{{ makeDate(timeslot.startTime) | date: "HH:mm" }}</span>
                 </td>
 
                 <td *ngIf="timeslot.isEditable && checked">
@@ -269,7 +269,6 @@
                     type="time"
                     formControlName="timeslotStart"
                     [(ngModel)]="currentTimeslot.startTime"
-                    name="currentStart"
                     class="form-control"
                     ng-required="true"
                   />
@@ -372,11 +371,11 @@
                 </td>
 
                 <td *ngIf="!timeslot.isEditable && checked">
-                  <span>{{ timeslot.endTime | date: "h:mma"}}</span>
+                  <span>{{ makeDate(timeslot.endTime) | date: "h:mma" }}</span>
                 </td>
 
                 <td *ngIf="!timeslot.isEditable && !checked">
-                  <span>{{ timeslot.endTime | date: "HH:mm"}}</span>
+                  <span>{{ makeDate(timeslot.endTime) | date: "HH:mm" }}</span>
                 </td>
 
                 <td *ngIf="timeslot.isEditable && checked">
@@ -518,6 +517,12 @@
                   >
                     Cancel
                   </button>
+                </td>
+                <td *ngIf="timeslot.isEditable && checked">
+                  Editing Timeslot: Start: {{ makeDate(timeslot.startTime) | date: "h:mma" }} End: {{ makeDate(timeslot.endTime) | date: "h:mma" }}
+                </td>
+                <td *ngIf="timeslot.isEditable && !checked">
+                  Editing Timeslot: Start: {{ makeDate(timeslot.startTime) | date: "HH:mm" }} End: {{ makeDate(timeslot.endTime) | date: "HH:mm" }}
                 </td>
               </tr>
             </tbody>

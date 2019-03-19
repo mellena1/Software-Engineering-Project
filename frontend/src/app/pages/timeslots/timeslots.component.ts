@@ -18,7 +18,7 @@ export class TimeslotsComponent implements OnInit {
   date = new Date();
   currentDate: any;
   seconds: any;
-  timeFormat: any;
+  timeFormat = "12hour";
   checked: any;
 
   startHour: any;
@@ -39,9 +39,8 @@ export class TimeslotsComponent implements OnInit {
   ngOnInit() {
     this.getAllTimeslots();
     this.currentDate = this.getCurrentDate();
-    this.seconds = ":00";
-    this.timeFormat = "12hour";
     this.checked = true;
+    this.seconds = ":00";
     this.startHour = "00";
     this.startMin = "00";
     this.endHour = "00";
@@ -71,20 +70,21 @@ export class TimeslotsComponent implements OnInit {
   }
 
   onSubmit(): void {
-
-    var fullStart = this.currentDate.concat(" ");
-    var fullEnd = this.currentDate.concat(" ");
+    
+    //format timeslots
+    var fullStart = this.currentDate.concat("T");
+    var fullEnd = this.currentDate.concat("T");
 
     if(!this.checked) {
 
-      fullStart = fullStart.concat(this.startHour).concat(":").concat(this.startMin).concat(this.seconds);
-      fullEnd = fullEnd.concat(this.endHour).concat(":").concat(this.endMin).concat(this.seconds);
+      fullStart = fullStart.concat(this.startHour).concat(":").concat(this.startMin).concat(this.seconds).concat("Z");
+      fullEnd = fullEnd.concat(this.endHour).concat(":").concat(this.endMin).concat(this.seconds).concat("Z");
 
     }
     else {
 
-      fullStart = fullStart.concat(this.timeslot.startTime).concat(this.seconds);
-      fullEnd = fullEnd.concat(this.timeslot.endTime).concat(this.seconds);
+      fullStart = fullStart.concat(this.timeslot.startTime).concat(this.seconds).concat("Z");
+      fullEnd = fullEnd.concat(this.timeslot.endTime).concat(this.seconds).concat("Z");
 
     }
 
@@ -98,11 +98,13 @@ export class TimeslotsComponent implements OnInit {
 
     console.log(this.timeslot.startTime);
 
+    //create new timeslot with user input
     var newTimeslot = new Timeslot(
       this.timeslot.startTime,
       this.timeslot.endTime
     );
 
+    //pass new timeslot to timeslotService to send to database
     this.timeslotService
       .writeTimeslot(this.timeslot.startTime, this.timeslot.endTime)
       .subscribe(error => (this.error = error), id => (newTimeslot.id = id));
@@ -121,23 +123,23 @@ export class TimeslotsComponent implements OnInit {
     }
   }
 
-  updateTimeslot(timeslot: Timeslot): void {
+  updateTimeslot(): void {
     this.currentTimeslot.isEditable = false;
-
-    var fullStart = this.currentDate.concat(" ");
-    var fullEnd = this.currentDate.concat(" ");
+    var fullStart = this.currentDate.concat("T");
+    var fullEnd = this.currentDate.concat("T");
     if(!this.checked) {
 
-      fullStart = fullStart.concat(this.currentStartHour).concat(":").concat(this.currentStartMin).concat(this.seconds);
-      fullEnd = fullEnd.concat(this.currentEndHour).concat(":").concat(this.currentEndMin).concat(this.seconds);
+      fullStart = fullStart.concat(this.currentStartHour).concat(":").concat(this.currentStartMin).concat(this.seconds).concat("Z");
+      fullEnd = fullEnd.concat(this.currentEndHour).concat(":").concat(this.currentEndMin).concat(this.seconds).concat("Z");
 
     }
     else {
 
-      fullStart = fullStart.concat(this.timeslot.startTime).concat(this.seconds);
-      fullEnd = fullEnd.concat(this.timeslot.endTime).concat(this.seconds);
+      fullStart = fullStart.concat(this.currentTimeslot.startTime).concat(this.seconds).concat("Z");
+      fullEnd = fullEnd.concat(this.currentTimeslot.endTime).concat(this.seconds).concat("Z");
 
     }
+    console.log(fullStart);
 
     this.currentTimeslot.startTime = fullStart;
     this.currentTimeslot.endTime = fullEnd;
@@ -153,9 +155,13 @@ export class TimeslotsComponent implements OnInit {
           error => (this.error = error),
           id => (this.currentTimeslot.id = id)
         );
+
     console.log("The following Timeslot Udpated :", this.timeslotForm.value);
-    //this.timeslots = this.timeslots.filter(item => item.id !== timeslotid);
-    this.timeslotForm.reset();
+    
+    this.getAllTimeslots();
+    window.location.reload();
+
+
   }
 
   showEdit(timeslot: Timeslot): void {
@@ -169,9 +175,9 @@ export class TimeslotsComponent implements OnInit {
   }
 
   getCurrentDate(): String{
-    var year = this.date.getUTCFullYear().toString();
+    var year = this.date.getFullYear().toString();
     var day = this.date.getDate().toString();
-    var m = this.date.getUTCMonth() + 1;
+    var m = this.date.getMonth() + 1;
     var month = m.toString();
 
     if(Number(day) < 10){
@@ -182,5 +188,11 @@ export class TimeslotsComponent implements OnInit {
     }
 
     return year.concat("-").concat(month).concat("-").concat(day);
+  }
+
+  makeDate(timeslotValue: string): Date{
+    var newTimeslotValue = timeslotValue.slice(0, -1);
+    var newDate = new Date(newTimeslotValue);
+    return newDate;
   }
 }
