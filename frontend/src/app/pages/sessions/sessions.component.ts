@@ -105,8 +105,8 @@ export class SessionsComponent implements OnInit {
       this.sessionService
         .updateSession(this.currentSession)
         .subscribe(
-          error => (this.error = error),
-          id => (this.currentSession.id = id));
+          error => (this.error = error)
+        );
 
       console.log("The following Session Udpated :", this.sessionForm.value);
 
