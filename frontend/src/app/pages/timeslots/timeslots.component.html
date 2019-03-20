@@ -245,12 +245,12 @@
               </td>
 
               <td *ngIf="timeslot.isEditable && twelveHourIsChecked">
-                <input type="time" formControlName="timeslotStart" [(ngModel)]="currentTimeslot.startTime"
+                <input type="time" formControlName="timeslotStart" [(ngModel)]="timeslot.startTime"
                   class="form-control" ng-required="true" />
               </td>
 
               <td *ngIf="timeslot.isEditable && !twelveHourIsChecked">
-                <select formControlName="timeslotStart" [(ngModel)]="currentStartHour" name="start" ng-required="true">
+                <select formControlName="timeslotStart" [(ngModel)]="startHour" name="start" ng-required="true">
                   <option>00</option>
                   <option>01</option>
                   <option>02</option>
@@ -277,7 +277,7 @@
                   <option>23</option>
                                   </select>
                 :
-                <select formControlName="timeslotStart" [(ngModel)]="currentStartMin" name="start" ng-required="true">
+                <select formControlName="timeslotStart" [(ngModel)]="startMin" name="start" ng-required="true">
                   <option>00</option>
                   <option>15</option>
                   <option>30</option>
@@ -352,12 +352,12 @@
               </td>
 
               <td *ngIf="timeslot.isEditable && twelveHourIsChecked">
-                <input type="time" formControlName="timeslotEnd" [(ngModel)]="currentTimeslot.endTime" name="currentEnd"
+                <input type="time" formControlName="timeslotEnd" [(ngModel)]="timeslot.endTime"
                   class="form-control" ng-required="true" />
               </td>
 
               <td *ngIf="timeslot.isEditable && !twelveHourIsChecked">
-                <select formControlName="timeslotEnd" [(ngModel)]="currentEndHour" name="end" ng-required="true">
+                <select formControlName="timeslotEnd" [(ngModel)]="endHour" name="end" ng-required="true">
                   <option>00</option>
                   <option>01</option>
                   <option>02</option>
@@ -384,7 +384,7 @@
                   <option>23</option>
                                   </select>
                 :
-                <select formControlName="timeslotEnd" [(ngModel)]="currentEndMin" name="end" ng-required="true">
+                <select formControlName="timeslotEnd" [(ngModel)]="endMin" name="end" ng-required="true">
                   <option>00</option>
                   <option>15</option>
                   <option>30</option>
@@ -474,5 +474,4 @@
     </div>
   </div>
 </body>
-
 </html>

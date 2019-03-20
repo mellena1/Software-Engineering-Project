@@ -14,8 +14,7 @@ export class TimeslotsComponent implements OnInit {
   timeslots: Timeslot[];
   error: any;
   timeslot = new Timeslot("", "");
-  editingTimeslot = new Timeslot("", "");
-  
+
   eventDate = "2019-04-06";
   twelveHourIsChecked = true;
   timeFormat = "12hour";
@@ -137,6 +136,7 @@ export class TimeslotsComponent implements OnInit {
 
   showEdit(timeslot: Timeslot): void {
     timeslot.isEditable = true;
+    console.log(timeslot)
     this.timeslot.id = timeslot.id;
   }
 
