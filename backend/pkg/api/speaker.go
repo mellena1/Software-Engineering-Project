@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
@@ -97,24 +98,38 @@ type writeASpeakerRequest struct {
 	LastName  *string `json:"lastName" example:"Smith"`
 }
 
+var validateEmail, _ = regexp.Compile(`[\w0-9\.\-\_]+@[\w0-9\.\-\_]+`)
+var validateName, _ = regexp.Compile(`[\w\.\-]+`)
+
 // Validate validates a writeASpeakerRequest
 func (r writeASpeakerRequest) Validate() error {
-	if r.Email == nil && r.FirstName == nil && r.LastName == nil {
-		return ErrInvalidRequest
-	}
-	email, fName, lName := "", "", ""
+	atLeastOneField := false
+
 	if r.Email != nil {
-		email = *r.Email
+		if !validateEmail.MatchString(*r.Email) {
+			return ErrInvalidEmail
+		}
+		atLeastOneField = true
 	}
+
 	if r.FirstName != nil {
-		fName = *r.FirstName
+		if !validateName.MatchString(*r.FirstName) {
+			return ErrInvalidName
+		}
+		atLeastOneField = true
 	}
+
 	if r.LastName != nil {
-		lName = *r.LastName
+		if !validateName.MatchString(*r.LastName) {
+			return ErrInvalidName
+		}
+		atLeastOneField = true
 	}
-	if email == "" && fName == "" && lName == "" {
+
+	if !atLeastOneField {
 		return ErrInvalidRequest
 	}
+
 	return nil
 }
 
@@ -168,22 +183,34 @@ func (r updateASpeakerRequest) Validate() error {
 	if r.ID == nil {
 		return ErrInvalidRequest
 	}
-	if r.Email == nil && r.FirstName == nil && r.LastName == nil {
-		return ErrInvalidRequest
-	}
-	email, fName, lName := "", "", ""
+
+	atLeastOneField := false
+
 	if r.Email != nil {
-		email = *r.Email
+		if !validateEmail.MatchString(*r.Email) {
+			return ErrInvalidEmail
+		}
+		atLeastOneField = true
 	}
+
 	if r.FirstName != nil {
-		fName = *r.FirstName
+		if !validateName.MatchString(*r.FirstName) {
+			return ErrInvalidName
+		}
+		atLeastOneField = true
 	}
+
 	if r.LastName != nil {
-		lName = *r.LastName
+		if !validateName.MatchString(*r.LastName) {
+			return ErrInvalidName
+		}
+		atLeastOneField = true
 	}
-	if email == "" && fName == "" && lName == "" {
+
+	if !atLeastOneField {
 		return ErrInvalidRequest
 	}
+
 	return nil
 }
 

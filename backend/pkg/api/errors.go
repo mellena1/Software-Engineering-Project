@@ -11,4 +11,8 @@ var (
 	ErrBadQueryType = errors.New("a query is not the right type")
 	// ErrInvalidRequest the body request is invalid (body requests)
 	ErrInvalidRequest = errors.New("the body request is invalid")
+	// ErrInvalidEmail the email is not valid email syntax
+	ErrInvalidEmail = errors.New("the email is not valid email syntax")
+	// ErrInvalidName the name is not valid syntax
+	ErrInvalidName = errors.New("the name is not valid syntax")
 )
