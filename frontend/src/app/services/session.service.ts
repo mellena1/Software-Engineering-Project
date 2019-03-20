@@ -50,7 +50,14 @@ export class SessionService {
   }
 
   updateSession(updatedSession: Session) {
-    return this.http.put(this.apiUrl + "/session", updatedSession);
+    var obj = {
+      roomID: updatedSession.room.id,
+      sessionID: updatedSession.id,
+      sessionName: updatedSession.name,
+      speakerID: updatedSession.speaker.id,
+      timeslotID: updatedSession.timeslot.id
+    }
+    return this.http.put(this.apiUrl + "/session", obj);
   }
 
   deleteSession(id: number) {
