@@ -50,7 +50,7 @@ export class SessionService {
   }
 
   updateSession(updatedSession: Session) {
-    return this.http.post(this.apiUrl + "/session", updatedSession);
+    return this.http.put(this.apiUrl + "/session", updatedSession);
   }
 
   deleteSession(id: number) {

@@ -40,7 +40,7 @@ export class TimeslotService {
   }
 
   updateTimeslot(updatedTimeslot: Timeslot) {
-    return this.http.post(this.apiUrl + "/timeslot", updatedTimeslot);
+    return this.http.put(this.apiUrl + "/timeslot", updatedTimeslot);
   }
 
   deleteTimeslot(id: number) {
