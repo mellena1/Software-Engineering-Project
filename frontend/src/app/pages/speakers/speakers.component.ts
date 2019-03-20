@@ -13,7 +13,8 @@ export class SpeakersComponent implements OnInit {
   speakers: Speaker[];
   error: any;
   speaker = new Speaker("", "", "");
-  isEditable = false;
+  currentSpeaker = new Speaker("", "", "");
+  //isEditable = false;
   speakerForm = new FormGroup({
     firstName: new FormControl(""),
     lastName: new FormControl(""),
@@ -62,5 +63,29 @@ export class SpeakersComponent implements OnInit {
     console.log("Speaker Submitted!", this.speakerForm.value);
     this.speakerForm.reset();
     this.speakers.push(newSpeaker);
+  }
+
+  updateSpeaker(speaker: Speaker): void {
+    speaker.isEditable=false;
+    if (confirm("Are you sure you want to update this?")) {
+      this.speakerService
+        .updateSpeakers(this.speaker)
+        .subscribe(
+          error => (this.error = error),
+          id => (this.currentSpeaker.id = id)
+        );
+      console.log("The following Rooms Updated :", this.speakerForm.value);
+    }
+   // this.roomForm.reset();
+  }
+
+  showEdit(speaker: Speaker): void {
+    speaker.isEditable = true;
+    this.currentSpeaker.id = speaker.id;
+  }
+
+  cancel(speaker: Speaker): void {
+    speaker.isEditable = false;
+    this.speakerForm.reset();
   }
 }

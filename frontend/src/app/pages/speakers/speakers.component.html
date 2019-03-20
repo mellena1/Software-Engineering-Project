@@ -79,16 +79,48 @@
                 </td>
               </tr>
               <tr *ngFor="let speaker of speakers">
-                <td>
+                <td *ngIf="!speaker.isEditable">
                   <span>{{ speaker.firstName }}</span>
                 </td>
-                <td>
+
+                <td *ngIf="room.isEditable">
+                  <input
+                  type="text"
+                  formControlName="firstName"
+                  [(ngModel)]="currentSpeaker.firstName"
+                  class="form-control"
+                  ng-required="true"
+                  />
+                </td>
+
+                <td *ngIf="!speaker.isEditable">
                   <span>{{ speaker.lastName }}</span>
                 </td>
-                <td>
+                <td *ngIf="speaker.isEditable">
+                  <input
+                  type="text"
+                  formControlName="lastName"
+                  [(ngModel)]="currentSpeaker.lastName"
+                  class="form-control"
+                  ng-required="true"
+                  />
+                </td>
+
+                <td *ngIf="!speaker.isEditable">
                   <span>{{ speaker.email }}</span>
                 </td>
-                <td>
+
+                <td *ngIf="speaker.isEditable">
+                  <input
+                  type="text"
+                  formControlName="email"
+                  [(ngModel)]="currentSpeaker.email"
+                  class="form-control"
+                  ng-required="true"
+                  />
+                </td>
+
+                <td *ngIf="!speaker.isEditable">
                   <button
                     type="button"
                     class="btn btn-primary btn-sm"
@@ -104,19 +136,27 @@
                     Delete
                   </button>
                 </td>
+
+                <td *ngIf="speaker.isEditable">
+                  <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  (click)="updateSpeaker(speaker)"
+                  >
+                  Save
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="cancel(speaker)"
+                  >
+                  Cancel
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
         </form>
-        <script type="text/ng-template" id="edit">
-          <td><input type="text" ng-model="formData.first_name" class="form-control" /></td>
-          <td><input type="text" ng-model="formData.last_name" class="form-control" /></td>
-          <td>
-              <input type="hidden" ng-model="formData.data.id" />
-              <button type="button" class="btn btn-info btn-sm" ng-click="editData()">Save</button>
-              <button type="button" class="btn btn-default btn-sm" ng-click="reset()">Cancel</button>
-          </td>
-        </script>
       </div>
     </div>
   </body>
