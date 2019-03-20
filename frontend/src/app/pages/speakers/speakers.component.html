@@ -83,7 +83,7 @@
                   <span>{{ speaker.firstName }}</span>
                 </td>
 
-                <td *ngIf="room.isEditable">
+                <td *ngIf="speaker.isEditable">
                   <input
                   type="text"
                   formControlName="firstName"
@@ -124,7 +124,7 @@
                   <button
                     type="button"
                     class="btn btn-primary btn-sm"
-                    ng-click="editSpeaker()"
+                    (click)="showEdit(speaker)"
                   >
                     Edit
                   </button>
