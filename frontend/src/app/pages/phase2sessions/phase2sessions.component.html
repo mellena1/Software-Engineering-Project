@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+    />
+    <title>Sessions</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <style>
+.block {
+  display: block;
+  width: 100%;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 28px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+}
+
+
+
+    </style>
+
+</head>
+<body>
+<div class="container">
+    <br/>
+    <h2 style="text-align:center">Sessions</h2>
+    <br/>
+
+    <div
+            class="table-responsive"
+    >
+        <table class="table table-bordered table-striped">
+
+            <tbody>
+            <tr>
+                <td>
+
+                    <p>{{ todo.timeslot.info }} current ones always expanded, rest are collapsed </p>
+                    <p>{{todo.session.name}}</p>
+                    <p>{{todo.session.speaker}}</p>
+                    <p>{{todo.session.room}}</p>
+
+
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <button type="button" class="btn block" data-toggle="collapse" data-target="#b1">
+                        {{ todo.timeslot.info }}
+                    </button>
+                    <div id="b1" class="collapse">
+                        <p>{{todo.session.name}}</p>
+                        <p>{{todo.session.speaker}}</p>
+                        <p>{{todo.session.room}}</p>
+                    </div>
+                </td>
+            </tr>
+
+
+
+            <tr>
+                <td>
+                    <button type="button" class="btn block" data-toggle="collapse" data-target="#b2">
+                        {{ todo.timeslot.info }}
+                    </button>
+                    <div id="b2" class="collapse">
+                        <p>{{todo.session.name}}</p>
+                        <p>{{todo.session.speaker}}</p>
+                        <p>{{todo.session.room}}</p>
+                    </div>
+                </td>
+            </tr>
+
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
