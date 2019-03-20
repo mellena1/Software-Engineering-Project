@@ -110,8 +110,8 @@ export class SessionsComponent implements OnInit {
 
       console.log("The following Session Udpated :", this.sessionForm.value);
 
-      //this.getAllSessions();
-      //window.location.reload();
+      this.getAllSessions();
+      window.location.reload();
   }
 
   deleteSession(id: number) {

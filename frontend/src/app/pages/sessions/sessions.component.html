@@ -54,7 +54,8 @@
                     id="Room"
                     ng-required="true"
                   >
-                    <option label = " "></option> 
+                    <option value="" disabled selected>--Select Room--</option>
+                    <option value = "" label = "[N/A]"></option> 
                     <option *ngFor="let room of rooms" [ngValue]="room">{{
                       room.name
                     }}</option>
@@ -69,7 +70,8 @@
                     id="Speaker"
                     ng-required="true"
                   >
-                    <option label = " "></option> 
+                    <option value="" disabled selected>--Select Speaker--</option>
+                    <option value = "" label = "[N/A]"></option> 
                     <option *ngFor="let speaker of speakers" [ngValue]="speaker"
                       >{{ speaker.firstName }} {{ speaker.lastName }}</option
                     >
@@ -84,7 +86,8 @@
                     id="Timeslot"
                     ng-required="true"
                   >
-                    <option label = " "></option> 
+                    <option value="" disabled selected>--Select Time--</option>
+                    <option value = "" label = "[N/A]"></option> 
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
