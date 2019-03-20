@@ -70,7 +70,10 @@ export class SessionsComponent implements OnInit {
   getAllRooms(): void {
     this.roomService
       .getAllRooms()
-      .subscribe(rooms => (this.rooms = rooms), error => (this.error = error));
+      .subscribe(
+        rooms => (this.rooms = rooms), 
+        error => (this.error = error)
+      );
   }
 
   getAllSpeakers(): void {
