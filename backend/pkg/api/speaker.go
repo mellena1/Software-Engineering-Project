@@ -98,29 +98,29 @@ type writeASpeakerRequest struct {
 	LastName  *string `json:"lastName" example:"Smith"`
 }
 
-var validateEmail, _ = regexp.Compile(`[\w0-9\.\-\_]+@[\w0-9\.\-\_]+`)
-var validateName, _ = regexp.Compile(`[\w\.\-]+`)
+var validateEmail, _ = regexp.Compile(`[a-zA-Z0-9\.\-\_]+@[a-zA-Z0-9\.\-\_]+`)
+var validateName, _ = regexp.Compile(`[a-zA-Z\.\-]+`)
 
 // Validate validates a writeASpeakerRequest
 func (r writeASpeakerRequest) Validate() error {
 	atLeastOneField := false
 
 	if r.Email != nil {
-		if !validateEmail.MatchString(*r.Email) {
+		if *r.Email != validateEmail.FindString(*r.Email) {
 			return ErrInvalidEmail
 		}
 		atLeastOneField = true
 	}
 
 	if r.FirstName != nil {
-		if !validateName.MatchString(*r.FirstName) {
+		if *r.FirstName != validateName.FindString(*r.FirstName) {
 			return ErrInvalidName
 		}
 		atLeastOneField = true
 	}
 
 	if r.LastName != nil {
-		if !validateName.MatchString(*r.LastName) {
+		if *r.LastName != validateName.FindString(*r.LastName) {
 			return ErrInvalidName
 		}
 		atLeastOneField = true
@@ -157,7 +157,7 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = speakerRequest.Validate(); err != nil {
-		ReportError(err, "one of email, firstName, and lastName must be set", http.StatusBadRequest, w)
+		ReportError(err, "Failed to validate speaker request", http.StatusBadRequest, w)
 		return
 	}
 
