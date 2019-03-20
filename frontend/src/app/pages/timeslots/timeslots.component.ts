@@ -14,23 +14,18 @@ export class TimeslotsComponent implements OnInit {
   timeslots: Timeslot[];
   error: any;
   timeslot = new Timeslot("", "");
-  currentTimeslot = new Timeslot("", "");
-  date = new Date();
-  currentDate: any;
-  seconds: any;
+  editingTimeslot = new Timeslot("", "");
+  
+  eventDate = "2019-04-06";
+  twelveHourIsChecked = true;
   timeFormat = "12hour";
-  checked: any;
-
-  startHour: any;
-  startMin: any;
-  endHour: any;
-  endMin: any;
-
-  currentStartHour: any;
-  currentStartMin: any;
-  currentEndHour: any;
-  currentEndMin: any;
-
+  
+  seconds = ":00";
+  startHour = "00";
+  startMin = "00";
+  endHour = "00";
+  endMin = "00";
+  
   timeslotForm = new FormGroup({
     timeslotStart: new FormControl(""),
     timeslotEnd: new FormControl("")
@@ -38,17 +33,6 @@ export class TimeslotsComponent implements OnInit {
 
   ngOnInit() {
     this.getAllTimeslots();
-    this.currentDate = this.getCurrentDate();
-    this.checked = true;
-    this.seconds = ":00";
-    this.startHour = "00";
-    this.startMin = "00";
-    this.endHour = "00";
-    this.endMin = "00";
-    this.currentStartHour = "00";
-    this.currentStartMin = "00";
-    this.currentEndHour = "00";
-    this.currentEndMin = "00";
   }
 
   getAllTimeslots(): void {
@@ -59,42 +43,34 @@ export class TimeslotsComponent implements OnInit {
         error => (this.error = error)
       );
   }
-
+  
+  writeTimeslot(startTime: string, endTime: string): number {
+    var newId: number
+    this.timeslotService
+      .writeTimeslot(this.timeslot.startTime, this.timeslot.endTime)
+      .subscribe(error => (this.error = error), id => (newId = id));
+    return newId
+  }
+  
   onSelect(): void {
     if (this.timeFormat == "12hour") {
-      this.checked = true;
+      this.twelveHourIsChecked = true;
     } else {
-      this.checked = false;
+      this.twelveHourIsChecked = false;
     }
   }
 
   onSubmit(): void {
-    //format timeslots
-    var fullStart = this.currentDate.concat("T");
-    var fullEnd = this.currentDate.concat("T");
+    // format timeslots
+    var fullStart = this.eventDate
+    var fullEnd = this.eventDate
 
-    if (!this.checked) {
-      fullStart = fullStart
-        .concat(this.startHour)
-        .concat(":")
-        .concat(this.startMin)
-        .concat(this.seconds)
-        .concat("Z");
-      fullEnd = fullEnd
-        .concat(this.endHour)
-        .concat(":")
-        .concat(this.endMin)
-        .concat(this.seconds)
-        .concat("Z");
+    if (!this.twelveHourIsChecked) {
+      var fullStart = this.format24HourTime(this.startHour, this.startMin, this.seconds)
+      var fullEnd = this.format24HourTime(this.endHour, this.endHour, this.seconds)
     } else {
-      fullStart = fullStart
-        .concat(this.timeslot.startTime)
-        .concat(this.seconds)
-        .concat("Z");
-      fullEnd = fullEnd
-        .concat(this.timeslot.endTime)
-        .concat(this.seconds)
-        .concat("Z");
+      var fullStart = this.format12HourTime(this.timeslot.startTime, this.seconds)
+      var fullEnd = this.format12HourTime(this.timeslot.endTime, this.seconds)
     }
 
     this.timeslot.startTime = fullStart;
@@ -105,81 +81,55 @@ export class TimeslotsComponent implements OnInit {
       this.timeslotForm.reset();
     }
 
-    console.log(this.timeslot.startTime);
-
-    //create new timeslot with user input
+    // create new timeslot with user input
     var newTimeslot = new Timeslot(
       this.timeslot.startTime,
       this.timeslot.endTime
     );
 
-    //pass new timeslot to timeslotService to send to database
-    this.timeslotService
-      .writeTimeslot(this.timeslot.startTime, this.timeslot.endTime)
-      .subscribe(error => (this.error = error), id => (newTimeslot.id = id));
-    console.log("Timeslot Submitted!", this.timeslotForm.value);
+    console.log(this.timeslot.startTime)
+    console.log(this.timeslot.endTime)
+    // pass new timeslot to timeslotService to send to database
+    newTimeslot.id =  this.writeTimeslot(this.timeslot.startTime, this.timeslot.endTime)
     this.timeslotForm.reset();
     this.timeslots.push(newTimeslot);
   }
 
-  deleteTimeslot(timeslotid): void {
-    if (confirm("Are you sure you want to remove it?")) {
-      this.timeslotService
-        .deleteTimeslot(timeslotid)
-        .subscribe(error => (this.error = error));
-      console.log("The following Timeslot Deleted :", this.timeslotForm.value);
-      this.timeslots = this.timeslots.filter(item => item.id !== timeslotid);
-    }
+  deleteTimeslot(id): void {
+    this.timeslotService
+      .deleteTimeslot(id)
+      .subscribe(error => (this.error = error));
+    console.log("The following Timeslot Deleted :", this.timeslotForm.value);
+    this.timeslots = this.timeslots.filter(item => item.id !== id);
   }
 
   updateTimeslot(): void {
-    this.currentTimeslot.isEditable = false;
-    var fullStart = this.currentDate.concat("T");
-    var fullEnd = this.currentDate.concat("T");
-    if (!this.checked) {
-      fullStart = fullStart
-        .concat(this.currentStartHour)
-        .concat(":")
-        .concat(this.currentStartMin)
-        .concat(this.seconds)
-        .concat("Z");
-      fullEnd = fullEnd
-        .concat(this.currentEndHour)
-        .concat(":")
-        .concat(this.currentEndMin)
-        .concat(this.seconds)
-        .concat("Z");
+    this.timeslot.isEditable = false;
+    if (!this.twelveHourIsChecked) {
+      var fullStart = this.format24HourTime(this.startHour, this.startMin, this.seconds)
+      var fullEnd = this.format24HourTime(this.endHour, this.endMin, this.seconds)
     } else {
-      fullStart = fullStart
-        .concat(this.currentTimeslot.startTime)
-        .concat(this.seconds)
-        .concat("Z");
-      fullEnd = fullEnd
-        .concat(this.currentTimeslot.endTime)
-        .concat(this.seconds)
-        .concat("Z");
+      var fullStart = this.format12HourTime(this.timeslot.startTime, this.seconds)
+      var fullEnd = this.format12HourTime(this.timeslot.endTime, this.seconds)
     }
-    console.log(fullStart);
 
-    this.currentTimeslot.startTime = fullStart;
-    this.currentTimeslot.endTime = fullEnd;
+    this.timeslot.startTime = fullStart;
+    this.timeslot.endTime = fullEnd;
 
     if (
-      this.currentTimeslot.startTime == "" ||
-      this.currentTimeslot.endTime == ""
+      this.timeslot.startTime == "" ||
+      this.timeslot.endTime == ""
     ) {
       alert("Please enter a date and time for both fields");
       this.timeslotForm.reset();
     }
 
     this.timeslotService
-      .updateTimeslot(this.currentTimeslot)
+      .updateTimeslot(this.timeslot)
       .subscribe(
         error => (this.error = error),
-        id => (this.currentTimeslot.id = id)
+        id => (this.timeslot.id = id)
       );
-
-    console.log("The following Timeslot Udpated :", this.timeslotForm.value);
 
     this.getAllTimeslots();
     window.location.reload();
@@ -187,7 +137,7 @@ export class TimeslotsComponent implements OnInit {
 
   showEdit(timeslot: Timeslot): void {
     timeslot.isEditable = true;
-    this.currentTimeslot.id = timeslot.id;
+    this.timeslot.id = timeslot.id;
   }
 
   cancel(timeslot: Timeslot): void {
@@ -195,29 +145,17 @@ export class TimeslotsComponent implements OnInit {
     this.timeslotForm.reset();
   }
 
-  getCurrentDate(): String {
-    var year = this.date.getFullYear().toString();
-    var day = this.date.getDate().toString();
-    var m = this.date.getMonth() + 1;
-    var month = m.toString();
-
-    if (Number(day) < 10) {
-      day = "0".concat(day);
-    }
-    if (Number(month) < 10) {
-      month = "0".concat(month);
-    }
-
-    return year
-      .concat("-")
-      .concat(month)
-      .concat("-")
-      .concat(day);
-  }
-
-  makeDate(timeslotValue: string): Date {
+  formatDate(timeslotValue: string): Date {
     var newTimeslotValue = timeslotValue.slice(0, -1);
     var newDate = new Date(newTimeslotValue);
     return newDate;
+  }
+
+  format24HourTime(hour: string, min: string, sec): string {
+    return `${this.eventDate}T${hour}:${min}${sec}Z`
+  }
+
+  format12HourTime(startTime: string, sec: string): string {
+    return `${this.eventDate}T${startTime}${sec}Z`
   }
 }
