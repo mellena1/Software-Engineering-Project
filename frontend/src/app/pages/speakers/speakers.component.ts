@@ -68,16 +68,15 @@ export class SpeakersComponent implements OnInit {
     this.speakerService
       .updateSpeaker(this.currentSpeaker)
       .subscribe(
-        error => (this.error = error),
-        id => (this.currentSpeaker.id = id)
+        error => (this.error = error)
       );
-    this.getAllSpeakers();
-    window.location.reload();
+      
+    this.speakerForm.reset();
   }
 
   showEdit(speaker: Speaker): void {
     speaker.isEditable = true;
-    this.currentSpeaker.id = speaker.id;
+    this.currentSpeaker = speaker;
   }
 
   cancel(speaker: Speaker): void {
