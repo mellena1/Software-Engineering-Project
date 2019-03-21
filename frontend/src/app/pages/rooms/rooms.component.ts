@@ -32,22 +32,14 @@ export class RoomsComponent implements OnInit {
   }
 
   deleteSpeaker(id): void {
-    this.roomService
-      .deleteRoom(id)
-      .subscribe(error => (this.error = error));
+    this.roomService.deleteRoom(id).subscribe(error => (this.error = error));
     this.rooms = this.rooms.filter(item => item.id !== id);
   }
 
   onSubmit(): void {
-    var newRoom = new Room(
-      this.room.name, 
-      this.room.capacity
-      );
+    var newRoom = new Room(this.room.name, this.room.capacity);
     this.roomService
-      .writeRoom(
-        this.room.name, 
-        this.room.capacity
-        )
+      .writeRoom(this.room.name, this.room.capacity)
       .subscribe(
         response => (newRoom.id = response.id),
         error => (this.error = error)
@@ -57,9 +49,7 @@ export class RoomsComponent implements OnInit {
   }
 
   updateRoom(): void {
-    var index = this.rooms.findIndex(
-      item => item.id === this.currentRoom.id
-    );
+    var index = this.rooms.findIndex(item => item.id === this.currentRoom.id);
     var currentSpeaker = this.room[index];
 
     currentSpeaker.isEditable = false;

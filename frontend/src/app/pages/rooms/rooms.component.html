@@ -15,11 +15,7 @@
       <br />
       <h3 style="text-align:center">Rooms</h3>
       <br />
-      <div 
-      class="table-responsive" 
-      ng-app="app-rooms" 
-      ng-init="getAllRooms()"
-      >
+      <div class="table-responsive" ng-app="app-rooms" ng-init="getAllRooms()">
         <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
           <table class="table table-bordered table-striped">
             <thead>
