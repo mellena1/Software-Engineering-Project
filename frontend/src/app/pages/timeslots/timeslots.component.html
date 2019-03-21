@@ -20,7 +20,7 @@
         ng-app="app-timeslot"
         ng-init="getAllTimeslots()"
       >
-        <h4 align="center">{{ currentDate | date: "longDate" }}</h4>
+        <h4 align="center">{{ eventDate | date: "longDate" }}</h4>
         <input
           type="radio"
           name="timeformat"
@@ -48,7 +48,7 @@
             </thead>
             <tbody>
               <tr>
-                <td *ngIf="checked">
+                <td *ngIf="twelveHourIsChecked">
                   <input
                     type="time"
                     formControlName="timeslotStart"
@@ -58,7 +58,7 @@
                     ng-required="true"
                   />
                 </td>
-                <td *ngIf="!checked">
+                <td *ngIf="!twelveHourIsChecked">
                   <select
                     formControlName="timeslotStart"
                     [(ngModel)]="startHour"
@@ -89,8 +89,7 @@
                     <option>21</option>
                     <option>22</option>
                     <option>23</option>
-                    <option>24</option>
-                  </select>
+                                      </select>
                   :
                   <select
                     formControlName="timeslotStart"
@@ -160,10 +159,9 @@
                     <option>57</option>
                     <option>58</option>
                     <option>59</option>
-                    <option>60</option>
-                  </select>
+                                      </select>
                 </td>
-                <td *ngIf="checked">
+                <td *ngIf="twelveHourIsChecked">
                   <input
                     type="time"
                     formControlName="timeslotEnd"
@@ -173,7 +171,7 @@
                     ng-required="true"
                   />
                 </td>
-                <td *ngIf="!checked">
+                <td *ngIf="!twelveHourIsChecked">
                   <select
                     formControlName="timeslotEnd"
                     [(ngModel)]="endHour"
@@ -204,8 +202,7 @@
                     <option>21</option>
                     <option>22</option>
                     <option>23</option>
-                    <option>24</option>
-                  </select>
+                                      </select>
                   :
                   <select
                     formControlName="timeslotEnd"
@@ -275,8 +272,7 @@
                     <option>57</option>
                     <option>58</option>
                     <option>59</option>
-                    <option>60</option>
-                  </select>
+                                      </select>
                 </td>
                 <td>
                   <button
@@ -290,19 +286,19 @@
               </tr>
 
               <tr *ngFor="let timeslot of timeslots">
-                <td *ngIf="!timeslot.isEditable && checked">
+                <td *ngIf="!timeslot.isEditable && twelveHourIsChecked">
                   <span>{{
-                    makeDate(timeslot.startTime) | date: "h:mma"
+                    formatDate(timeslot.startTime) | date: "h:mma"
                   }}</span>
                 </td>
 
-                <td *ngIf="!timeslot.isEditable && !checked">
+                <td *ngIf="!timeslot.isEditable && !twelveHourIsChecked">
                   <span>{{
-                    makeDate(timeslot.startTime) | date: "HH:mm"
+                    formatDate(timeslot.startTime) | date: "HH:mm"
                   }}</span>
                 </td>
 
-                <td *ngIf="timeslot.isEditable && checked">
+                <td *ngIf="timeslot.isEditable && twelveHourIsChecked">
                   <input
                     type="time"
                     formControlName="timeslotStart"
@@ -312,7 +308,7 @@
                   />
                 </td>
 
-                <td *ngIf="timeslot.isEditable && !checked">
+                <td *ngIf="timeslot.isEditable && !twelveHourIsChecked">
                   <select
                     formControlName="timeslotStart"
                     [(ngModel)]="currentStartHour"
@@ -343,8 +339,7 @@
                     <option>21</option>
                     <option>22</option>
                     <option>23</option>
-                    <option>24</option>
-                  </select>
+                                      </select>
                   :
                   <select
                     formControlName="timeslotStart"
@@ -414,19 +409,18 @@
                     <option>57</option>
                     <option>58</option>
                     <option>59</option>
-                    <option>60</option>
-                  </select>
+                </select>
                 </td>
 
-                <td *ngIf="!timeslot.isEditable && checked">
-                  <span>{{ makeDate(timeslot.endTime) | date: "h:mma" }}</span>
+                <td *ngIf="!timeslot.isEditable && twelveHourIsChecked">
+                  <span>{{ formatDate(timeslot.endTime) | date: "h:mma" }}</span>
                 </td>
 
-                <td *ngIf="!timeslot.isEditable && !checked">
-                  <span>{{ makeDate(timeslot.endTime) | date: "HH:mm" }}</span>
+                <td *ngIf="!timeslot.isEditable && !twelveHourIsChecked">
+                  <span>{{ formatDate(timeslot.endTime) | date: "HH:mm" }}</span>
                 </td>
 
-                <td *ngIf="timeslot.isEditable && checked">
+                <td *ngIf="timeslot.isEditable && twelveHourIsChecked">
                   <input
                     type="time"
                     formControlName="timeslotEnd"
@@ -437,7 +431,7 @@
                   />
                 </td>
 
-                <td *ngIf="timeslot.isEditable && !checked">
+                <td *ngIf="timeslot.isEditable && !twelveHourIsChecked">
                   <select
                     formControlName="timeslotEnd"
                     [(ngModel)]="currentEndHour"
@@ -468,8 +462,7 @@
                     <option>21</option>
                     <option>22</option>
                     <option>23</option>
-                    <option>24</option>
-                  </select>
+                                      </select>
                   :
                   <select
                     formControlName="timeslotEnd"
@@ -539,8 +532,7 @@
                     <option>57</option>
                     <option>58</option>
                     <option>59</option>
-                    <option>60</option>
-                  </select>
+                                      </select>
                 </td>
 
                 <td *ngIf="!timeslot.isEditable">
@@ -576,16 +568,16 @@
                     Cancel
                   </button>
                 </td>
-                <td *ngIf="timeslot.isEditable && checked">
-                  Editing Timeslot: Start:
-                  {{ makeDate(timeslot.startTime) | date: "h:mma" }} End:
-                  {{ makeDate(timeslot.endTime) | date: "h:mma" }}
-                </td>
-                <td *ngIf="timeslot.isEditable && !checked">
-                  Editing Timeslot: Start:
-                  {{ makeDate(timeslot.startTime) | date: "HH:mm" }} End:
-                  {{ makeDate(timeslot.endTime) | date: "HH:mm" }}
-                </td>
+
+
+
+
+
+
+
+
+
+
               </tr>
             </tbody>
           </table>
