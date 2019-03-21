@@ -15,14 +15,14 @@ func TestStringToNullString(t *testing.T) {
 		String: val,
 		Valid:  true,
 	}
-	actual := stringToNullString(&val)
+	actual := StringToNullString(&val)
 	assert.Equal(t, expected, actual)
 
 	expected = sql.NullString{
 		String: "",
 		Valid:  false,
 	}
-	actual = stringToNullString(nil)
+	actual = StringToNullString(nil)
 	assert.Equal(t, expected, actual)
 }
 
@@ -32,7 +32,7 @@ func TestNullStringToString(t *testing.T) {
 		Valid:  true,
 	}
 	expected := db.StringPtr("hello")
-	actual := nullStringToString(val)
+	actual := NullStringToString(val)
 	assert.Equal(t, expected, actual)
 
 	val = sql.NullString{
@@ -40,7 +40,7 @@ func TestNullStringToString(t *testing.T) {
 		Valid:  false,
 	}
 	expected = nil
-	actual = nullStringToString(val)
+	actual = NullStringToString(val)
 	assert.Equal(t, expected, actual)
 }
 
@@ -50,14 +50,14 @@ func TestIntToNullInt(t *testing.T) {
 		Int64: val,
 		Valid: true,
 	}
-	actual := intToNullInt(&val)
+	actual := IntToNullInt(&val)
 	assert.Equal(t, expected, actual)
 
 	expected = sql.NullInt64{
 		Int64: 0,
 		Valid: false,
 	}
-	actual = intToNullInt(nil)
+	actual = IntToNullInt(nil)
 	assert.Equal(t, expected, actual)
 }
 
@@ -67,7 +67,7 @@ func TestNullIntToInt(t *testing.T) {
 		Valid: true,
 	}
 	expected := db.Int64Ptr(15)
-	actual := nullIntToInt(val)
+	actual := NullIntToInt(val)
 	assert.Equal(t, expected, actual)
 
 	val = sql.NullInt64{
@@ -75,6 +75,6 @@ func TestNullIntToInt(t *testing.T) {
 		Valid: false,
 	}
 	expected = nil
-	actual = nullIntToInt(val)
+	actual = NullIntToInt(val)
 	assert.Equal(t, expected, actual)
 }

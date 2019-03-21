@@ -16,8 +16,8 @@ var (
 	endTime               = "2019-10-01 23:00:00"
 	testTimeslot          = db.Timeslot{
 		ID:        db.Int64Ptr(timeslotID),
-		StartTime: parseTime(mysqlTimeformat, startTime),
-		EndTime:   parseTime(mysqlTimeformat, endTime),
+		StartTime: parseTime(MySQLTimeFormat, startTime),
+		EndTime:   parseTime(MySQLTimeFormat, endTime),
 	}
 )
 

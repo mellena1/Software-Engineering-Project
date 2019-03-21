@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	mysqlTimeformat = "2006-01-02 15:04:05"
+	// MySQLTimeFormat format used to write to the mysql db
+	MySQLTimeFormat = "2006-01-02 15:04:05"
 )
 
 // TimeslotMySQL implements TimeslotReaderWriterUpdaterDeleter
@@ -28,20 +29,19 @@ func scanATimeslot(timeslot *db.Timeslot, row rowScanner) error {
 
 // ReadATimeslot reads a timeslot from the db given an id
 func (t TimeslotMySQL) ReadATimeslot(id int64) (db.Timeslot, error) {
-	timeslot := db.NewTimeslot()
-
 	if t.db == nil {
-		return timeslot, ErrDBNotSet
+		return db.Timeslot{}, ErrDBNotSet
 	}
 
 	stmt, err := t.db.Prepare("SELECT timeslotID, startTime, endTime FROM timeslot where timeslotID = ?;")
 	if err != nil {
-		return timeslot, err
+		return db.Timeslot{}, err
 	}
 	defer stmt.Close()
 
 	row := stmt.QueryRow(id)
 
+	timeslot := db.NewTimeslot()
 	err = scanATimeslot(&timeslot, row)
 
 	return timeslot, err
@@ -88,7 +88,7 @@ func (t TimeslotMySQL) WriteATimeslot(startTime, endTime time.Time) (int64, erro
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(startTime.Format(mysqlTimeformat), endTime.Format(mysqlTimeformat))
+	result, err := stmt.Exec(startTime.Format(MySQLTimeFormat), endTime.Format(MySQLTimeFormat))
 	if err != nil {
 		return 0, err
 	}
@@ -108,7 +108,7 @@ func (t TimeslotMySQL) UpdateATimeslot(id int64, startTime, endTime time.Time) e
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(startTime.Format(mysqlTimeformat), endTime.Format(mysqlTimeformat), id)
+	result, err := stmt.Exec(startTime.Format(MySQLTimeFormat), endTime.Format(MySQLTimeFormat), id)
 	if err != nil {
 		return err
 	}
