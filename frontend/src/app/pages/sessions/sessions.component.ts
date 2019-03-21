@@ -24,20 +24,34 @@ export class SessionsComponent implements OnInit {
     private speakerService: SpeakerService,
     private timeslotService: TimeslotService
   ) {}
+
   sessions: Session[];
+  error: any;
   rooms: Room[];
   speakers: Speaker[];
   timeslots: Timeslot[];
+
+  checked: any;
+  timeFormat: "12hour";
+  date = new Date();
+  currentDate: any;
+
   session = new Session(
     "",
     new Room("", 0),
     new Speaker("", "", ""),
     new Timeslot("", "")
   );
+
+  currentSession = new Session(
+    "",
+    new Room("", 0),
+    new Speaker("", "", ""),
+    new Timeslot("", "")
+  );
+
   selectedSession: Session;
-  error: any;
-  isEditable: boolean;
-  isCurrent: boolean;
+
   sessionForm = new FormGroup({
     sessionName: new FormControl(""),
     sessionRoom: new FormControl(""),
@@ -50,8 +64,8 @@ export class SessionsComponent implements OnInit {
     this.getAllRooms();
     this.getAllSpeakers();
     this.getAllTimeslots();
-    this.isEditable = false;
-    this.isCurrent = true;
+    this.checked = true;
+    this.currentDate = this.getCurrentDate();
   }
 
   getAllSessions(): void {
@@ -91,17 +105,18 @@ export class SessionsComponent implements OnInit {
     this.sessionService.getSession(id);
   }
 
-  updateSession(updatedSession: Session): void {
-    console.log("Yo");
-    if (confirm("Are you sure you want to update?")) {
-      this.sessionService
-        .updateSession(updatedSession)
-        .subscribe(error => (this.error = error));
-      console.log("The following Session Udpated :", this.sessionForm.value);
-      this.sessions = this.sessions.filter(item => item !== updatedSession);
-      this.sessionForm.reset();
-      this.sessions.push(updatedSession);
-    }
+  updateSession(): void {
+    this.currentSession.isEditable = false;
+    console.log(this.currentSession.name);
+
+    this.sessionService
+      .updateSession(this.currentSession)
+      .subscribe(error => (this.error = error));
+
+    console.log("The following Session Udpated :", this.sessionForm.value);
+
+    this.getAllSessions();
+    window.location.reload();
   }
 
   deleteSession(id: number) {
@@ -116,6 +131,11 @@ export class SessionsComponent implements OnInit {
 
   onSelect(session: Session): void {
     this.selectedSession = session;
+    if (this.timeFormat == "12hour") {
+      this.checked = true;
+    } else {
+      this.checked = false;
+    }
   }
 
   onSubmit(): void {
@@ -138,16 +158,46 @@ export class SessionsComponent implements OnInit {
       );
     console.log("Session Submitted!", this.sessionForm.value);
     this.sessionForm.reset();
+    this.session.isEditable = false;
     this.sessions.push(newSession);
   }
 
   showEdit(session: Session): void {
-    console.log("Showing Edit");
     session.isEditable = true;
+    this.currentSession.id = session.id;
   }
 
   cancel(session: Session): void {
-    console.log("Showing Cancel");
     session.isEditable = false;
+    this.sessionForm.reset();
+  }
+
+  getCurrentDate(): String {
+    var year = this.date.getFullYear().toString();
+    var day = this.date.getDate().toString();
+    var m = this.date.getMonth() + 1;
+    var month = m.toString();
+
+    if (Number(day) < 10) {
+      day = "0".concat(day);
+    }
+    if (Number(month) < 10) {
+      month = "0".concat(month);
+    }
+
+    return year
+      .concat("-")
+      .concat(month)
+      .concat("-")
+      .concat(day);
+  }
+
+  makeDate(timeslotValue: string): Date {
+    if (timeslotValue == null || timeslotValue == "" || timeslotValue == " ") {
+      return new Date();
+    }
+    var newTimeslotValue = timeslotValue.slice(0, -1);
+    var newDate = new Date(newTimeslotValue);
+    return newDate;
   }
 }
