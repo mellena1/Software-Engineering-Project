@@ -21,21 +21,21 @@
         ng-app="app-sessions"
         ng-init="getAllSessions()"
       >
-      <h4 align="center">{{ eventDate | date: "longDate" }}</h4>
-      <input
-        type="radio"
-        name="timeformat"
-        [value]="true"
-        [(ngModel)]="twelveHourIsChecked"
-      />
-      12 Hour
-      <input
-        type="radio"
-        name="timeformat"
-        [value]="false"
-        [(ngModel)]="twelveHourIsChecked"
-      />
-      24 Hour
+        <h4 align="center">{{ eventDate | date: "longDate" }}</h4>
+        <input
+          type="radio"
+          name="timeformat"
+          [value]="true"
+          [(ngModel)]="twelveHourIsChecked"
+        />
+        12 Hour
+        <input
+          type="radio"
+          name="timeformat"
+          [value]="false"
+          [(ngModel)]="twelveHourIsChecked"
+        />
+        24 Hour
         <form [formGroup]="sessionForm" (ngSubmit)="onSubmit()">
           <table class="table table-bordered table-striped">
             <thead>
@@ -206,9 +206,7 @@
 
                 <td *ngIf="!session.isEditable && twelveHourIsChecked">
                   <span
-                    >{{
-                      makeDate(session.timeslot.startTime) | date: "h:mma"
-                    }}
+                    >{{ makeDate(session.timeslot.startTime) | date: "h:mma" }}
                     -
                     {{
                       makeDate(session.timeslot.endTime) | date: "h:mma"
@@ -218,9 +216,7 @@
 
                 <td *ngIf="!session.isEditable && !twelveHourIsChecked">
                   <span
-                    >{{
-                      makeDate(session.timeslot.startTime) | date: "HH:mm"
-                    }}
+                    >{{ makeDate(session.timeslot.startTime) | date: "HH:mm" }}
                     -
                     {{
                       makeDate(session.timeslot.endTime) | date: "HH:mm"
