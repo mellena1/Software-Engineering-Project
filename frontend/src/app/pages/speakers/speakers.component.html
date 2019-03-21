@@ -20,7 +20,7 @@
         ng-app="app-speakers"
         ng-init="getAllSpeakers()"
       >
-        <form [formGroup]="speakerForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="speakerForm" (ngSubmit)="writeSpeaker()">
           <table class="table table-bordered table-striped">
             <thead>
               <tr>

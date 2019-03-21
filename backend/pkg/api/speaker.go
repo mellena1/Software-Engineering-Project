@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
@@ -97,24 +98,38 @@ type WriteASpeakerRequest struct {
 	LastName  *string `json:"lastName" example:"Smith"`
 }
 
-// Validate validates a WriteASpeakerRequest
+var validateEmail, _ = regexp.Compile(`[a-zA-Z0-9\.\-\_]+@[a-zA-Z0-9\.\-\_]+`)
+var validateName, _ = regexp.Compile(`[a-zA-Z\.\-]+`)
+
+// Validate validates a writeASpeakerRequest
 func (r WriteASpeakerRequest) Validate() error {
-	if r.Email == nil && r.FirstName == nil && r.LastName == nil {
+	atLeastOneField := false
+
+	if r.Email != nil && *r.Email != "" {
+		if *r.Email != validateEmail.FindString(*r.Email) {
+			return ErrInvalidEmail
+		}
+		atLeastOneField = true
+	}
+
+	if r.FirstName != nil && *r.FirstName != "" {
+		if *r.FirstName != validateName.FindString(*r.FirstName) {
+			return ErrInvalidName
+		}
+		atLeastOneField = true
+	}
+
+	if r.LastName != nil && *r.LastName != "" {
+		if *r.LastName != validateName.FindString(*r.LastName) {
+			return ErrInvalidName
+		}
+		atLeastOneField = true
+	}
+
+	if !atLeastOneField {
 		return ErrInvalidRequest
 	}
-	email, fName, lName := "", "", ""
-	if r.Email != nil {
-		email = *r.Email
-	}
-	if r.FirstName != nil {
-		fName = *r.FirstName
-	}
-	if r.LastName != nil {
-		lName = *r.LastName
-	}
-	if email == "" && fName == "" && lName == "" {
-		return ErrInvalidRequest
-	}
+
 	return nil
 }
 
@@ -142,7 +157,7 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = speakerRequest.Validate(); err != nil {
-		ReportError(err, "one of email, firstName, and lastName must be set", http.StatusBadRequest, w)
+		ReportError(err, "Failed to validate speaker request", http.StatusBadRequest, w)
 		return
 	}
 
@@ -168,22 +183,34 @@ func (r UpdateASpeakerRequest) Validate() error {
 	if r.ID == nil {
 		return ErrInvalidRequest
 	}
-	if r.Email == nil && r.FirstName == nil && r.LastName == nil {
+
+	atLeastOneField := false
+
+	if r.Email != nil && *r.Email != "" {
+		if *r.Email != validateEmail.FindString(*r.Email) {
+			return ErrInvalidEmail
+		}
+		atLeastOneField = true
+	}
+
+	if r.FirstName != nil && *r.FirstName != "" {
+		if *r.FirstName != validateName.FindString(*r.FirstName) {
+			return ErrInvalidName
+		}
+		atLeastOneField = true
+	}
+
+	if r.LastName != nil && *r.LastName != "" {
+		if *r.LastName != validateName.FindString(*r.LastName) {
+			return ErrInvalidName
+		}
+		atLeastOneField = true
+	}
+
+	if !atLeastOneField {
 		return ErrInvalidRequest
 	}
-	email, fName, lName := "", "", ""
-	if r.Email != nil {
-		email = *r.Email
-	}
-	if r.FirstName != nil {
-		fName = *r.FirstName
-	}
-	if r.LastName != nil {
-		lName = *r.LastName
-	}
-	if email == "" && fName == "" && lName == "" {
-		return ErrInvalidRequest
-	}
+
 	return nil
 }
 
