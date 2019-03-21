@@ -13,9 +13,13 @@
   <body>
     <div class="container">
       <br />
-      <h3 align="center">Rooms</h3>
+      <h3 style="text-align:center">Rooms</h3>
       <br />
-      <div class="table-responsive" ng-app="app-rooms" ng-init="getAllRooms()">
+      <div 
+      class="table-responsive" 
+      ng-app="app-rooms" 
+      ng-init="getAllRooms()"
+      >
         <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
           <table class="table table-bordered table-striped">
             <thead>
@@ -33,6 +37,7 @@
                     formControlName="roomName"
                     [(ngModel)]="room.name"
                     class="form-control"
+                    placeholder="{{ this.room.name }}"
                     ng-required="true"
                   />
                 </td>
@@ -42,6 +47,7 @@
                     formControlName="roomCapacity"
                     [(ngModel)]="room.capacity"
                     class="form-control"
+                    placeholder="{{ this.room.capacity }}"
                     ng-required="true"
                   />
                 </td>
@@ -74,7 +80,6 @@
                 <td *ngIf="!room.isEditable">
                   <span>{{ room.capacity }}</span>
                 </td>
-
                 <td *ngIf="room.isEditable">
                   <input
                     type="number"

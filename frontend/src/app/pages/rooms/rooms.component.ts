@@ -25,46 +25,52 @@ export class RoomsComponent implements OnInit {
     this.getAllRooms();
   }
 
-  deleteRoom(id): void {
-    if (confirm("Are you sure you want to remove it?")) {
-      this.roomService.deleteRoom(id).subscribe(error => (this.error = error));
-      console.log("The following Room Deleted :", this.roomForm.value);
-      this.rooms = this.rooms.filter(item => item.id !== id);
-    }
-  }
-
   getAllRooms(): void {
     this.roomService
       .getAllRooms()
       .subscribe(rooms => (this.rooms = rooms), error => (this.error = error));
   }
 
-  onSubmit(): void {
-    var newRoom = new Room(this.room.name, this.room.capacity);
-
+  deleteSpeaker(id): void {
     this.roomService
-      .writeRoom(this.room.name, this.room.capacity)
+      .deleteRoom(id)
+      .subscribe(error => (this.error = error));
+    this.rooms = this.rooms.filter(item => item.id !== id);
+  }
+
+  onSubmit(): void {
+    var newRoom = new Room(
+      this.room.name, 
+      this.room.capacity
+      );
+    this.roomService
+      .writeRoom(
+        this.room.name, 
+        this.room.capacity
+        )
       .subscribe(
         response => (newRoom.id = response.id),
         error => (this.error = error)
       );
-    console.log("Room Submitted!", this.roomForm.value);
     this.roomForm.reset();
     this.rooms.push(newRoom);
   }
 
-  updateRoom(room: Room): void {
-    room.isEditable = false;
-    if (confirm("Are you sure you want to update this?")) {
-      this.roomService
-        .updateRoom(this.currentRoom)
-        .subscribe(
-          error => (this.error = error),
-          id => (this.currentRoom.id = id)
-        );
-      console.log("The following Rooms Updated :", this.roomForm.value);
-    }
-    // this.roomForm.reset();
+  updateRoom(): void {
+    var index = this.rooms.findIndex(
+      item => item.id === this.currentRoom.id
+    );
+    var currentSpeaker = this.room[index];
+
+    currentSpeaker.isEditable = false;
+    this.roomService.updateRoom(this.currentRoom).subscribe(error => {
+      this.error = error;
+    });
+
+    currentSpeaker.name = this.currentRoom.name;
+    currentSpeaker.capacity = this.currentRoom.capacity;
+
+    this.roomForm.reset();
   }
 
   showEdit(room: Room): void {
