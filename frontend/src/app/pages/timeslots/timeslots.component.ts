@@ -18,13 +18,13 @@ export class TimeslotsComponent implements OnInit {
 
   eventDate = "2019-04-06";
   twelveHourIsChecked = true;
-  
+
   seconds = ":00";
   startHour = "00";
   startMin = "00";
   endHour = "00";
   endMin = "00";
-  
+
   timeslotForm = new FormGroup({
     timeslotStart: new FormControl(""),
     timeslotEnd: new FormControl("")
@@ -46,11 +46,22 @@ export class TimeslotsComponent implements OnInit {
   writeTimeslot(): void {
     // format timeslots
     if (!this.twelveHourIsChecked) {
-      var fullStart = this.format24HourTime(this.startHour, this.startMin, this.seconds)
-      var fullEnd = this.format24HourTime(this.endHour, this.endHour, this.seconds)
+      var fullStart = this.format24HourTime(
+        this.startHour,
+        this.startMin,
+        this.seconds
+      );
+      var fullEnd = this.format24HourTime(
+        this.endHour,
+        this.endHour,
+        this.seconds
+      );
     } else {
-      var fullStart = this.format12HourTime(this.timeslot.startTime, this.seconds)
-      var fullEnd = this.format12HourTime(this.timeslot.endTime, this.seconds)
+      var fullStart = this.format12HourTime(
+        this.timeslot.startTime,
+        this.seconds
+      );
+      var fullEnd = this.format12HourTime(this.timeslot.endTime, this.seconds);
     }
 
     this.timeslot.startTime = fullStart;
@@ -66,11 +77,14 @@ export class TimeslotsComponent implements OnInit {
       this.timeslot.startTime,
       this.timeslot.endTime
     );
-  
+
     // pass new timeslot to timeslotService to send to database
     this.timeslotService
       .writeTimeslot(this.timeslot.startTime, this.timeslot.endTime)
-      .subscribe(response => (newTimeslot.id = response.id), error => (this.error = error));
+      .subscribe(
+        response => (newTimeslot.id = response.id),
+        error => (this.error = error)
+      );
     this.timeslotForm.reset();
     this.timeslots.push(newTimeslot);
   }
@@ -83,34 +97,45 @@ export class TimeslotsComponent implements OnInit {
   }
 
   updateTimeslot(): void {
-    var index = this.timeslots.findIndex(item => item.id === this.editedTimeslot.id);
+    var index = this.timeslots.findIndex(
+      item => item.id === this.editedTimeslot.id
+    );
     var curTimeslot = this.timeslots[index];
     curTimeslot.isEditable = false;
 
     if (!this.twelveHourIsChecked) {
-      var fullStart = this.format24HourTime(this.startHour, this.startMin, this.seconds)
-      var fullEnd = this.format24HourTime(this.endHour, this.endMin, this.seconds)
+      var fullStart = this.format24HourTime(
+        this.startHour,
+        this.startMin,
+        this.seconds
+      );
+      var fullEnd = this.format24HourTime(
+        this.endHour,
+        this.endMin,
+        this.seconds
+      );
     } else {
-      var fullStart = this.format12HourTime(this.editedTimeslot.startTime, this.seconds)
-      var fullEnd = this.format12HourTime(this.editedTimeslot.endTime, this.seconds)
+      var fullStart = this.format12HourTime(
+        this.editedTimeslot.startTime,
+        this.seconds
+      );
+      var fullEnd = this.format12HourTime(
+        this.editedTimeslot.endTime,
+        this.seconds
+      );
     }
 
     curTimeslot.startTime = fullStart;
     curTimeslot.endTime = fullEnd;
 
-    if (
-      curTimeslot.startTime == "" ||
-      curTimeslot.endTime == ""
-    ) {
+    if (curTimeslot.startTime == "" || curTimeslot.endTime == "") {
       alert("Please enter a date and time for both fields");
       this.timeslotForm.reset();
     }
 
     this.timeslotService
       .updateTimeslot(curTimeslot)
-      .subscribe(
-        error => (this.error = error)
-    );
+      .subscribe(error => (this.error = error));
 
     this.timeslotForm.reset();
   }
@@ -131,10 +156,10 @@ export class TimeslotsComponent implements OnInit {
   }
 
   format24HourTime(hour: string, min: string, sec: string): string {
-    return `${this.eventDate}T${hour}:${min}${sec}Z`
+    return `${this.eventDate}T${hour}:${min}${sec}Z`;
   }
 
   format12HourTime(startTime: string, sec: string): string {
-    return `${this.eventDate}T${startTime}${sec}Z`
+    return `${this.eventDate}T${startTime}${sec}Z`;
   }
 }

@@ -44,7 +44,7 @@ export class TimeslotService {
       id: updatedTimeslot.id,
       startTime: updatedTimeslot.startTime,
       endTime: updatedTimeslot.endTime
-    }
+    };
     return this.http.put(this.apiUrl + "/timeslot", obj);
   }
 
