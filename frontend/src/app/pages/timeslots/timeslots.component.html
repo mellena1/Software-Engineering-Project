@@ -15,9 +15,9 @@
     <br />
     <div class="table-responsive" ng-app="app-timeslot" ng-init="getAllTimeslots()">
       <h4 align="center">{{ eventDate | date: "longDate" }}</h4>
-      <input type="radio" name="timeformat" value="12hour" [(ngModel)]="timeFormat" (change)="onSelect()" />
+      <input type="radio" name="timeformat" [value]="true" [(ngModel)]="twelveHourIsChecked" />
       12 Hour
-      <input type="radio" name="timeformat" value="24hour" [(ngModel)]="timeFormat" (change)="onSelect()" />
+      <input type="radio" name="timeformat" [value]=false [(ngModel)]="twelveHourIsChecked" />
       24 Hour
       <form [formGroup]="timeslotForm" (ngSubmit)="onSubmit()">
         <table class="table table-bordered table-striped">
@@ -245,7 +245,7 @@
               </td>
 
               <td *ngIf="timeslot.isEditable && twelveHourIsChecked">
-                <input type="time" formControlName="timeslotStart" [(ngModel)]="timeslot.startTime"
+                <input type="time" formControlName="timeslotStart" [(ngModel)]="editedTimeslot.startTime"
                   class="form-control" ng-required="true" />
               </td>
 
@@ -352,7 +352,7 @@
               </td>
 
               <td *ngIf="timeslot.isEditable && twelveHourIsChecked">
-                <input type="time" formControlName="timeslotEnd" [(ngModel)]="timeslot.endTime"
+                <input type="time" formControlName="timeslotEnd" [(ngModel)]="editedTimeslot.endTime"
                   class="form-control" ng-required="true" />
               </td>
 

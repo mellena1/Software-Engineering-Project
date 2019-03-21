@@ -14,10 +14,10 @@ export class TimeslotsComponent implements OnInit {
   timeslots: Timeslot[];
   error: any;
   timeslot = new Timeslot("", "");
+  editedTimeslot = new Timeslot("", "");
 
   eventDate = "2019-04-06";
   twelveHourIsChecked = true;
-  timeFormat = "12hour";
   
   seconds = ":00";
   startHour = "00";
@@ -42,28 +42,9 @@ export class TimeslotsComponent implements OnInit {
         error => (this.error = error)
       );
   }
-  
-  writeTimeslot(startTime: string, endTime: string): number {
-    var newId: number
-    this.timeslotService
-      .writeTimeslot(this.timeslot.startTime, this.timeslot.endTime)
-      .subscribe(error => (this.error = error), id => (newId = id));
-    return newId
-  }
-  
-  onSelect(): void {
-    if (this.timeFormat == "12hour") {
-      this.twelveHourIsChecked = true;
-    } else {
-      this.twelveHourIsChecked = false;
-    }
-  }
 
   onSubmit(): void {
     // format timeslots
-    var fullStart = this.eventDate
-    var fullEnd = this.eventDate
-
     if (!this.twelveHourIsChecked) {
       var fullStart = this.format24HourTime(this.startHour, this.startMin, this.seconds)
       var fullEnd = this.format24HourTime(this.endHour, this.endHour, this.seconds)
@@ -85,11 +66,11 @@ export class TimeslotsComponent implements OnInit {
       this.timeslot.startTime,
       this.timeslot.endTime
     );
-
-    console.log(this.timeslot.startTime)
-    console.log(this.timeslot.endTime)
+  
     // pass new timeslot to timeslotService to send to database
-    newTimeslot.id =  this.writeTimeslot(this.timeslot.startTime, this.timeslot.endTime)
+    this.timeslotService
+      .writeTimeslot(this.timeslot.startTime, this.timeslot.endTime)
+      .subscribe(response => (newTimeslot.id = response.id), error => (this.error = error));
     this.timeslotForm.reset();
     this.timeslots.push(newTimeslot);
   }
@@ -98,46 +79,45 @@ export class TimeslotsComponent implements OnInit {
     this.timeslotService
       .deleteTimeslot(id)
       .subscribe(error => (this.error = error));
-    console.log("The following Timeslot Deleted :", this.timeslotForm.value);
     this.timeslots = this.timeslots.filter(item => item.id !== id);
   }
 
   updateTimeslot(): void {
-    this.timeslot.isEditable = false;
+    var index = this.timeslots.findIndex(item => item.id === this.editedTimeslot.id);
+    var curTimeslot = this.timeslots[index];
+    curTimeslot.isEditable = false;
+
     if (!this.twelveHourIsChecked) {
       var fullStart = this.format24HourTime(this.startHour, this.startMin, this.seconds)
       var fullEnd = this.format24HourTime(this.endHour, this.endMin, this.seconds)
     } else {
-      var fullStart = this.format12HourTime(this.timeslot.startTime, this.seconds)
-      var fullEnd = this.format12HourTime(this.timeslot.endTime, this.seconds)
+      var fullStart = this.format12HourTime(this.editedTimeslot.startTime, this.seconds)
+      var fullEnd = this.format12HourTime(this.editedTimeslot.endTime, this.seconds)
     }
 
-    this.timeslot.startTime = fullStart;
-    this.timeslot.endTime = fullEnd;
+    curTimeslot.startTime = fullStart;
+    curTimeslot.endTime = fullEnd;
 
     if (
-      this.timeslot.startTime == "" ||
-      this.timeslot.endTime == ""
+      curTimeslot.startTime == "" ||
+      curTimeslot.endTime == ""
     ) {
       alert("Please enter a date and time for both fields");
       this.timeslotForm.reset();
     }
 
     this.timeslotService
-      .updateTimeslot(this.timeslot)
+      .updateTimeslot(curTimeslot)
       .subscribe(
-        error => (this.error = error),
-        id => (this.timeslot.id = id)
-      );
+        error => (this.error = error)
+    );
 
-    this.getAllTimeslots();
-    window.location.reload();
+    this.timeslotForm.reset();
   }
 
   showEdit(timeslot: Timeslot): void {
     timeslot.isEditable = true;
-    console.log(timeslot)
-    this.timeslot.id = timeslot.id;
+    this.editedTimeslot.id = timeslot.id;
   }
 
   cancel(timeslot: Timeslot): void {
@@ -151,7 +131,7 @@ export class TimeslotsComponent implements OnInit {
     return newDate;
   }
 
-  format24HourTime(hour: string, min: string, sec): string {
+  format24HourTime(hour: string, min: string, sec: string): string {
     return `${this.eventDate}T${hour}:${min}${sec}Z`
   }
 

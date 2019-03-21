@@ -22,7 +22,7 @@ export class TimeslotService {
 
   getAllTimeslots() {
     return this.http.get<Timeslot[]>(this.apiUrl + "/timeslots").pipe(
-      map(data => data),
+      map(timeslots => timeslots),
       catchError(this.handleError)
     );
   }
@@ -40,7 +40,12 @@ export class TimeslotService {
   }
 
   updateTimeslot(updatedTimeslot: Timeslot) {
-    return this.http.put(this.apiUrl + "/timeslot", updatedTimeslot);
+    var obj = {
+      id: updatedTimeslot.id,
+      startTime: updatedTimeslot.startTime,
+      endTime: updatedTimeslot.endTime
+    }
+    return this.http.put(this.apiUrl + "/timeslot", obj);
   }
 
   deleteTimeslot(id: number) {
