@@ -29,7 +29,7 @@ func CreateCountRoutes(countDBFacade db.CountReaderWriterUpdaterDeleter) []Route
 		NewRoute("/api/v1/counts", cAPI.getAllCounts, "GET"),
 		NewRoute("/api/v1/count", cAPI.getACount, "GET"),
 		NewRoute("/api/v1/count", cAPI.writeACount, "POST"),
-		// NewRoute("/api/v1/count", cAPI.updateACount, "PUT"),
+		NewRoute("/api/v1/count", cAPI.updateACount, "PUT"),
 		// NewRoute("/api/v1/count", cAPI.deleteACount, "DELETE"),
 	}
 
@@ -144,17 +144,15 @@ func (c countAPI) writeACount(w http.ResponseWriter, r *http.Request) {
 
 // updateACountRequest request for updateACount
 type updateACountRequest struct {
-	ID        *int64  `json:"id" example:"1"`
-	StartTime *string `json:"startTime" example:"2019-02-18T21:00:00Z"`
-	EndTime   *string `json:"endTime" example:"2019-10-01T23:00:00Z"`
+	Time      *string `json:"time" example:"beginning"`
+	SessionID *int64  `json:"sessionID" example:"2"`
+	UserID    *int64  `json:"userID" example:"1"`
+	Count     *int64  `json:"count" example:"30"`
 }
 
 // Validate validates a updateACountRequest
 func (r updateACountRequest) Validate() error {
-	if r.ID == nil {
-		return ErrInvalidRequest
-	}
-	if r.StartTime == nil || r.EndTime == nil {
+	if r.SessionID == nil || r.Time == nil {
 		return ErrInvalidRequest
 	}
 	return nil
@@ -171,7 +169,36 @@ func (r updateACountRequest) Validate() error {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/count [put]
 func (c countAPI) updateACount(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+		return
+	}
 
+	updateRequest := updateACountRequest{}
+	err = json.Unmarshal(body, &updateRequest)
+	if err != nil {
+		ReportError(err, "failed to unmarshal json", http.StatusBadRequest, w)
+		return
+	}
+
+	if err = updateRequest.Validate(); err != nil {
+		ReportError(err, "must set time and session for count you wish to update", http.StatusBadRequest, w)
+		return
+	}
+
+	err = c.countUpdater.UpdateACount(updateRequest.Time, updateRequest.SessionID, updateRequest.UserID, updateRequest.Count)
+	switch err {
+	case nil:
+		w.Write(nil)
+		return
+	case db.ErrNothingChanged:
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		return
+	default:
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		return
+	}
 }
 
 // deleteACountRequest request for deleteATimeslot

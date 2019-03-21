@@ -39,4 +39,4 @@ INSERT INTO count (`time`, `sessionID`, `userID`, `count`) VALUES
                      ('end', 2, 1, 15),
                      ('beginning', 3, 1, 20),
                      ('middle', 3, 2, 25),
-                     ('end', 3, 1, 30;
+                     ('end', 3, 1, 30);

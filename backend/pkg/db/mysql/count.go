@@ -104,6 +104,27 @@ func (c CountMySQL) WriteACount(time *string, sessionID *int64, userID *int64, c
 
 // UpdateACount updates a count in the db given the session Id and the updated time of session
 func (c CountMySQL) UpdateACount(time *string, sessionID *int64, userID *int64, count *int64) error {
+	if c.db == nil {
+		return ErrDBNotSet
+	}
+
+	stmt, err := c.db.Prepare("UPDATE count SET time = ?, sessionID = ?, userID = ?, count = ? WHERE time = ? and sessionID = ?;")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	result, err := stmt.Exec(stringToNullString(time), intToNullInt(sessionID), intToNullInt(userID), intToNullInt(count), stringToNullString(time), intToNullInt(sessionID))
+	if err != nil {
+		return err
+	}
+
+	if rows, err := result.RowsAffected(); err != nil {
+		return err
+	} else if rows == 0 {
+		return db.ErrNothingChanged
+	}
+
 	return nil
 }
 
