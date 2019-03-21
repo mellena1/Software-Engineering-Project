@@ -199,7 +199,6 @@ export class SessionsComponent implements OnInit {
 
   makeDate(timeslotValue: string): Date {
     if (timeslotValue == null || timeslotValue == "" || timeslotValue == " ") {
-      console.log(timeslotValue);
       return new Date();
     }
     var newTimeslotValue = timeslotValue.slice(0, -1);

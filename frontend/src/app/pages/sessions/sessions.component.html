@@ -72,7 +72,7 @@
                     ngRequired="true"
                   >
                     <option value="" disabled selected>--Select Room--</option>
-                    <option value="" label = "[N/A]"></option> 
+                    <option value=" " label = "[N/A]"></option> 
                     <option *ngFor="let room of rooms" [ngValue]="room">{{
                       room.name
                     }}</option>
@@ -88,7 +88,7 @@
                     ngRequired="true"
                   >
                     <option value="" disabled selected>--Select Speaker--</option>
-                    <option value="" label = "[N/A]"></option> 
+                    <option value=" " label = "[N/A]"></option> 
                     <option *ngFor="let speaker of speakers" [ngValue]="speaker"
                       >{{ speaker.firstName }} {{ speaker.lastName }}</option
                     >
@@ -104,12 +104,12 @@
                     ngRequired="true"
                   >
                     <option value="" disabled selected>--Select Time--</option>
-                    <option value="" label = "[N/A]"></option> 
+                    <option value=" " label = "[N/A]"></option> 
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
-                      >{{ timeslot.startTime | date: "h:mma"}} -
-                      {{ timeslot.endTime | date: "h:mma"}}</option
+                      >{{ makeDate(timeslot.startTime) | date: "h:mma"}} -
+                      {{ makeDate(timeslot.endTime) | date: "h:mma"}}</option
                     >
                   </select>
                 </td>
@@ -123,7 +123,7 @@
                     ngRequired="true"
                   >
                     <option value="" disabled selected>--Select Time--</option>
-                    <option value="" label = "[N/A]"></option> 
+                    <option value=" " label = "[N/A]"></option> 
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
@@ -172,7 +172,8 @@
                     id="Current Room"
                     value = "{{session.room}}"
                   >
-                    <option label = " "></option> 
+                    <option value="" disabled selected>--Select Room--</option>
+                    <option value=" " label = "[N/A]"></option>  
                     <option *ngFor="let room of rooms" [ngValue]="room">{{
                       room.name
                     }}</option>
@@ -193,7 +194,8 @@
                     class="form-control"
                     id="Current Speaker"
                   >
-                    <option label = " "></option> 
+                    <option value="" disabled selected>--Select Speaker--</option>
+                    <option value=" " label = "[N/A]"></option>  
                     <option *ngFor="let speaker of speakers" [ngValue]="speaker"
                       >{{ speaker.firstName }} {{ speaker.lastName }}</option
                     >
@@ -212,6 +214,7 @@
                   }} - {{ makeDate(session.timeslot.endTime) | date: "HH:mm"}}</span>
                 </td>
 
+
                 <td *ngIf="session.isEditable && !checked">
                   <select
                     formControlName="sessionTimeslot"
@@ -219,7 +222,8 @@
                     class="form-control"
                     id="Current Timeslot"
                   >
-                    <option label = " "></option> 
+                    <option value="" disabled selected>--Select Time--</option>
+                    <option value=" " label = "[N/A]"></option> 
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
@@ -236,7 +240,8 @@
                     class="form-control"
                     id="Current Timeslot"
                   >
-                    <option label = " "></option> 
+                    <option value="" disabled selected>--Select Time--</option>
+                    <option value=" " label = "[N/A]"></option> 
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
