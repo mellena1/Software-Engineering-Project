@@ -5,7 +5,7 @@ import (
 	"io"
 	"net/http"
 
-	mysqlDriver "github.com/go-sql-driver/mysql" // mysql driver for database/sql
+	mysqlDriver "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 
@@ -21,7 +21,7 @@ type API struct {
 }
 
 // NewAPI returns a new API given a mysqlDriver.Config
-// passing nil to logWriter means no logging
+// passing nil to logWriter means no access logs
 func NewAPI(mySQLConfig mysqlDriver.Config, logWriter io.Writer) (*API, error) {
 	db, err := sql.Open("mysql", mySQLConfig.FormatDSN())
 	if err != nil {
@@ -54,11 +54,21 @@ func NewAPI(mySQLConfig mysqlDriver.Config, logWriter io.Writer) (*API, error) {
 	timeslotRoutes := api.CreateTimeslotRoutes(timeslotDBFacade)
 	apiObj.CreateRoutes(timeslotRoutes...)
 
+	// Count
+	countDBFacade := mysqlEntities.NewCountMySQL(apiObj.db)
+	countRoutes := api.CreateCountRoutes(countDBFacade)
+	apiObj.CreateRoutes(countRoutes...)
+
 	return &apiObj, nil
 }
 
 // ListenAndServe basically runs http.ListenAndServe
 func (a API) ListenAndServe(addr string) error {
+	return http.ListenAndServe(addr, a.getHandler())
+}
+
+// Gets the handler for this API
+func (a API) getHandler() http.Handler {
 	// Add logging if there is a logWriter defined
 	var handler http.Handler = a.router
 	if a.logWriter != nil {
@@ -72,7 +82,7 @@ func (a API) ListenAndServe(addr string) error {
 		handlers.AllowedHeaders([]string{"Content-Type"}),
 	)(handler)
 
-	return http.ListenAndServe(addr, handler)
+	return handler
 }
 
 // CreateRoutes adds a route(s) to the router
