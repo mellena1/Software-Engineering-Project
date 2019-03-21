@@ -90,14 +90,14 @@ func (t timeslotAPI) getATimeslot(w http.ResponseWriter, r *http.Request) {
 	w.Write(responseJSON)
 }
 
-// writeATimeslotRequest request for writeATimeslot
-type writeATimeslotRequest struct {
+// WriteATimeslotRequest request for writeATimeslot
+type WriteATimeslotRequest struct {
 	StartTime *string `json:"startTime" example:"2019-02-18T21:00:00Z"`
 	EndTime   *string `json:"endTime" example:"2019-10-01T23:00:00Z"`
 }
 
-// Validate validates a writeATimeslotRequest
-func (r writeATimeslotRequest) Validate() error {
+// Validate validates a WriteATimeslotRequest
+func (r WriteATimeslotRequest) Validate() error {
 	if r.StartTime == nil || r.EndTime == nil {
 		return ErrInvalidRequest
 	}
@@ -109,7 +109,7 @@ func (r writeATimeslotRequest) Validate() error {
 // @Description Add a timeslot to the db
 // @accept json
 // @produce json
-// @param timeslot body api.writeATimeslotRequest true "the timeslot to add"
+// @param timeslot body api.WriteATimeslotRequest true "the timeslot to add"
 // @Success 200 {integer} int64 "the id of the timeslot added"
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
@@ -121,7 +121,7 @@ func (t timeslotAPI) writeATimeslot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	timeslotRequest := writeATimeslotRequest{}
+	timeslotRequest := WriteATimeslotRequest{}
 	err = json.Unmarshal(j, &timeslotRequest)
 	if err != nil {
 		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
@@ -156,15 +156,15 @@ func (t timeslotAPI) writeATimeslot(w http.ResponseWriter, r *http.Request) {
 	writeIDToClient(w, id)
 }
 
-// updateATimeslotRequest request for updateATimeslot
-type updateATimeslotRequest struct {
+// UpdateATimeslotRequest request for updateATimeslot
+type UpdateATimeslotRequest struct {
 	ID        *int64  `json:"id" example:"1"`
 	StartTime *string `json:"startTime" example:"2019-02-18T21:00:00Z"`
 	EndTime   *string `json:"endTime" example:"2019-10-01T23:00:00Z"`
 }
 
-// Validate validates a updateATimeslotRequest
-func (r updateATimeslotRequest) Validate() error {
+// Validate validates a UpdateATimeslotRequest
+func (r UpdateATimeslotRequest) Validate() error {
 	if r.ID == nil {
 		return ErrInvalidRequest
 	}
@@ -179,7 +179,7 @@ func (r updateATimeslotRequest) Validate() error {
 // @Description Update an existing timeslot in the db
 // @accept json
 // @produce json
-// @param timeslot body api.updateATimeslotRequest true "the timeslot to update with the new values"
+// @param timeslot body api.UpdateATimeslotRequest true "the timeslot to update with the new values"
 // @Success 200 "Updated properly"
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
@@ -191,7 +191,7 @@ func (t timeslotAPI) updateATimeslot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	timeslotRequest := updateATimeslotRequest{}
+	timeslotRequest := UpdateATimeslotRequest{}
 	err = json.Unmarshal(j, &timeslotRequest)
 	if err != nil {
 		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
