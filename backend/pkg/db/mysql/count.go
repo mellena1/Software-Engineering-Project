@@ -21,7 +21,7 @@ func scanACount(count *db.Count, row rowScanner) error {
 	return row.Scan(&count.Time, &count.SessionID, &count.UserID, &count.Count)
 }
 
-// ReadACount reads a count from the db given a sessionID
+// ReadCountsOfSession reads a count from the db given a sessionID
 func (c CountMySQL) ReadCountsOfSession(sessionID int64) ([]db.Count, error) {
 	if c.db == nil {
 		return nil, ErrDBNotSet
@@ -94,7 +94,7 @@ func (c CountMySQL) WriteACount(time *string, sessionID *int64, userID *int64, c
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(stringToNullString(time), intToNullInt(sessionID), intToNullInt(userID), intToNullInt(count))
+	result, err := stmt.Exec(StringToNullString(time), IntToNullInt(sessionID), IntToNullInt(userID), IntToNullInt(count))
 	if err != nil {
 		return 0, err
 	}
@@ -114,7 +114,7 @@ func (c CountMySQL) UpdateACount(time *string, sessionID *int64, userID *int64, 
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(stringToNullString(time), intToNullInt(sessionID), intToNullInt(userID), intToNullInt(count), stringToNullString(time), intToNullInt(sessionID))
+	result, err := stmt.Exec(StringToNullString(time), IntToNullInt(sessionID), IntToNullInt(userID), IntToNullInt(count), StringToNullString(time), IntToNullInt(sessionID))
 	if err != nil {
 		return err
 	}
