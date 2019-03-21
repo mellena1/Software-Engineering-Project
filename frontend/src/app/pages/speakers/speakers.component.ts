@@ -38,7 +38,6 @@ export class SpeakersComponent implements OnInit {
     this.speakerService
       .deleteSpeaker(id)
       .subscribe(error => (this.error = error));
-    console.log("The following Speaker Deleted :", this.speakerForm.value);
     this.speakers = this.speakers.filter(item => item.id !== id);
   }
 
@@ -58,7 +57,6 @@ export class SpeakersComponent implements OnInit {
         response => (newSpeaker.id = response.id),
         error => (this.error = error)
       );
-    console.log("Speaker Submitted!", this.speakerForm.value);
     this.speakerForm.reset();
     this.speakers.push(newSpeaker);
   }
