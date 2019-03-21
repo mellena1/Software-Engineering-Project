@@ -65,16 +65,16 @@ export class SpeakersComponent implements OnInit {
     var index = this.speakers.findIndex(
       item => item.id === this.currentSpeaker.id
     );
-    var curSpeaker = this.speakers[index];
+    var currentSpeaker = this.speakers[index];
 
-    curSpeaker.isEditable = false;
+    currentSpeaker.isEditable = false;
     this.speakerService.updateSpeaker(this.currentSpeaker).subscribe(error => {
       this.error = error;
     });
 
-    curSpeaker.firstName = this.currentSpeaker.firstName;
-    curSpeaker.lastName = this.currentSpeaker.lastName;
-    curSpeaker.email = this.currentSpeaker.email;
+    currentSpeaker.firstName = this.currentSpeaker.firstName;
+    currentSpeaker.lastName = this.currentSpeaker.lastName;
+    currentSpeaker.email = this.currentSpeaker.email;
 
     this.speakerForm.reset();
   }
