@@ -20,12 +20,6 @@
         ng-app="app-speakers"
         ng-init="getAllSpeakers()"
       >
-        <!--    
-                        <div class="alert alert-success alert-dismissible" ng-show="success" >
-                                    <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">&times;</a>
-                                    {{successMessage}}
-                                </div>
-                            -->
         <form [formGroup]="speakerForm" (ngSubmit)="onSubmit()">
           <table class="table table-bordered table-striped">
             <thead>
@@ -44,7 +38,7 @@
                     formControlName="firstName"
                     [(ngModel)]="speaker.firstName"
                     class="form-control"
-                    placeholder="Enter First Name"
+                    placeholder="{{ this.speaker.firstName }}"
                     ng-required="true"
                   />
                 </td>
@@ -54,7 +48,7 @@
                     formControlName="lastName"
                     [(ngModel)]="speaker.lastName"
                     class="form-control"
-                    placeholder="Enter Last Name"
+                    placeholder="{{ this.speaker.lastName }}"
                     ng-required="true"
                   />
                 </td>
@@ -64,7 +58,7 @@
                     formControlName="email"
                     [(ngModel)]="speaker.email"
                     class="form-control"
-                    placeholder="Enter email"
+                    placeholder="{{ this.speaker.email }}"
                     ng-required="true"
                   />
                 </td>
@@ -79,20 +73,52 @@
                 </td>
               </tr>
               <tr *ngFor="let speaker of speakers">
-                <td>
+                <td *ngIf="!speaker.isEditable">
                   <span>{{ speaker.firstName }}</span>
                 </td>
-                <td>
+
+                <td *ngIf="speaker.isEditable">
+                  <input
+                    type="text"
+                    formControlName="firstName"
+                    [(ngModel)]="currentSpeaker.firstName"
+                    class="form-control"
+                    ng-required="true"
+                  />
+                </td>
+
+                <td *ngIf="!speaker.isEditable">
                   <span>{{ speaker.lastName }}</span>
                 </td>
-                <td>
+                <td *ngIf="speaker.isEditable">
+                  <input
+                    type="text"
+                    formControlName="lastName"
+                    [(ngModel)]="currentSpeaker.lastName"
+                    class="form-control"
+                    ng-required="true"
+                  />
+                </td>
+
+                <td *ngIf="!speaker.isEditable">
                   <span>{{ speaker.email }}</span>
                 </td>
-                <td>
+
+                <td *ngIf="speaker.isEditable">
+                  <input
+                    type="text"
+                    formControlName="email"
+                    [(ngModel)]="currentSpeaker.email"
+                    class="form-control"
+                    ng-required="true"
+                  />
+                </td>
+
+                <td *ngIf="!speaker.isEditable">
                   <button
                     type="button"
                     class="btn btn-primary btn-sm"
-                    ng-click="editSpeaker()"
+                    (click)="showEdit(speaker)"
                   >
                     Edit
                   </button>
@@ -104,19 +130,27 @@
                     Delete
                   </button>
                 </td>
+
+                <td *ngIf="speaker.isEditable">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    (click)="updateSpeaker()"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="cancel(speaker)"
+                  >
+                    Cancel
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
         </form>
-        <script type="text/ng-template" id="edit">
-          <td><input type="text" ng-model="formData.first_name" class="form-control" /></td>
-          <td><input type="text" ng-model="formData.last_name" class="form-control" /></td>
-          <td>
-              <input type="hidden" ng-model="formData.data.id" />
-              <button type="button" class="btn btn-info btn-sm" ng-click="editData()">Save</button>
-              <button type="button" class="btn btn-default btn-sm" ng-click="reset()">Cancel</button>
-          </td>
-        </script>
       </div>
     </div>
   </body>
