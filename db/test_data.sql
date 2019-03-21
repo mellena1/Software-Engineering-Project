@@ -33,10 +33,10 @@ INSERT INTO user (`userID`, `name`) VALUES
                      (1, 'Kenny'),
                      (2, 'Robinson');
 
-INSERT INTO count (`time`, `count`, `userID`, `sessionID`) VALUES
-                     ('beginning', 20, 1, 1),
-                     ('middle', 10, 2, 2),
-                     ('end', 15, 1, 2),
-                     ('beginning', 5, 1, 3),
-                     ('middle', 15, 2, 3),
-                     ('end', 30, 1, 3);
+INSERT INTO count (`time`, `sessionID`, `userID`, `count`) VALUES
+                     ('beginning', 1, 1, 5),
+                     ('middle', 2, 2, 10),
+                     ('end', 2, 1, 15),
+                     ('beginning', 3, 1, 20),
+                     ('middle', 3, 2, 25),
+                     ('end', 3, 1, 30;

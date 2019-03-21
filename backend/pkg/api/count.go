@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
@@ -27,7 +28,7 @@ func CreateCountRoutes(countDBFacade db.CountReaderWriterUpdaterDeleter) []Route
 	routes := []Route{
 		NewRoute("/api/v1/counts", cAPI.getAllCounts, "GET"),
 		NewRoute("/api/v1/count", cAPI.getACount, "GET"),
-		// NewRoute("/api/v1/count", cAPI.writeACount, "POST"),
+		NewRoute("/api/v1/count", cAPI.writeACount, "POST"),
 		// NewRoute("/api/v1/count", cAPI.updateACount, "PUT"),
 		// NewRoute("/api/v1/count", cAPI.deleteACount, "DELETE"),
 	}
@@ -89,13 +90,15 @@ func (c countAPI) getACount(w http.ResponseWriter, r *http.Request) {
 
 // writeACountRequest request for writeACount
 type writeACountRequest struct {
-	StartTime *string `json:"startTime" example:"2019-02-18T21:00:00Z"`
-	EndTime   *string `json:"endTime" example:"2019-10-01T23:00:00Z"`
+	Time      *string `json:"time" example:"beginning"`
+	SessionID *int64  `json:"sessionID" example:"2"`
+	UserID    *int64  `json:"userID" example:"1"`
+	Count     *int64  `json:"count" example:"30"`
 }
 
 // Validate validates a writeACountRequest
 func (r writeACountRequest) Validate() error {
-	if r.StartTime == nil || r.EndTime == nil {
+	if r.SessionID == nil || r.Time == nil {
 		return ErrInvalidRequest
 	}
 	return nil
@@ -112,7 +115,31 @@ func (r writeACountRequest) Validate() error {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/count [post]
 func (c countAPI) writeACount(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+		return
+	}
 
+	countRequest := writeACountRequest{}
+	err = json.Unmarshal(body, &countRequest)
+	if err != nil {
+		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
+		return
+	}
+
+	if err = countRequest.Validate(); err != nil {
+		ReportError(err, "time and session must be set", http.StatusBadRequest, w)
+		return
+	}
+
+	id, err := c.countWriter.WriteACount(countRequest.Time, countRequest.SessionID, countRequest.UserID, countRequest.Count)
+	if err != nil {
+		ReportError(err, "failed to write a count", http.StatusServiceUnavailable, w)
+		return
+	}
+
+	writeIDToClient(w, id)
 }
 
 // updateACountRequest request for updateACount
