@@ -30,18 +30,26 @@ export class SessionsComponent implements OnInit {
   rooms: Room[];
   speakers: Speaker[];
   timeslots: Timeslot[];
+
+  checked: any;
+  timeFormat: "12hour";
+  date = new Date();
+  currentDate: any;
+
   session = new Session(
     "",
     new Room("", 0),
     new Speaker("", "", ""),
     new Timeslot("", "")
   );
+
   currentSession = new Session(
     "",
     new Room("", 0),
     new Speaker("", "", ""),
     new Timeslot("", "")
   );
+
   selectedSession: Session;
 
   sessionForm = new FormGroup({
@@ -56,6 +64,8 @@ export class SessionsComponent implements OnInit {
     this.getAllRooms();
     this.getAllSpeakers();
     this.getAllTimeslots();
+    this.checked = true;
+    this.currentDate = this.getCurrentDate();
   }
 
   getAllSessions(): void {
@@ -110,8 +120,8 @@ export class SessionsComponent implements OnInit {
 
       console.log("The following Session Udpated :", this.sessionForm.value);
 
-      this.getAllSessions();
-      window.location.reload();
+      //this.getAllSessions();
+      //window.location.reload();
   }
 
   deleteSession(id: number) {
@@ -126,6 +136,11 @@ export class SessionsComponent implements OnInit {
 
   onSelect(session: Session): void {
     this.selectedSession = session;
+    if (this.timeFormat == "12hour") {
+      this.checked = true;
+    } else {
+      this.checked = false;
+    }
   }
 
   onSubmit(): void {
@@ -160,5 +175,35 @@ export class SessionsComponent implements OnInit {
   cancel(session: Session): void {
     session.isEditable = false;
     this.sessionForm.reset();
+  }
+
+  getCurrentDate(): String {
+    var year = this.date.getFullYear().toString();
+    var day = this.date.getDate().toString();
+    var m = this.date.getMonth() + 1;
+    var month = m.toString();
+
+    if (Number(day) < 10) {
+      day = "0".concat(day);
+    }
+    if (Number(month) < 10) {
+      month = "0".concat(month);
+    }
+
+    return year
+      .concat("-")
+      .concat(month)
+      .concat("-")
+      .concat(day);
+  }
+
+  makeDate(timeslotValue: string): Date {
+    if (timeslotValue == null || timeslotValue == "" || timeslotValue == " ") {
+      console.log(timeslotValue);
+      return new Date();
+    }
+    var newTimeslotValue = timeslotValue.slice(0, -1);
+    var newDate = new Date(newTimeslotValue);
+    return newDate;
   }
 }

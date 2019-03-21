@@ -21,6 +21,23 @@
         ng-app="app-sessions"
         ng-init="getAllSessions()"
       >
+      <h4 style="text-align:center">{{ currentDate | date: "longDate" }}</h4>
+      <input
+          type="radio"
+          name="timeformat"
+          value="12hour"
+          [(ngModel)]="timeFormat"
+          (change)="onSelect()"
+        />
+        12 Hour
+        <input
+          type="radio"
+          name="timeformat"
+          value="24hour"
+          [(ngModel)]="timeFormat"
+          (change)="onSelect()"
+        />
+        24 Hour
         <form [formGroup]="sessionForm" (ngSubmit)="onSubmit()">
           <table class="table table-bordered table-striped">
             <thead>
@@ -42,7 +59,7 @@
                     class="form-control"
                     placeholder="Enter Presentation Name"
                     id="Name"
-                    ng-required="true"
+                    ngRequired="true"
                   />
                 </td>
 
@@ -52,10 +69,10 @@
                     [(ngModel)]="session.room"
                     class="form-control"
                     id="Room"
-                    ng-required="true"
+                    ngRequired="true"
                   >
                     <option value="" disabled selected>--Select Room--</option>
-                    <option value = "" label = "[N/A]"></option> 
+                    <option value="" label = "[N/A]"></option> 
                     <option *ngFor="let room of rooms" [ngValue]="room">{{
                       room.name
                     }}</option>
@@ -68,31 +85,50 @@
                     [(ngModel)]="session.speaker"
                     class="form-control"
                     id="Speaker"
-                    ng-required="true"
+                    ngRequired="true"
                   >
                     <option value="" disabled selected>--Select Speaker--</option>
-                    <option value = "" label = "[N/A]"></option> 
+                    <option value="" label = "[N/A]"></option> 
                     <option *ngFor="let speaker of speakers" [ngValue]="speaker"
                       >{{ speaker.firstName }} {{ speaker.lastName }}</option
                     >
                   </select>
                 </td>
 
-                <td>
+                <td *ngIf="checked">
                   <select
                     formControlName="sessionTimeslot"
                     [(ngModel)]="session.timeslot"
                     class="form-control"
                     id="Timeslot"
-                    ng-required="true"
+                    ngRequired="true"
                   >
                     <option value="" disabled selected>--Select Time--</option>
-                    <option value = "" label = "[N/A]"></option> 
+                    <option value="" label = "[N/A]"></option> 
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
                       >{{ timeslot.startTime | date: "h:mma"}} -
                       {{ timeslot.endTime | date: "h:mma"}}</option
+                    >
+                  </select>
+                </td>
+
+                <td *ngIf="!checked">
+                  <select
+                    formControlName="sessionTimeslot"
+                    [(ngModel)]="session.timeslot"
+                    class="form-control"
+                    id="Timeslot"
+                    ngRequired="true"
+                  >
+                    <option value="" disabled selected>--Select Time--</option>
+                    <option value="" label = "[N/A]"></option> 
+                    <option
+                      *ngFor="let timeslot of timeslots"
+                      [ngValue]="timeslot"
+                      >{{ makeDate(timeslot.startTime) | date: "HH:mm"}} -
+                      {{ makeDate(timeslot.endTime) | date: "HH:mm"}}</option
                     >
                   </select>
                 </td>
@@ -120,7 +156,7 @@
                     [(ngModel)]="currentSession.name"
                     class="form-control"
                     id="Current Name"
-                    ng-required="true"
+                    value="{{session.name}}"
                   />
                 </td>
 
@@ -134,7 +170,7 @@
                     [(ngModel)]="currentSession.room"
                     class="form-control"
                     id="Current Room"
-                    ng-required="true"
+                    value = "{{session.room}}"
                   >
                     <option label = " "></option> 
                     <option *ngFor="let room of rooms" [ngValue]="room">{{
@@ -156,7 +192,6 @@
                     [(ngModel)]="currentSession.speaker"
                     class="form-control"
                     id="Current Speaker"
-                    ng-required="true"
                   >
                     <option label = " "></option> 
                     <option *ngFor="let speaker of speakers" [ngValue]="speaker"
@@ -165,27 +200,48 @@
                   </select>
                 </td>
 
-                <td *ngIf="!session.isEditable">
-                  <span
-                    >{{ session.timeslot.startTime | date: "h:mma"}} -
-                    {{ session.timeslot.endTime | date: "h:mma"}}</span
-                  >
+                <td *ngIf="!session.isEditable && checked">
+                  <span>{{
+                    makeDate(session.timeslot.startTime) | date: "h:mma"
+                  }} - {{ makeDate(session.timeslot.endTime) | date: "h:mma"}}</span>
                 </td>
 
-                <td *ngIf="session.isEditable">
+                <td *ngIf="!session.isEditable && !checked">
+                  <span>{{
+                    makeDate(session.timeslot.startTime) | date: "HH:mm"
+                  }} - {{ makeDate(session.timeslot.endTime) | date: "HH:mm"}}</span>
+                </td>
+
+                <td *ngIf="session.isEditable && !checked">
                   <select
                     formControlName="sessionTimeslot"
                     [(ngModel)]="currentSession.timeslot"
                     class="form-control"
                     id="Current Timeslot"
-                    ng-required="true"
                   >
                     <option label = " "></option> 
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
-                      >{{ timeslot.startTime | date: "h:mma"}} -
-                      {{ timeslot.endTime | date: "h:mma"}}</option
+                      >{{ makeDate(timeslot.startTime) | date: "HH:mm"}} -
+                      {{ makeDate(timeslot.endTime) | date: "HH:mm"}}</option
+                    >
+                  </select>
+                </td>
+
+                <td *ngIf="session.isEditable && checked">
+                  <select
+                    formControlName="sessionTimeslot"
+                    [(ngModel)]="currentSession.timeslot"
+                    class="form-control"
+                    id="Current Timeslot"
+                  >
+                    <option label = " "></option> 
+                    <option
+                      *ngFor="let timeslot of timeslots"
+                      [ngValue]="timeslot"
+                      >{{ makeDate(timeslot.startTime) | date: "hh:mma"}} -
+                      {{ makeDate(timeslot.endTime) | date: "hh:mma"}}</option
                     >
                   </select>
                 </td>
