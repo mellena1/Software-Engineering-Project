@@ -20,12 +20,6 @@
         ng-app="app-speakers"
         ng-init="getAllSpeakers()"
       >
-        <!--    
-                        <div class="alert alert-success alert-dismissible" ng-show="success" >
-                                    <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">&times;</a>
-                                    {{successMessage}}
-                                </div>
-                            -->
         <form [formGroup]="speakerForm" (ngSubmit)="onSubmit()">
           <table class="table table-bordered table-striped">
             <thead>

@@ -19,7 +19,7 @@
       12 Hour
       <input type="radio" name="timeformat" [value]=false [(ngModel)]="twelveHourIsChecked" />
       24 Hour
-      <form [formGroup]="timeslotForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="timeslotForm" (ngSubmit)="writeTimeslot()">
         <table class="table table-bordered table-striped">
           <thead>
             <tr>

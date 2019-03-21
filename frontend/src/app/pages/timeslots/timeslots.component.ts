@@ -43,7 +43,7 @@ export class TimeslotsComponent implements OnInit {
       );
   }
 
-  onSubmit(): void {
+  writeTimeslot(): void {
     // format timeslots
     if (!this.twelveHourIsChecked) {
       var fullStart = this.format24HourTime(this.startHour, this.startMin, this.seconds)
@@ -75,7 +75,7 @@ export class TimeslotsComponent implements OnInit {
     this.timeslots.push(newTimeslot);
   }
 
-  deleteTimeslot(id): void {
+  deleteTimeslot(id: number): void {
     this.timeslotService
       .deleteTimeslot(id)
       .subscribe(error => (this.error = error));
@@ -124,7 +124,6 @@ export class TimeslotsComponent implements OnInit {
     timeslot.isEditable = false;
     this.timeslotForm.reset();
   }
-
   formatDate(timeslotValue: string): Date {
     var newTimeslotValue = timeslotValue.slice(0, -1);
     var newDate = new Date(newTimeslotValue);
