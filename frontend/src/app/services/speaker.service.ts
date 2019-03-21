@@ -39,8 +39,8 @@ export class SpeakerService {
     return this.http.post<WriteResponse>(this.apiUrl + "/speaker", obj);
   }
 
-  updateSpeakers(updatedSpeaker: Speaker) {
-    return this.http.post(this.apiUrl + "/speaker", updatedSpeaker);
+  updateSpeaker(updatedSpeaker: Speaker) {
+    return this.http.put(this.apiUrl + "/speaker", updatedSpeaker);
   }
 
   deleteSpeaker(id: number) {
