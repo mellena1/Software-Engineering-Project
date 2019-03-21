@@ -35,13 +35,10 @@ export class SpeakersComponent implements OnInit {
   }
 
   deleteSpeaker(id): void {
-    if (confirm("Are you sure you want to remove it?")) {
-      this.speakerService
-        .deleteSpeaker(id)
-        .subscribe(error => (this.error = error));
-      console.log("The following Speaker Deleted :", this.speakerForm.value);
-      this.speakers = this.speakers.filter(item => item.id !== id);
-    }
+    this.speakerService
+      .deleteSpeaker(id)
+      .subscribe(error => (this.error = error));
+    this.speakers = this.speakers.filter(item => item.id !== id);
   }
 
   onSubmit(): void {
@@ -60,24 +57,20 @@ export class SpeakersComponent implements OnInit {
         response => (newSpeaker.id = response.id),
         error => (this.error = error)
       );
-    console.log("Speaker Submitted!", this.speakerForm.value);
     this.speakerForm.reset();
     this.speakers.push(newSpeaker);
   }
 
   updateSpeaker(speaker: Speaker): void {
-    speaker.isEditable=false;
-    if (confirm("Are you sure you want to update this?")) {
-      this.speakerService
-        .updateSpeakers(this.speaker)
-        .subscribe(
-          error => (this.error = error),
-          id => (this.currentSpeaker.id = id)
-          
-        );
-      console.log("The following Rooms Updated :", this.speakerForm.value);
-    }
-   // this.roomForm.reset();
+    this.speaker.isEditable = false;
+    this.speakerService
+      .updateSpeaker(this.currentSpeaker)
+      .subscribe(
+        error => (this.error = error),
+        id => (this.currentSpeaker.id = id)
+      );
+    this.getAllSpeakers();
+    window.location.reload();
   }
 
   showEdit(speaker: Speaker): void {
