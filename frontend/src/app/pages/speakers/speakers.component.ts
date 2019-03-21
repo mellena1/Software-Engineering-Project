@@ -73,6 +73,7 @@ export class SpeakersComponent implements OnInit {
         .subscribe(
           error => (this.error = error),
           id => (this.currentSpeaker.id = id)
+          
         );
       console.log("The following Rooms Updated :", this.speakerForm.value);
     }
