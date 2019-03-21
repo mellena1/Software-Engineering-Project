@@ -56,7 +56,7 @@ export class SessionService {
       sessionName: updatedSession.name,
       speakerID: updatedSession.speaker.id,
       timeslotID: updatedSession.timeslot.id
-    }
+    };
     return this.http.put(this.apiUrl + "/session", obj);
   }
 

@@ -80,10 +80,7 @@ export class SessionsComponent implements OnInit {
   getAllRooms(): void {
     this.roomService
       .getAllRooms()
-      .subscribe(
-        rooms => (this.rooms = rooms), 
-        error => (this.error = error)
-      );
+      .subscribe(rooms => (this.rooms = rooms), error => (this.error = error));
   }
 
   getAllSpeakers(): void {
@@ -112,16 +109,14 @@ export class SessionsComponent implements OnInit {
     this.currentSession.isEditable = false;
     console.log(this.currentSession.name);
 
-      this.sessionService
-        .updateSession(this.currentSession)
-        .subscribe(
-          error => (this.error = error)
-        );
+    this.sessionService
+      .updateSession(this.currentSession)
+      .subscribe(error => (this.error = error));
 
-      console.log("The following Session Udpated :", this.sessionForm.value);
+    console.log("The following Session Udpated :", this.sessionForm.value);
 
-      //this.getAllSessions();
-      //window.location.reload();
+    this.getAllSessions();
+    window.location.reload();
   }
 
   deleteSession(id: number) {
