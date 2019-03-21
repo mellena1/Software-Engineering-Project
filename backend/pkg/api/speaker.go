@@ -105,21 +105,21 @@ var validateName, _ = regexp.Compile(`[a-zA-Z\.\-]+`)
 func (r writeASpeakerRequest) Validate() error {
 	atLeastOneField := false
 
-	if r.Email != nil {
+	if r.Email != nil && *r.Email != "" {
 		if *r.Email != validateEmail.FindString(*r.Email) {
 			return ErrInvalidEmail
 		}
 		atLeastOneField = true
 	}
 
-	if r.FirstName != nil {
+	if r.FirstName != nil && *r.FirstName != "" {
 		if *r.FirstName != validateName.FindString(*r.FirstName) {
 			return ErrInvalidName
 		}
 		atLeastOneField = true
 	}
 
-	if r.LastName != nil {
+	if r.LastName != nil && *r.LastName != "" {
 		if *r.LastName != validateName.FindString(*r.LastName) {
 			return ErrInvalidName
 		}
@@ -186,22 +186,22 @@ func (r updateASpeakerRequest) Validate() error {
 
 	atLeastOneField := false
 
-	if r.Email != nil {
-		if !validateEmail.MatchString(*r.Email) {
+	if r.Email != nil && *r.Email != "" {
+		if *r.Email != validateEmail.FindString(*r.Email) {
 			return ErrInvalidEmail
 		}
 		atLeastOneField = true
 	}
 
-	if r.FirstName != nil {
-		if !validateName.MatchString(*r.FirstName) {
+	if r.FirstName != nil && *r.FirstName != "" {
+		if *r.FirstName != validateName.FindString(*r.FirstName) {
 			return ErrInvalidName
 		}
 		atLeastOneField = true
 	}
 
-	if r.LastName != nil {
-		if !validateName.MatchString(*r.LastName) {
+	if r.LastName != nil && *r.LastName != "" {
+		if *r.LastName != validateName.FindString(*r.LastName) {
 			return ErrInvalidName
 		}
 		atLeastOneField = true
