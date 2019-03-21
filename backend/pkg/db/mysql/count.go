@@ -129,6 +129,27 @@ func (c CountMySQL) UpdateACount(time *string, sessionID *int64, userID *int64, 
 }
 
 // DeleteACount deletes a count given an id
-func (c CountMySQL) DeleteACount(sessionID *int64) error {
+func (c CountMySQL) DeleteACount(sessionID int64) error {
+	if c.db == nil {
+		return ErrDBNotSet
+	}
+
+	stmt, err := c.db.Prepare("DELETE FROM count WHERE sessionID = ?;")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	result, err := stmt.Exec(sessionID)
+	if err != nil {
+		return err
+	}
+
+	if rows, err := result.RowsAffected(); err != nil {
+		return err
+	} else if rows == 0 {
+		return db.ErrNothingChanged
+	}
+
 	return nil
 }

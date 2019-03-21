@@ -30,7 +30,7 @@ func CreateCountRoutes(countDBFacade db.CountReaderWriterUpdaterDeleter) []Route
 		NewRoute("/api/v1/count", cAPI.getACount, "GET"),
 		NewRoute("/api/v1/count", cAPI.writeACount, "POST"),
 		NewRoute("/api/v1/count", cAPI.updateACount, "PUT"),
-		// NewRoute("/api/v1/count", cAPI.deleteACount, "DELETE"),
+		NewRoute("/api/v1/count", cAPI.deleteACount, "DELETE"),
 	}
 
 	return routes
@@ -203,7 +203,7 @@ func (c countAPI) updateACount(w http.ResponseWriter, r *http.Request) {
 
 // deleteACountRequest request for deleteATimeslot
 type deleteACountRequest struct {
-	ID int64 `json:"id" example:"1"`
+	SessionID *int64 `json:"sessionID" example:"1"`
 }
 
 // deleteACount Delete an existing count in the db
@@ -216,6 +216,30 @@ type deleteACountRequest struct {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/count [delete]
-func (t timeslotAPI) deleteACount(w http.ResponseWriter, r *http.Request) {
+func (c countAPI) deleteACount(w http.ResponseWriter, r *http.Request) {
+	requestedID, err := getIDFromQueries(r)
+	switch err {
+	case ErrQueryNotSet:
+		ReportError(err, "the \"sessionID\" param was not set", http.StatusBadRequest, w)
+		return
+	case ErrBadQuery:
+		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		return
+	case ErrBadQueryType:
+		ReportError(err, "the \"sessionID\" param is not a number", http.StatusBadRequest, w)
+		return
+	}
 
+	err = c.countDeleter.DeleteACount(requestedID)
+	switch err {
+	case nil:
+		w.Write(nil)
+		return
+	case db.ErrNothingChanged:
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		return
+	default:
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		return
+	}
 }

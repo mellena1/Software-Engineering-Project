@@ -44,5 +44,5 @@ type CountUpdater interface {
 
 // CountDeleter implements all delete related methods
 type CountDeleter interface {
-	DeleteACount(sessionID *int64) error
+	DeleteACount(sessionID int64) error
 }
