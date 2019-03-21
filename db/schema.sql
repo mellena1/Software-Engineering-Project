@@ -27,8 +27,8 @@ CREATE TABLE room (
 
 CREATE TABLE timeslot (
     timeslotID  INT     AUTO_INCREMENT NOT NULL,
-    startTime   DATETIME,
-    endTime     DATETIME,
+    startTime   DATETIME NOT NULL,
+    endTime     DATETIME NOT NULL,
     PRIMARY KEY (timeslotID)
 );
 

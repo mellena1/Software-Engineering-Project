@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
@@ -90,38 +91,52 @@ func (a speakerAPI) getASpeaker(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
-// writeASpeakerRequest request for writeASpeaker
-type writeASpeakerRequest struct {
+// WriteASpeakerRequest request for writeASpeaker
+type WriteASpeakerRequest struct {
 	Email     *string `json:"email" example:"person@gmail.com"`
 	FirstName *string `json:"firstName" example:"Bob"`
 	LastName  *string `json:"lastName" example:"Smith"`
 }
 
+var validateEmail, _ = regexp.Compile(`[a-zA-Z0-9\.\-\_]+@[a-zA-Z0-9\.\-\_]+`)
+var validateName, _ = regexp.Compile(`[a-zA-Z\.\-]+`)
+
 // Validate validates a writeASpeakerRequest
-func (r writeASpeakerRequest) Validate() error {
-	if r.Email == nil && r.FirstName == nil && r.LastName == nil {
+func (r WriteASpeakerRequest) Validate() error {
+	atLeastOneField := false
+
+	if r.Email != nil && *r.Email != "" {
+		if *r.Email != validateEmail.FindString(*r.Email) {
+			return ErrInvalidEmail
+		}
+		atLeastOneField = true
+	}
+
+	if r.FirstName != nil && *r.FirstName != "" {
+		if *r.FirstName != validateName.FindString(*r.FirstName) {
+			return ErrInvalidName
+		}
+		atLeastOneField = true
+	}
+
+	if r.LastName != nil && *r.LastName != "" {
+		if *r.LastName != validateName.FindString(*r.LastName) {
+			return ErrInvalidName
+		}
+		atLeastOneField = true
+	}
+
+	if !atLeastOneField {
 		return ErrInvalidRequest
 	}
-	email, fName, lName := "", "", ""
-	if r.Email != nil {
-		email = *r.Email
-	}
-	if r.FirstName != nil {
-		fName = *r.FirstName
-	}
-	if r.LastName != nil {
-		lName = *r.LastName
-	}
-	if email == "" && fName == "" && lName == "" {
-		return ErrInvalidRequest
-	}
+
 	return nil
 }
 
 // writeASpeaker Inserts a speaker into the database
 // @Summary Write a speaker
 // @Description Inserts a speaker with the specified email, firstName and lastName
-// @Param Speaker body api.writeASpeakerRequest true "Speaker that wants to be added to the db (no ID)"
+// @Param Speaker body api.WriteASpeakerRequest true "Speaker that wants to be added to the db (no ID)"
 // @Produce json
 // @Success 200
 // @Failure 400 {} _ "the request was bad"
@@ -134,7 +149,7 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	speakerRequest := writeASpeakerRequest{}
+	speakerRequest := WriteASpeakerRequest{}
 	err = json.Unmarshal(body, &speakerRequest)
 	if err != nil {
 		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
@@ -142,7 +157,7 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = speakerRequest.Validate(); err != nil {
-		ReportError(err, "one of email, firstName, and lastName must be set", http.StatusBadRequest, w)
+		ReportError(err, "Failed to validate speaker request", http.StatusBadRequest, w)
 		return
 	}
 
@@ -155,42 +170,54 @@ func (a speakerAPI) writeASpeaker(w http.ResponseWriter, r *http.Request) {
 	writeIDToClient(w, id)
 }
 
-// updateASpeakerRequest request for updateASpeaker
-type updateASpeakerRequest struct {
+// UpdateASpeakerRequest request for updateASpeaker
+type UpdateASpeakerRequest struct {
 	ID        *int64  `json:"id" example:"1"`
 	Email     *string `json:"email" example:"person@gmail.com"`
 	FirstName *string `json:"firstName" example:"Bob"`
 	LastName  *string `json:"lastName" example:"Smith"`
 }
 
-// Validate validates a updateASpeakerRequest
-func (r updateASpeakerRequest) Validate() error {
+// Validate validates a UpdateASpeakerRequest
+func (r UpdateASpeakerRequest) Validate() error {
 	if r.ID == nil {
 		return ErrInvalidRequest
 	}
-	if r.Email == nil && r.FirstName == nil && r.LastName == nil {
+
+	atLeastOneField := false
+
+	if r.Email != nil && *r.Email != "" {
+		if *r.Email != validateEmail.FindString(*r.Email) {
+			return ErrInvalidEmail
+		}
+		atLeastOneField = true
+	}
+
+	if r.FirstName != nil && *r.FirstName != "" {
+		if *r.FirstName != validateName.FindString(*r.FirstName) {
+			return ErrInvalidName
+		}
+		atLeastOneField = true
+	}
+
+	if r.LastName != nil && *r.LastName != "" {
+		if *r.LastName != validateName.FindString(*r.LastName) {
+			return ErrInvalidName
+		}
+		atLeastOneField = true
+	}
+
+	if !atLeastOneField {
 		return ErrInvalidRequest
 	}
-	email, fName, lName := "", "", ""
-	if r.Email != nil {
-		email = *r.Email
-	}
-	if r.FirstName != nil {
-		fName = *r.FirstName
-	}
-	if r.LastName != nil {
-		lName = *r.LastName
-	}
-	if email == "" && fName == "" && lName == "" {
-		return ErrInvalidRequest
-	}
+
 	return nil
 }
 
 // updateASpeaker Edits a speaker already in the database
 // @Summary Edit a speaker
 // @Description Return a speaker with the specified email
-// @Param Speaker body api.updateASpeakerRequest true "Speaker struct that wants to be updated in the db"
+// @Param Speaker body api.UpdateASpeakerRequest true "Speaker struct that wants to be updated in the db"
 // @Produce json
 // @Success 200
 // @Failure 400 {} _ "the request was bad"
@@ -203,7 +230,7 @@ func (a speakerAPI) updateASpeaker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	speakerRequest := updateASpeakerRequest{}
+	speakerRequest := UpdateASpeakerRequest{}
 	err = json.Unmarshal(body, &speakerRequest)
 	if err != nil {
 		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
