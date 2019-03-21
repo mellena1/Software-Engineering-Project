@@ -82,3 +82,18 @@ func (c CountMySQL) ReadAllCounts() ([]db.Count, error) {
 
 	return counts, nil
 }
+
+// WriteACount writes a count to the db
+func (c CountMySQL) WriteACount(sessionID int64, time string, count int64) (int64, error) {
+	return 2, nil
+}
+
+// UpdateACount updates a count in the db given the session Id and the updated time of session
+func (c CountMySQL) UpdateACount(sessionID int64, userID, int64, time string, updatedCount int64) error {
+	return nil
+}
+
+// DeleteACount deletes a count given an id
+func (c CountMySQL) DeleteACount(sessionID int64) error {
+	return nil
+}

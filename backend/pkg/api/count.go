@@ -86,3 +86,82 @@ func (c countAPI) getACount(w http.ResponseWriter, r *http.Request) {
 	responseJSON, _ := json.Marshal(count)
 	w.Write(responseJSON)
 }
+
+// writeACountRequest request for writeACount
+type writeACountRequest struct {
+	StartTime *string `json:"startTime" example:"2019-02-18T21:00:00Z"`
+	EndTime   *string `json:"endTime" example:"2019-10-01T23:00:00Z"`
+}
+
+// Validate validates a writeACountRequest
+func (r writeACountRequest) Validate() error {
+	if r.StartTime == nil || r.EndTime == nil {
+		return ErrInvalidRequest
+	}
+	return nil
+}
+
+// writeACount Add a count to the db
+// @Summary Add a count
+// @Description Add a count to the db
+// @accept json
+// @produce json
+// @param count body api.writeACountRequest true "the count to add"
+// @Success 200 {integer} int64 "the id of the session count was added to"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
+// @Router /api/v1/count [post]
+func (c countAPI) writeACount(w http.ResponseWriter, r *http.Request) {
+
+}
+
+// updateACountRequest request for updateACount
+type updateACountRequest struct {
+	ID        *int64  `json:"id" example:"1"`
+	StartTime *string `json:"startTime" example:"2019-02-18T21:00:00Z"`
+	EndTime   *string `json:"endTime" example:"2019-10-01T23:00:00Z"`
+}
+
+// Validate validates a updateACountRequest
+func (r updateACountRequest) Validate() error {
+	if r.ID == nil {
+		return ErrInvalidRequest
+	}
+	if r.StartTime == nil || r.EndTime == nil {
+		return ErrInvalidRequest
+	}
+	return nil
+}
+
+// updateACount Update an existing count in the db
+// @Summary Update an existing count in the db
+// @Description Update an existing count in the db
+// @accept json
+// @produce json
+// @param count body api.updateACountRequest true "the count to update with the new values"
+// @Success 200 "Updated properly"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
+// @Router /api/v1/count [put]
+func (c countAPI) updateACount(w http.ResponseWriter, r *http.Request) {
+
+}
+
+// deleteACountRequest request for deleteATimeslot
+type deleteACountRequest struct {
+	ID int64 `json:"id" example:"1"`
+}
+
+// deleteACount Delete an existing count in the db
+// @Summary Delete an existing count in the db
+// @Description Delete an existing count in the db
+// @accept json
+// @produce json
+// @param id query int true "the count to delete"
+// @Success 200 "Deleted properly"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
+// @Router /api/v1/count [delete]
+func (t timeslotAPI) deleteACount(w http.ResponseWriter, r *http.Request) {
+
+}

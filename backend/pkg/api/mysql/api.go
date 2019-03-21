@@ -54,6 +54,11 @@ func NewAPI(mySQLConfig mysqlDriver.Config, logWriter io.Writer) (*API, error) {
 	timeslotRoutes := api.CreateTimeslotRoutes(timeslotDBFacade)
 	apiObj.CreateRoutes(timeslotRoutes...)
 
+	// Count
+	countDBFacade := mysqlEntities.NewCountMySQL(apiObj.db)
+	countRoutes := api.CreateCountRoutes(countDBFacade)
+	apiObj.CreateRoutes(countRoutes...)
+
 	return &apiObj, nil
 }
 
