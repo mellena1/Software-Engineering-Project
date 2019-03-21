@@ -22,7 +22,7 @@ func scanACount(count *db.Count, row rowScanner) error {
 }
 
 // ReadACount reads a count from the db given a sessionID
-func (c CountMySQL) ReadACount(sessionID int64) ([]db.Count, error) {
+func (c CountMySQL) ReadCountsOfSession(sessionID int64) ([]db.Count, error) {
 	if c.db == nil {
 		return nil, ErrDBNotSet
 	}

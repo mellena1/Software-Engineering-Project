@@ -27,7 +27,7 @@ func CreateCountRoutes(countDBFacade db.CountReaderWriterUpdaterDeleter) []Route
 
 	routes := []Route{
 		NewRoute("/api/v1/counts", cAPI.getAllCounts, "GET"),
-		NewRoute("/api/v1/count", cAPI.getACount, "GET"),
+		NewRoute("/api/v1/count", cAPI.getCountsOfSession, "GET"),
 		NewRoute("/api/v1/count", cAPI.writeACount, "POST"),
 		NewRoute("/api/v1/count", cAPI.updateACount, "PUT"),
 		NewRoute("/api/v1/count", cAPI.deleteACount, "DELETE"),
@@ -64,7 +64,7 @@ func (c countAPI) getAllCounts(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/count [get]
-func (c countAPI) getACount(w http.ResponseWriter, r *http.Request) {
+func (c countAPI) getCountsOfSession(w http.ResponseWriter, r *http.Request) {
 	requestedID, err := getIDFromQueries(r)
 	switch err {
 	case ErrQueryNotSet:
@@ -78,7 +78,7 @@ func (c countAPI) getACount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	count, err := c.countReader.ReadACount(requestedID)
+	count, err := c.countReader.ReadCountsOfSession(requestedID)
 	if err != nil {
 		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
 		return
@@ -201,17 +201,12 @@ func (c countAPI) updateACount(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// deleteACountRequest request for deleteATimeslot
-type deleteACountRequest struct {
-	SessionID *int64 `json:"sessionID" example:"1"`
-}
-
 // deleteACount Delete an existing count in the db
 // @Summary Delete an existing count in the db
-// @Description Delete an existing count in the db
+// @Description Delete an existing session's counts in the db
 // @accept json
 // @produce json
-// @param id query int true "the count to delete"
+// @param id query int true "the session of counts to delete"
 // @Success 200 "Deleted properly"
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"

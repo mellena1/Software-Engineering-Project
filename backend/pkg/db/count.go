@@ -28,7 +28,7 @@ type CountReaderWriterUpdaterDeleter interface {
 
 // CountReader implements all read related methods
 type CountReader interface {
-	ReadACount(sessionID int64) ([]Count, error)
+	ReadCountsOfSession(sessionID int64) ([]Count, error)
 	ReadAllCounts() ([]Count, error)
 }
 
