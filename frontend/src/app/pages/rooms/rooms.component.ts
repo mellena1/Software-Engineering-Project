@@ -50,15 +50,15 @@ export class RoomsComponent implements OnInit {
 
   updateRoom(): void {
     var index = this.rooms.findIndex(item => item.id === this.currentRoom.id);
-    var currentRoom = this.rooms[index];
+    var updatedRoom = this.rooms[index];
 
     this.rooms[index].isEditable = false;
     this.roomService.updateRoom(this.currentRoom).subscribe(error => {
       this.error = error;
     });
 
-    currentRoom.name = this.currentRoom.name;
-    currentRoom.capacity = this.currentRoom.capacity;
+    updatedRoom.name = this.currentRoom.name;
+    updatedRoom.capacity = this.currentRoom.capacity;
 
     this.roomForm.reset();
   }
