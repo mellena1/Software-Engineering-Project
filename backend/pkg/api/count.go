@@ -92,7 +92,7 @@ func (c countAPI) getCountsOfSession(w http.ResponseWriter, r *http.Request) {
 type writeACountRequest struct {
 	Time      *string `json:"time" example:"beginning"`
 	SessionID *int64  `json:"sessionID" example:"2"`
-	UserID    *int64  `json:"userID" example:"1"`
+	UserName  *string `json:"userName" example:"Kenny Robinson"`
 	Count     *int64  `json:"count" example:"30"`
 }
 
@@ -133,7 +133,7 @@ func (c countAPI) writeACount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := c.countWriter.WriteACount(countRequest.Time, countRequest.SessionID, countRequest.UserID, countRequest.Count)
+	id, err := c.countWriter.WriteACount(countRequest.Time, countRequest.SessionID, countRequest.UserName, countRequest.Count)
 	if err != nil {
 		ReportError(err, "failed to write a count", http.StatusServiceUnavailable, w)
 		return
@@ -146,7 +146,7 @@ func (c countAPI) writeACount(w http.ResponseWriter, r *http.Request) {
 type updateACountRequest struct {
 	Time      *string `json:"time" example:"beginning"`
 	SessionID *int64  `json:"sessionID" example:"2"`
-	UserID    *int64  `json:"userID" example:"1"`
+	UserName  *string `json:"userName" example:"Kenny Robinson"`
 	Count     *int64  `json:"count" example:"30"`
 }
 
@@ -187,7 +187,7 @@ func (c countAPI) updateACount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = c.countUpdater.UpdateACount(updateRequest.Time, updateRequest.SessionID, updateRequest.UserID, updateRequest.Count)
+	err = c.countUpdater.UpdateACount(updateRequest.Time, updateRequest.SessionID, updateRequest.UserName, updateRequest.Count)
 	switch err {
 	case nil:
 		w.Write(nil)

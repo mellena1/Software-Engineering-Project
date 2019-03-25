@@ -18,7 +18,7 @@ func NewCountMySQL(db *sql.DB) CountMySQL {
 
 // scanACount takes in a count pointer and scans a row into it
 func scanACount(count *db.Count, row rowScanner) error {
-	return row.Scan(&count.Time, &count.SessionID, &count.UserID, &count.Count)
+	return row.Scan(&count.Time, &count.SessionID, &count.UserName, &count.Count)
 }
 
 // ReadCountsOfSession reads a count from the db given a sessionID
@@ -27,7 +27,7 @@ func (c CountMySQL) ReadCountsOfSession(sessionID int64) ([]db.Count, error) {
 		return nil, ErrDBNotSet
 	}
 
-	stmt, err := c.db.Prepare("SELECT time, sessionID, userID, count FROM count where sessionID = ?;")
+	stmt, err := c.db.Prepare("SELECT time, sessionID, userName, count FROM count where sessionID = ?;")
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func (c CountMySQL) ReadAllCounts() ([]db.Count, error) {
 		return nil, ErrDBNotSet
 	}
 
-	q := "SELECT time, sessionID, userID, count FROM count;"
+	q := "SELECT time, sessionID, userName, count FROM count;"
 
 	rows, err := c.db.Query(q)
 	if err != nil {
@@ -84,17 +84,17 @@ func (c CountMySQL) ReadAllCounts() ([]db.Count, error) {
 }
 
 // WriteACount writes a count to the db
-func (c CountMySQL) WriteACount(time *string, sessionID *int64, userID *int64, count *int64) (int64, error) {
+func (c CountMySQL) WriteACount(time *string, sessionID *int64, userName *string, count *int64) (int64, error) {
 	if c.db == nil {
 		return 0, ErrDBNotSet
 	}
-	stmt, err := c.db.Prepare("INSERT INTO `count`(`time`, `sessionID`, `userID`, `count`) VALUES (?, ?, ?, ?)")
+	stmt, err := c.db.Prepare("INSERT INTO `count`(`time`, `sessionID`, `userName`, `count`) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		return 0, err
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(StringToNullString(time), IntToNullInt(sessionID), IntToNullInt(userID), IntToNullInt(count))
+	result, err := stmt.Exec(StringToNullString(time), IntToNullInt(sessionID), StringToNullString(userName), IntToNullInt(count))
 	if err != nil {
 		return 0, err
 	}
@@ -103,18 +103,18 @@ func (c CountMySQL) WriteACount(time *string, sessionID *int64, userID *int64, c
 }
 
 // UpdateACount updates a count in the db given the session Id and the updated time of session
-func (c CountMySQL) UpdateACount(time *string, sessionID *int64, userID *int64, count *int64) error {
+func (c CountMySQL) UpdateACount(time *string, sessionID *int64, userName *string, count *int64) error {
 	if c.db == nil {
 		return ErrDBNotSet
 	}
 
-	stmt, err := c.db.Prepare("UPDATE count SET time = ?, sessionID = ?, userID = ?, count = ? WHERE time = ? and sessionID = ?;")
+	stmt, err := c.db.Prepare("UPDATE count SET time = ?, sessionID = ?, userName = ?, count = ? WHERE time = ? and sessionID = ?;")
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(StringToNullString(time), IntToNullInt(sessionID), IntToNullInt(userID), IntToNullInt(count), StringToNullString(time), IntToNullInt(sessionID))
+	result, err := stmt.Exec(StringToNullString(time), IntToNullInt(sessionID), StringToNullString(userName), IntToNullInt(count), StringToNullString(time), IntToNullInt(sessionID))
 	if err != nil {
 		return err
 	}
