@@ -31,7 +31,7 @@ export class SessionsComponent implements OnInit {
   speakers: Speaker[];
   timeslots: Timeslot[];
 
-  checked: any;
+  twelveHourIsChecked = true;
   timeFormat: "12hour";
   date = new Date();
   currentDate: any;
@@ -64,7 +64,6 @@ export class SessionsComponent implements OnInit {
     this.getAllRooms();
     this.getAllSpeakers();
     this.getAllTimeslots();
-    this.checked = true;
     this.currentDate = this.getCurrentDate();
   }
 
@@ -126,15 +125,6 @@ export class SessionsComponent implements OnInit {
         .subscribe(error => (this.error = error));
       console.log("The following Session Deleted :", this.sessionForm.value);
       this.sessions = this.sessions.filter(item => item.id !== id);
-    }
-  }
-
-  onSelect(session: Session): void {
-    this.selectedSession = session;
-    if (this.timeFormat == "12hour") {
-      this.checked = true;
-    } else {
-      this.checked = false;
     }
   }
 

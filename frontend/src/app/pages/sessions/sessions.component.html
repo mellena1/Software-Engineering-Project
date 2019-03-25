@@ -21,21 +21,19 @@
         ng-app="app-sessions"
         ng-init="getAllSessions()"
       >
-        <h4 style="text-align:center">{{ currentDate | date: "longDate" }}</h4>
+        <h4 align="center">{{ eventDate | date: "longDate" }}</h4>
         <input
           type="radio"
           name="timeformat"
-          value="12hour"
-          [(ngModel)]="timeFormat"
-          (change)="onSelect()"
+          [value]="true"
+          [(ngModel)]="twelveHourIsChecked"
         />
         12 Hour
         <input
           type="radio"
           name="timeformat"
-          value="24hour"
-          [(ngModel)]="timeFormat"
-          (change)="onSelect()"
+          [value]="false"
+          [(ngModel)]="twelveHourIsChecked"
         />
         24 Hour
         <form [formGroup]="sessionForm" (ngSubmit)="onSubmit()">
@@ -97,7 +95,7 @@
                   </select>
                 </td>
 
-                <td *ngIf="checked">
+                <td *ngIf="twelveHourIsChecked">
                   <select
                     formControlName="sessionTimeslot"
                     [(ngModel)]="session.timeslot"
@@ -116,7 +114,7 @@
                   </select>
                 </td>
 
-                <td *ngIf="!checked">
+                <td *ngIf="!twelveHourIsChecked">
                   <select
                     formControlName="sessionTimeslot"
                     [(ngModel)]="session.timeslot"
@@ -206,11 +204,9 @@
                   </select>
                 </td>
 
-                <td *ngIf="!session.isEditable && checked">
+                <td *ngIf="!session.isEditable && twelveHourIsChecked">
                   <span
-                    >{{
-                      makeDate(session.timeslot.startTime) | date: "h:mma"
-                    }}
+                    >{{ makeDate(session.timeslot.startTime) | date: "h:mma" }}
                     -
                     {{
                       makeDate(session.timeslot.endTime) | date: "h:mma"
@@ -218,11 +214,9 @@
                   >
                 </td>
 
-                <td *ngIf="!session.isEditable && !checked">
+                <td *ngIf="!session.isEditable && !twelveHourIsChecked">
                   <span
-                    >{{
-                      makeDate(session.timeslot.startTime) | date: "HH:mm"
-                    }}
+                    >{{ makeDate(session.timeslot.startTime) | date: "HH:mm" }}
                     -
                     {{
                       makeDate(session.timeslot.endTime) | date: "HH:mm"
@@ -230,7 +224,7 @@
                   >
                 </td>
 
-                <td *ngIf="session.isEditable && !checked">
+                <td *ngIf="session.isEditable && !twelveHourIsChecked">
                   <select
                     formControlName="sessionTimeslot"
                     [(ngModel)]="currentSession.timeslot"
@@ -248,7 +242,7 @@
                   </select>
                 </td>
 
-                <td *ngIf="session.isEditable && checked">
+                <td *ngIf="session.isEditable && twelveHourIsChecked">
                   <select
                     formControlName="sessionTimeslot"
                     [(ngModel)]="currentSession.timeslot"
