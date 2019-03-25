@@ -4,7 +4,7 @@ package db
 type Count struct {
 	Time      *string
 	SessionID *int64
-	UserID    *int64
+	UserName  *string
 	Count     *int64
 }
 
@@ -13,7 +13,7 @@ func NewCount() Count {
 	return Count{
 		Time:      StringPtr(""),
 		SessionID: Int64Ptr(0),
-		UserID:    Int64Ptr(0),
+		UserName:  StringPtr(""),
 		Count:     Int64Ptr(0),
 	}
 }
@@ -34,12 +34,12 @@ type CountReader interface {
 
 // CountWriter implements all write related methods
 type CountWriter interface {
-	WriteACount(time *string, sessionID *int64, userID *int64, count *int64) (int64, error)
+	WriteACount(time *string, sessionID *int64, userName *string, count *int64) (int64, error)
 }
 
 // CountUpdater implements all update related methods
 type CountUpdater interface {
-	UpdateACount(time *string, sessionID *int64, userID *int64, count *int64) error
+	UpdateACount(time *string, sessionID *int64, userName *string, count *int64) error
 }
 
 // CountDeleter implements all delete related methods

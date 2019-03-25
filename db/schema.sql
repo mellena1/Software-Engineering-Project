@@ -45,18 +45,12 @@ CREATE TABLE session (
     PRIMARY KEY (sessionID)
 );
 
-CREATE TABLE user (
-    userID  INT   AUTO_INCREMENT NOT NULL,
-    name    VARCHAR(32)          NOT NULL,
-    PRIMARY KEY (userID)
-);
 
 CREATE TABLE count (
     time      ENUM('beginning', 'middle', 'end'),
     count     INT,
-    userID    INT,
+    userName  VARCHAR(32),
     sessionID INT,
-    FOREIGN KEY (userID)    REFERENCES user    (userID)     ON DELETE SET NULL,
     FOREIGN KEY (sessionID) REFERENCES session (sessionID)  ON DELETE CASCADE,
     PRIMARY KEY (time, sessionID)
 );

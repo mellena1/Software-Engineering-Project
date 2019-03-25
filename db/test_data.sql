@@ -29,14 +29,10 @@ INSERT INTO session (`speakerID`, `roomID`, `timeslotID`, `sessionName`) VALUES
                     (5, 4, 3, 'Bet You Didt Think');          
                             
 
-INSERT INTO user (`userID`, `name`) VALUES
-                     (1, 'Kenny'),
-                     (2, 'Robinson');
-
-INSERT INTO count (`time`, `sessionID`, `userID`, `count`) VALUES
-                     ('beginning', 1, 1, 5),
-                     ('middle', 2, 2, 10),
-                     ('end', 2, 1, 15),
-                     ('beginning', 3, 1, 20),
-                     ('middle', 3, 2, 25),
-                     ('end', 3, 1, 30);
+INSERT INTO count (`time`, `sessionID`, `userName`, `count`) VALUES
+                     ('beginning', 1, "Kenny", 5),
+                     ('middle', 2, "Charles", 10),
+                     ('end', 2, "Kenny", 15),
+                     ('beginning', 3, "Kenny", 20),
+                     ('middle', 3, "Andrew", 25),
+                     ('end', 3, "Kenny", 30);
