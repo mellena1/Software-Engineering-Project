@@ -2,14 +2,16 @@ import { Component, OnInit } from "@angular/core";
 import { Timeslot } from "src/app/data_models/timeslot";
 import { TimeslotService } from "src/app/services/timeslot.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { AppComponent } from "src/app/app.component";
 
 @Component({
   selector: "app-timeslots",
   templateUrl: "./timeslots.component.html",
   styleUrls: ["./timeslots.component.css"]
 })
-export class TimeslotsComponent implements OnInit {
-  constructor(private timeslotService: TimeslotService) {}
+export class TimeslotsComponent implements OnInit{
+  constructor(private timeslotService: TimeslotService,
+              private app: AppComponent) {}
 
   timeslots: Timeslot[];
   error: any;
@@ -17,7 +19,7 @@ export class TimeslotsComponent implements OnInit {
   editedTimeslot = new Timeslot("", "");
 
   eventDate = "2019-04-06";
-  twelveHourIsChecked = true;
+  //twelveHourIsChecked = this.app.getTimeFormat();
 
   seconds = ":00";
   startHour = "00";
@@ -45,7 +47,7 @@ export class TimeslotsComponent implements OnInit {
 
   writeTimeslot(): void {
     // format timeslots
-    if (!this.twelveHourIsChecked) {
+    if (!this.app.getTimeFormat()) {
       var fullStart = this.format24HourTime(
         this.startHour,
         this.startMin,
@@ -103,7 +105,7 @@ export class TimeslotsComponent implements OnInit {
     var curTimeslot = this.timeslots[index];
     curTimeslot.isEditable = false;
 
-    if (!this.twelveHourIsChecked) {
+    if (!this.app.getTimeFormat()) {
       var fullStart = this.format24HourTime(
         this.startHour,
         this.startMin,

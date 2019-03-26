@@ -7,4 +7,9 @@ import { Component } from "@angular/core";
 })
 export class AppComponent {
   title = "Boston Code Camp Scheduling";
+  twelveHourIsChecked = true;
+
+  getTimeFormat() { 
+    return this.twelveHourIsChecked;
+  }
 }
