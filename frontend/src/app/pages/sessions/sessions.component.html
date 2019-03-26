@@ -69,10 +69,10 @@
                     id="Room"
                     ngRequired="true"
                   >
-                    <option value="" disabled selected>--Select Room--</option>
-                    <option value=" " label="[N/A]"></option>
+                    <option ngValue="--" disabled selected>--Select Room--</option>
+                    <option ngValue="--" label="[N/A]"></option>
                     <option *ngFor="let room of rooms" [ngValue]="room">{{
-                      room.name
+                      room?.name
                     }}</option>
                   </select>
                 </td>
@@ -85,12 +85,12 @@
                     id="Speaker"
                     ngRequired="true"
                   >
-                    <option value="" disabled selected
+                    <option ngValue="--" disabled selected
                       >--Select Speaker--</option
                     >
-                    <option value=" " label="[N/A]"></option>
+                    <option ngValue="--" label="[N/A]"></option>
                     <option *ngFor="let speaker of speakers" [ngValue]="speaker"
-                      >{{ speaker.firstName }} {{ speaker.lastName }}</option
+                      >{{ speaker?.firstName || " "}} {{ speaker?.lastName || " "}}</option
                     >
                   </select>
                 </td>
@@ -103,13 +103,13 @@
                     id="Timeslot"
                     ngRequired="true"
                   >
-                    <option value="" disabled selected>--Select Time--</option>
-                    <option value=" " label="[N/A]"></option>
+                    <option ngValue="--" disabled selected>--Select Time--</option>
+                    <option ngValue="--" label="[N/A]"></option>
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
-                      >{{ makeDate(timeslot.startTime) | date: "h:mma" }} -
-                      {{ makeDate(timeslot.endTime) | date: "h:mma" }}</option
+                      >{{ makeDate(timeslot?.startTime) | date: "h:mma" || " "}} -
+                      {{ makeDate(timeslot?.endTime) | date: "h:mma" || " "}}</option
                     >
                   </select>
                 </td>
@@ -122,13 +122,13 @@
                     id="Timeslot"
                     ngRequired="true"
                   >
-                    <option value="" disabled selected>--Select Time--</option>
-                    <option value=" " label="[N/A]"></option>
+                    <option ngValue="--" disabled selected>--Select Time--</option>
+                    <option ngValue="--" label="[N/A]"></option>
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
-                      >{{ makeDate(timeslot.startTime) | date: "HH:mm" }} -
-                      {{ makeDate(timeslot.endTime) | date: "HH:mm" }}</option
+                      >{{ makeDate(timeslot?.startTime) | date: "HH:mm" || " "}} -
+                      {{ makeDate(timeslot?.endTime) | date: "HH:mm" || " "}}</option
                     >
                   </select>
                 </td>
@@ -145,9 +145,13 @@
               </tr>
 
               <tr *ngFor="let session of sessions">
+
+                
                 <td *ngIf="!session.isEditable">
-                  <span>{{ session.name }}</span>
+                  <span>{{ session?.name || " "}}</span>
                 </td>
+
+                
 
                 <td *ngIf="session.isEditable">
                   <input
@@ -156,12 +160,14 @@
                     [(ngModel)]="currentSession.name"
                     class="form-control"
                     id="Current Name"
-                    value="{{ session.name }}"
+                    value="{{ session?.name }}"
                   />
                 </td>
 
+                
+
                 <td *ngIf="!session.isEditable">
-                  <span>{{ session.room.name }}</span>
+                  <span>{{ session.room?.name || " " }}</span>
                 </td>
 
                 <td *ngIf="session.isEditable">
@@ -170,20 +176,20 @@
                     [(ngModel)]="currentSession.room"
                     class="form-control"
                     id="Current Room"
-                    value="{{ session.room }}"
+                    value="{{ session?.room }}"
                   >
-                    <option value="" disabled selected>--Select Room--</option>
-                    <option value=" " label="[N/A]"></option>
+                    <option ngValue="--" disabled selected>--Select Room--</option>
+                    <option ngValue="--" label="[N/A]"></option>
                     <option *ngFor="let room of rooms" [ngValue]="room">{{
-                      room.name
+                      room?.name
                     }}</option>
                   </select>
                 </td>
 
                 <td *ngIf="!session.isEditable">
                   <span
-                    >{{ session.speaker.firstName }}
-                    {{ session.speaker.lastName }}</span
+                    >{{ session.speaker?.firstName || " "}}
+                    {{ session.speaker?.lastName || " "}}</span
                   >
                 </td>
 
@@ -194,32 +200,32 @@
                     class="form-control"
                     id="Current Speaker"
                   >
-                    <option value="" disabled selected
+                    <option ngValue="--" disabled selected
                       >--Select Speaker--</option
                     >
-                    <option value=" " label="[N/A]"></option>
+                    <option ngValue="--" label="[N/A]"></option>
                     <option *ngFor="let speaker of speakers" [ngValue]="speaker"
-                      >{{ speaker.firstName }} {{ speaker.lastName }}</option
+                      >{{ speaker?.firstName || " "}} {{ speaker?.lastName || " "}}</option
                     >
                   </select>
                 </td>
 
                 <td *ngIf="!session.isEditable && twelveHourIsChecked">
                   <span
-                    >{{ makeDate(session.timeslot.startTime) | date: "h:mma" }}
+                    >{{ makeDate(session.timeslot?.startTime) | date: "h:mma" || " "}}
                     -
                     {{
-                      makeDate(session.timeslot.endTime) | date: "h:mma"
+                      makeDate(session.timeslot?.endTime) | date: "h:mma" || " "
                     }}</span
                   >
                 </td>
 
                 <td *ngIf="!session.isEditable && !twelveHourIsChecked">
                   <span
-                    >{{ makeDate(session.timeslot.startTime) | date: "HH:mm" }}
+                    >{{ makeDate(session.timeslot?.startTime) | date: "HH:mm" || " "}}
                     -
                     {{
-                      makeDate(session.timeslot.endTime) | date: "HH:mm"
+                      makeDate(session.timeslot?.endTime) | date: "HH:mm" || " "
                     }}</span
                   >
                 </td>
@@ -231,13 +237,13 @@
                     class="form-control"
                     id="Current Timeslot"
                   >
-                    <option value="" disabled selected>--Select Time--</option>
-                    <option value=" " label="[N/A]"></option>
+                    <option ngValue="--" disabled selected>--Select Time--</option>
+                    <option ngValue="--" label="[N/A]"></option>
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
-                      >{{ makeDate(timeslot.startTime) | date: "HH:mm" }} -
-                      {{ makeDate(timeslot.endTime) | date: "HH:mm" }}</option
+                      >{{ makeDate(timeslot?.startTime) | date: "HH:mm" || " "}} -
+                      {{ makeDate(timeslot?.endTime) | date: "HH:mm" || " "}}</option
                     >
                   </select>
                 </td>
@@ -249,13 +255,13 @@
                     class="form-control"
                     id="Current Timeslot"
                   >
-                    <option value="" disabled selected>--Select Time--</option>
-                    <option value=" " label="[N/A]"></option>
+                    <option ngValue="--" disabled selected>--Select Time--</option>
+                    <option ngValue="--" label="[N/A]"></option>
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
-                      >{{ makeDate(timeslot.startTime) | date: "hh:mma" }} -
-                      {{ makeDate(timeslot.endTime) | date: "hh:mma" }}</option
+                      >{{ makeDate(timeslot?.startTime) | date: "hh:mma" || " "}} -
+                      {{ makeDate(timeslot?.endTime) | date: "hh:mma" || " "}}</option
                     >
                   </select>
                 </td>

@@ -31,7 +31,7 @@ export class RoomsComponent implements OnInit {
       .subscribe(rooms => (this.rooms = rooms), error => (this.error = error));
   }
 
-  deleteSpeaker(id): void {
+  deleteRoom(id): void {
     this.roomService.deleteRoom(id).subscribe(error => (this.error = error));
     this.rooms = this.rooms.filter(item => item.id !== id);
   }

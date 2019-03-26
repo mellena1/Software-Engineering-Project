@@ -38,7 +38,7 @@
                     formControlName="firstName"
                     [(ngModel)]="speaker.firstName"
                     class="form-control"
-                    placeholder="{{ this.speaker.firstName }}"
+                    placeholder="First Name"
                     ng-required="true"
                   />
                 </td>
@@ -48,7 +48,7 @@
                     formControlName="lastName"
                     [(ngModel)]="speaker.lastName"
                     class="form-control"
-                    placeholder="{{ this.speaker.lastName }}"
+                    placeholder="Last Name"
                     ng-required="true"
                   />
                 </td>
@@ -58,7 +58,7 @@
                     formControlName="email"
                     [(ngModel)]="speaker.email"
                     class="form-control"
-                    placeholder="{{ this.speaker.email }}"
+                    placeholder="Email Address"
                     ng-required="true"
                   />
                 </td>
@@ -74,7 +74,7 @@
               </tr>
               <tr *ngFor="let speaker of speakers">
                 <td *ngIf="!speaker.isEditable">
-                  <span>{{ speaker.firstName }}</span>
+                  <span>{{ speaker?.firstName  }}</span>
                 </td>
 
                 <td *ngIf="speaker.isEditable">
@@ -88,7 +88,7 @@
                 </td>
 
                 <td *ngIf="!speaker.isEditable">
-                  <span>{{ speaker.lastName }}</span>
+                  <span>{{ speaker?.lastName }}</span>
                 </td>
                 <td *ngIf="speaker.isEditable">
                   <input
@@ -101,7 +101,7 @@
                 </td>
 
                 <td *ngIf="!speaker.isEditable">
-                  <span>{{ speaker.email }}</span>
+                  <span>{{ speaker?.email }}</span>
                 </td>
 
                 <td *ngIf="speaker.isEditable">

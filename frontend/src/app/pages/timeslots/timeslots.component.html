@@ -287,13 +287,13 @@
               <tr *ngFor="let timeslot of timeslots">
                 <td *ngIf="!timeslot.isEditable && twelveHourIsChecked">
                   <span>{{
-                    formatDate(timeslot.startTime) | date: "h:mma"
+                    formatDate(timeslot?.startTime) | date: "h:mma"
                   }}</span>
                 </td>
 
                 <td *ngIf="!timeslot.isEditable && !twelveHourIsChecked">
                   <span>{{
-                    formatDate(timeslot.startTime) | date: "HH:mm"
+                    formatDate(timeslot?.startTime) | date: "HH:mm"
                   }}</span>
                 </td>
 
@@ -413,13 +413,13 @@
 
                 <td *ngIf="!timeslot.isEditable && twelveHourIsChecked">
                   <span>{{
-                    formatDate(timeslot.endTime) | date: "h:mma"
+                    formatDate(timeslot?.endTime) | date: "h:mma"
                   }}</span>
                 </td>
 
                 <td *ngIf="!timeslot.isEditable && !twelveHourIsChecked">
                   <span>{{
-                    formatDate(timeslot.endTime) | date: "HH:mm"
+                    formatDate(timeslot?.endTime) | date: "HH:mm"
                   }}</span>
                 </td>
 

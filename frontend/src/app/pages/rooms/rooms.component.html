@@ -33,7 +33,7 @@
                     formControlName="roomName"
                     [(ngModel)]="room.name"
                     class="form-control"
-                    placeholder="{{ this.room.name }}"
+                    placeholder="Enter Room Name"
                     ng-required="true"
                   />
                 </td>
@@ -43,7 +43,6 @@
                     formControlName="roomCapacity"
                     [(ngModel)]="room.capacity"
                     class="form-control"
-                    placeholder="{{ this.room.capacity }}"
                     ng-required="true"
                   />
                 </td>
@@ -60,7 +59,7 @@
 
               <tr *ngFor="let room of rooms">
                 <td *ngIf="!room.isEditable">
-                  <span>{{ room.name }}</span>
+                  <span>{{ room?.name }}</span>
                 </td>
 
                 <td *ngIf="room.isEditable">
@@ -74,7 +73,7 @@
                 </td>
 
                 <td *ngIf="!room.isEditable">
-                  <span>{{ room.capacity }}</span>
+                  <span>{{ room?.capacity }}</span>
                 </td>
                 <td *ngIf="room.isEditable">
                   <input
