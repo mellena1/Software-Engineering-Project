@@ -90,7 +90,7 @@
                     >
                     <option ngValue="--" label="[N/A]"></option>
                     <option *ngFor="let speaker of speakers" [ngValue]="speaker"
-                      >{{ speaker?.firstName || " "}} {{ speaker?.lastName || " "}}</option
+                      >{{ speaker?.firstName}} {{ speaker?.lastName}}</option
                     >
                   </select>
                 </td>
@@ -108,8 +108,8 @@
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
-                      >{{ makeDate(timeslot?.startTime) | date: "h:mma" || " "}} -
-                      {{ makeDate(timeslot?.endTime) | date: "h:mma" || " "}}</option
+                      >{{ makeDate(timeslot?.startTime) | date: "h:mma"}} -
+                      {{ makeDate(timeslot?.endTime) | date: "h:mma"}}</option
                     >
                   </select>
                 </td>
@@ -127,8 +127,8 @@
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
-                      >{{ makeDate(timeslot?.startTime) | date: "HH:mm" || " "}} -
-                      {{ makeDate(timeslot?.endTime) | date: "HH:mm" || " "}}</option
+                      >{{ makeDate(timeslot?.startTime) | date: "HH:mm"}} -
+                      {{ makeDate(timeslot?.endTime) | date: "HH:mm"}}</option
                     >
                   </select>
                 </td>
@@ -148,7 +148,7 @@
 
                 
                 <td *ngIf="!session.isEditable">
-                  <span>{{ session?.name || " "}}</span>
+                  <span>{{ session?.name ? session?.name : "-"}}</span>
                 </td>
 
                 
@@ -167,7 +167,7 @@
                 
 
                 <td *ngIf="!session.isEditable">
-                  <span>{{ session.room?.name || " " }}</span>
+                  <span>{{ session.room?.name ? session.room?.name: "-" }}</span>
                 </td>
 
                 <td *ngIf="session.isEditable">
@@ -188,8 +188,8 @@
 
                 <td *ngIf="!session.isEditable">
                   <span
-                    >{{ session.speaker?.firstName || " "}}
-                    {{ session.speaker?.lastName || " "}}</span
+                    >{{ session.speaker?.firstName ? session.speaker?.firstName : "-"}}
+                    {{ session.speaker?.lastName  ? session.speaker?.lastName : ""}}</span
                   >
                 </td>
 
@@ -204,30 +204,28 @@
                       >--Select Speaker--</option
                     >
                     <option ngValue="--" label="[N/A]"></option>
-                    <option *ngFor="let speaker of speakers" [ngValue]="speaker"
-                      >{{ speaker?.firstName || " "}} {{ speaker?.lastName || " "}}</option
-                    >
+                    <option *ngFor="let speaker of speakers" [ngValue]="speaker">
+                      {{ speaker?.firstName}} 
+                      {{ speaker?.lastName}}
+                    </option>
                   </select>
                 </td>
 
                 <td *ngIf="!session.isEditable && twelveHourIsChecked">
-                  <span
-                    >{{ makeDate(session.timeslot?.startTime) | date: "h:mma" || " "}}
+                  <span>
+                    {{ session.timeslot?.startTime ? (makeDate(session.timeslot?.startTime) | date: "h:mma") : ""}}
                     -
-                    {{
-                      makeDate(session.timeslot?.endTime) | date: "h:mma" || " "
-                    }}</span
-                  >
+                    {{ session.timeslot?.endTime ? (makeDate(session.timeslot?.endTime) | date: "h:mma") : ""}}
+                  </span>
                 </td>
 
                 <td *ngIf="!session.isEditable && !twelveHourIsChecked">
-                  <span
-                    >{{ makeDate(session.timeslot?.startTime) | date: "HH:mm" || " "}}
+                  <span>
+                    {{ session.timeslot?.startTime ? (makeDate(session.timeslot?.startTime) | date: "HH:mm") : ""}}
                     -
                     {{
-                      makeDate(session.timeslot?.endTime) | date: "HH:mm" || " "
-                    }}</span
-                  >
+                      session.timeslot?.endTime ? (makeDate(session.timeslot?.endTime) | date: "HH:mm") : ""}}
+                  </span>
                 </td>
 
                 <td *ngIf="session.isEditable && !twelveHourIsChecked">
@@ -242,8 +240,8 @@
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
-                      >{{ makeDate(timeslot?.startTime) | date: "HH:mm" || " "}} -
-                      {{ makeDate(timeslot?.endTime) | date: "HH:mm" || " "}}</option
+                      >{{ timeslot.startTime ? "" : makeDate(timeslot?.startTime) | date: "HH:mm"}} -
+                      {{ timeslot.endTime ? "" : makeDate(timeslot?.endTime) | date: "HH:mm"}}</option
                     >
                   </select>
                 </td>
@@ -260,8 +258,8 @@
                     <option
                       *ngFor="let timeslot of timeslots"
                       [ngValue]="timeslot"
-                      >{{ makeDate(timeslot?.startTime) | date: "hh:mma" || " "}} -
-                      {{ makeDate(timeslot?.endTime) | date: "hh:mma" || " "}}</option
+                      >{{ makeDate(timeslot?.startTime) | date: "hh:mma"}} -
+                      {{ makeDate(timeslot?.endTime) | date: "hh:mma"}}</option
                     >
                   </select>
                 </td>

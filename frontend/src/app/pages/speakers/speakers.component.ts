@@ -74,16 +74,20 @@ export class SpeakersComponent implements OnInit {
     var index = this.speakers.findIndex(
       item => item.id === this.currentSpeaker.id
     );
-    var currentSpeaker = this.speakers[index];
+    var updatedSpeaker = this.speakers[index];
 
-    currentSpeaker.isEditable = false;
-    this.speakerService.updateSpeaker(this.currentSpeaker).subscribe(error => {
-      this.error = error;
+    this.speakers[index].isEditable = false;
+    this.speakerService
+      .updateSpeaker(this.currentSpeaker)
+      .subscribe(error => {this.error = error;
     });
 
-    currentSpeaker.firstName = this.currentSpeaker.firstName;
-    currentSpeaker.lastName = this.currentSpeaker.lastName;
-    currentSpeaker.email = this.currentSpeaker.email;
+    console.log("The following Speaker Udpated :", this.speakerForm.value);
+
+
+    updatedSpeaker.firstName = this.currentSpeaker.firstName;
+    updatedSpeaker.lastName = this.currentSpeaker.lastName;
+    updatedSpeaker.email = this.currentSpeaker.email;
 
     this.speakerForm.reset();
   }
@@ -91,6 +95,9 @@ export class SpeakersComponent implements OnInit {
   showEdit(speaker: Speaker): void {
     speaker.isEditable = true;
     this.currentSpeaker.id = speaker.id;
+    this.currentSpeaker.firstName = speaker.firstName;
+    this.currentSpeaker.lastName = speaker.lastName;
+    this.currentSpeaker.email = speaker.email;
   }
 
   cancel(speaker: Speaker): void {

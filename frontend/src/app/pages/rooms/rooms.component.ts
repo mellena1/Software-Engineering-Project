@@ -49,13 +49,19 @@ export class RoomsComponent implements OnInit {
   }
 
   updateRoom(): void {
-    var index = this.rooms.findIndex(item => item.id === this.currentRoom.id);
+    var index = this.rooms.findIndex(
+      item => item.id === this.currentRoom.id
+    );
     var updatedRoom = this.rooms[index];
 
     this.rooms[index].isEditable = false;
-    this.roomService.updateRoom(this.currentRoom).subscribe(error => {
-      this.error = error;
+    this.roomService
+      .updateRoom(this.currentRoom)
+      .subscribe(error => {this.error = error;
     });
+
+    console.log("The following Room Udpated :", this.roomForm.value);
+
 
     updatedRoom.name = this.currentRoom.name;
     updatedRoom.capacity = this.currentRoom.capacity;
@@ -66,8 +72,7 @@ export class RoomsComponent implements OnInit {
   showEdit(room: Room): void {
     room.isEditable = true;
     this.currentRoom.id = room.id;
-    this.currentRoom.name = room.name;
-    this.currentRoom.capacity = room.capacity;
+
   }
 
   cancel(room: Room): void {
