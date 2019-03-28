@@ -7,44 +7,42 @@ import {
 } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { throwError as observableThrowError } from "rxjs";
+import { Count } from "../data_models/count";
 import { catchError, map } from "rxjs/operators";
-
-import { Room } from "../data_models/room";
 import { WriteResponse } from "./writeResponse";
 
 @Injectable({
   providedIn: "root"
 })
-export class RoomService {
+export class CountService {
   constructor(private http: HttpClient) {}
   private apiUrl = environment.apiUrl;
 
-  getAllRooms() {
-    return this.http.get<Room[]>(this.apiUrl + "/rooms").pipe(
+  getAllCounts() {
+    return this.http.get<Count>(this.apiUrl + "/counts").pipe(
       map(data => data),
       catchError(this.handleError)
     );
   }
 
-  getARoom(id: number) {
-    var params = new HttpParams().set("id", id.toString());
-    return this.http.get<Room>(this.apiUrl + "/room", {
+  getACount(sessionID: number) {
+    var params = new HttpParams().set("id", sessionID.toString());
+    return this.http.get<Count[]>(this.apiUrl + "/count", {
       params: params
     });
   }
 
-  writeRoom(name: string, capacity: number) {
-    var obj = { name: name, capacity: capacity };
-    return this.http.post<WriteResponse>(this.apiUrl + "/room", obj);
+  writeACount(count: Count) {
+    return this.http.post<WriteResponse>(this.apiUrl + "/count", count);
   }
 
-  updateRoom(updatedRoom: Room) {
-    return this.http.put(this.apiUrl + "/room", updatedRoom);
+  updateCount(count: Count) {
+    return this.http.put(this.apiUrl + "/count", count);
   }
 
-  deleteRoom(id: number) {
-    var params = new HttpParams().set("id", id.toString());
-    return this.http.delete(this.apiUrl + "/room", {
+  deleteCount(sessionID: number) {
+    var params = new HttpParams().set("id", sessionID.toString());
+    return this.http.delete(this.apiUrl + "/count", {
       params: params
     });
   }
