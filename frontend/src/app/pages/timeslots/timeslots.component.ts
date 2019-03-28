@@ -142,7 +142,6 @@ export class TimeslotsComponent implements OnInit{
       .subscribe(error => (this.error = error));
 
     this.disableEdit = false;
-    this.timeslotForm.reset();
   }
 
   showEdit(timeslot: Timeslot): void {

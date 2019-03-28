@@ -70,7 +70,6 @@ export class RoomsComponent implements OnInit {
     updatedRoom.capacity = this.currentRoom.capacity;
 
     this.disableEdit = false;
-    this.roomForm.reset();
   }
 
   showEdit(room: Room): void {
@@ -83,6 +82,5 @@ export class RoomsComponent implements OnInit {
     room.isEditable = false;
     this.currentRoom = this.emptyRoom;
     this.disableEdit = false;
-    //this.roomForm.reset();
   }
 }

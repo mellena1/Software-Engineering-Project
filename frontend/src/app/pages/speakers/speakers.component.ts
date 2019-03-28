@@ -81,8 +81,8 @@ export class SpeakersComponent implements OnInit {
     this.speakers[index].isEditable = false;
     this.speakerService
       .updateSpeaker(this.currentSpeaker)
-      .subscribe(error => {this.error = error;
-    });
+      .subscribe(error => (this.error = error
+        ));
 
     console.log("The following Speaker Udpated :", this.speakerForm.value);
 
@@ -90,8 +90,7 @@ export class SpeakersComponent implements OnInit {
     updatedSpeaker.firstName = this.currentSpeaker.firstName;
     updatedSpeaker.lastName = this.currentSpeaker.lastName;
     updatedSpeaker.email = this.currentSpeaker.email;
-
-    this.speakerForm.reset();
+    this.disableEdit = false;
   }
 
   showEdit(speaker: Speaker): void {

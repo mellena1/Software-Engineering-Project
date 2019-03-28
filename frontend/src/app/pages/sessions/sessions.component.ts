@@ -33,9 +33,6 @@ export class SessionsComponent implements OnInit {
   speakers: Speaker[];
   timeslots: Timeslot[];
 
-  date = new Date();
-  currentDate: any;
-
   session = new Session(
     "",
     new Room("", 0),
@@ -43,21 +40,23 @@ export class SessionsComponent implements OnInit {
     new Timeslot("", "")
   );
 
-  //currentSession = new Session(
-    //"",
-    //new Room("", 0),
-    //new Speaker("", "", ""),
-    //new Timeslot("", "")
-  //);
-
   currentSession = new Session(
-    this.session.name,
-    this.session.room,
-    this.session.speaker,
-    this.session.timeslot
+    "",
+    new Room("", 0),
+    new Speaker("", "", ""),
+    new Timeslot("", "")
   );
 
-  selectedSession: Session;
+  emptySession = new Session(
+    "",
+    new Room("", 0),
+    new Speaker("", "", ""),
+    new Timeslot("", "")
+  ); 
+
+  disableEdit = false;
+  date = new Date();
+  currentDate: any;
 
   sessionForm = new FormGroup({
     sessionName: new FormControl(""),
@@ -107,22 +106,25 @@ export class SessionsComponent implements OnInit {
       );
   }
 
-  getSession(id: number) {
-    this.sessionService.getSession(id);
-  }
-
   updateSession(): void {
-    this.currentSession.isEditable = false;
-    console.log(this.currentSession.name);
+    var index = this.sessions.findIndex(
+      item => item.id === this.currentSession.id
+    );
+    var updatedSession = this.sessions[index];
 
+    this.sessions[index].isEditable = false;
     this.sessionService
       .updateSession(this.currentSession)
-      .subscribe(error => (this.error = error));
+      .subscribe(error => (this.error = error
+        ));
 
     console.log("The following Session Udpated :", this.sessionForm.value);
 
-    //this.getAllSessions();
-    //window.location.reload();
+    updatedSession.name = this.currentSession.name;
+    updatedSession.room = this.currentSession.room;
+    updatedSession.speaker = this.currentSession.speaker;
+    updatedSession.timeslot = this.currentSession.timeslot;
+    this.disableEdit = false;
   }
 
   deleteSession(id: number) {
@@ -150,22 +152,30 @@ export class SessionsComponent implements OnInit {
         this.session.timeslot.id
       )
       .subscribe(
-        response => (newSession.id = response.id),
-        error => (this.error = error)
+        response => {
+        newSession.id = response.id,
+        this.sessionForm.reset();
+        this.session.isEditable = false;
+        this.sessions.push(newSession);
+        console.log("Session Submitted!", this.sessionForm.value);
+      },
+        error => {
+          this.error = error;
+          console.log(this.error);
+        }
       );
-    console.log("Session Submitted!", this.sessionForm.value);
-    this.sessionForm.reset();
-    this.session.isEditable = false;
-    this.sessions.push(newSession);
   }
 
   showEdit(session: Session): void {
     session.isEditable = true;
     this.currentSession = session;
+    this.disableEdit = true;
   }
 
   cancel(session: Session): void {
     session.isEditable = false;
+    this.currentSession = this.emptySession
+    this.disableEdit = true;
   }
 
   getCurrentDate(): String {
@@ -188,7 +198,7 @@ export class SessionsComponent implements OnInit {
       .concat(day);
   }
 
-  makeDate(timeslotValue: string): Date {
+  formatDate(timeslotValue: string): Date {
     if (timeslotValue == null || timeslotValue == "" || timeslotValue == " ") {
       return new Date();
     }
