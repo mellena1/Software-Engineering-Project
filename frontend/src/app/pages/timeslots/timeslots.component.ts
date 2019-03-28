@@ -17,6 +17,8 @@ export class TimeslotsComponent implements OnInit{
   error: any;
   timeslot = new Timeslot("", "");
   editedTimeslot = new Timeslot("", "");
+  emptyTimeslot = new Timeslot("", "");
+  disableEdit = false;
 
   eventDate = "2019-04-06";
   //twelveHourIsChecked = this.app.getTimeFormat();
@@ -69,8 +71,8 @@ export class TimeslotsComponent implements OnInit{
     this.timeslot.startTime = fullStart;
     this.timeslot.endTime = fullEnd;
 
-    if (this.timeslot.startTime == "" || this.timeslot.endTime == "") {
-      alert("Please enter a date and time for both fields");
+    if (this.timeslot.startTime == this.eventDate || this.timeslot.endTime == this.eventDate) {
+      alert("Please enter a time for both fields");
       this.timeslotForm.reset();
     }
 
@@ -139,18 +141,23 @@ export class TimeslotsComponent implements OnInit{
       .updateTimeslot(curTimeslot)
       .subscribe(error => (this.error = error));
 
+    this.disableEdit = false;
     this.timeslotForm.reset();
   }
 
   showEdit(timeslot: Timeslot): void {
     timeslot.isEditable = true;
-    this.editedTimeslot.id = timeslot.id;
+    this.editedTimeslot = timeslot;
+    this.disableEdit = true;
   }
 
   cancel(timeslot: Timeslot): void {
     timeslot.isEditable = false;
-    this.timeslotForm.reset();
+    this.editedTimeslot = this.emptyTimeslot;
+    this.disableEdit = false;
+    //this.timeslotForm.reset();
   }
+
   formatDate(timeslotValue: string): Date {
     var newTimeslotValue = timeslotValue.slice(0, -1);
     var newDate = new Date(newTimeslotValue);

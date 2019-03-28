@@ -14,7 +14,9 @@ export class SpeakersComponent implements OnInit {
   error: any;
   speaker = new Speaker("", "", "");
   currentSpeaker = new Speaker("", "", "");
-  //isEditable = false;
+  emptySpeaker = new Speaker("", "", "");
+  disableEdit = false;
+
   speakerForm = new FormGroup({
     firstName: new FormControl(""),
     lastName: new FormControl(""),
@@ -90,11 +92,14 @@ export class SpeakersComponent implements OnInit {
 
   showEdit(speaker: Speaker): void {
     speaker.isEditable = true;
-    this.currentSpeaker.id = speaker.id;
+    this.currentSpeaker = speaker;
+    this.disableEdit = true;
   }
 
   cancel(speaker: Speaker): void {
     speaker.isEditable = false;
-    this.speakerForm.reset();
+    this.currentSpeaker = this.emptySpeaker;
+    this.disableEdit = false;
+    //this.speakerForm.reset();
   }
 }
