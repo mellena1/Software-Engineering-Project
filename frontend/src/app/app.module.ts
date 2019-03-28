@@ -3,7 +3,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 
-import { HttpClientInMemoryWebApiModule } from "angular-in-memory-web-api";
+import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 import { AppRoutingModule } from "./app-routing.module";
 
@@ -13,20 +13,27 @@ import { RoomsComponent } from "./pages/rooms/rooms.component";
 import { SpeakersComponent } from "./pages/speakers/speakers.component";
 import { TimeslotsComponent } from "./pages/timeslots/timeslots.component";
 
+import { NumberInputComponent } from "./shared_components/number_input.component"
+
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    Ng2SmartTableModule
   ],
   declarations: [
     AppComponent,
     SessionsComponent,
     RoomsComponent,
     SpeakersComponent,
-    TimeslotsComponent
+    TimeslotsComponent,
+    NumberInputComponent
+  ],
+  entryComponents: [
+    NumberInputComponent
   ],
   bootstrap: [AppComponent]
 })

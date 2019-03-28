@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { RoomService } from "../../services/room.service";
 import { Room } from "../../data_models/room";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
+
+import { TableSetting } from '../table_setting';
+import { NumberInputComponent } from '../../shared_components/number_input.component'
 
 @Component({
   selector: "app-rooms",
@@ -9,19 +11,25 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
   styleUrls: ["./rooms.component.css"]
 })
 export class RoomsComponent implements OnInit {
-  constructor(private roomService: RoomService) {}
+  constructor(private roomService: RoomService) { }
   rooms: Room[];
   error: any;
-  room = new Room("", 0);
-  currentRoom = new Room("", 0);
-
-  //  isEditable = false;
-  roomForm = new FormGroup({
-    roomName: new FormControl(""),
-    roomCapacity: new FormControl("")
-  });
+  tableSettings: object;
 
   ngOnInit() {
+    var columns = {
+      name: {
+        title: 'Room Name'
+      },
+      capacity: {
+        title: 'Room Capacity',
+        editor: {
+          type: 'custom',
+          component: NumberInputComponent,
+        },
+      },
+    };
+    this.tableSettings = new TableSetting(columns);
     this.getAllRooms();
   }
 
@@ -31,47 +39,45 @@ export class RoomsComponent implements OnInit {
       .subscribe(rooms => (this.rooms = rooms), error => (this.error = error));
   }
 
-  deleteSpeaker(id): void {
+  deleteRoom(event): void {
+    var id = event.data.id;
+
+    console.log(id);
+
     this.roomService.deleteRoom(id).subscribe(error => (this.error = error));
+    event.confirm.resolve();
     this.rooms = this.rooms.filter(item => item.id !== id);
+    event.source.refresh();
   }
 
-  onSubmit(): void {
-    var newRoom = new Room(this.room.name, this.room.capacity);
+  addARoom(event): void {
+    var room = event.newData;
+    room.capacity = +room.capacity; // convert to number
     this.roomService
-      .writeRoom(this.room.name, this.room.capacity)
+      .writeRoom(room.name, room.capacity)
       .subscribe(
-        response => (newRoom.id = response.id),
-        error => (this.error = error)
+        response => {
+          room.id = response.id
+          this.rooms.push(room);
+          event.confirm.resolve();
+        },
+        error => {
+          this.error = error
+          event.confirm.reject();
+        }
       );
-    this.roomForm.reset();
-    this.rooms.push(newRoom);
   }
 
-  updateRoom(): void {
-    var index = this.rooms.findIndex(item => item.id === this.currentRoom.id);
-    var updatedRoom = this.rooms[index];
+  updateRoom(event): void {
+    var room = event.newData;
 
-    this.rooms[index].isEditable = false;
-    this.roomService.updateRoom(this.currentRoom).subscribe(error => {
-      this.error = error;
+    this.roomService.updateRoom(room).subscribe(_ =>{
+        event.confirm.resolve();
+      }, 
+      error => {
+        event.confirm.reject();
+        this.error = error;
+        console.log(error);
     });
-
-    updatedRoom.name = this.currentRoom.name;
-    updatedRoom.capacity = this.currentRoom.capacity;
-
-    this.roomForm.reset();
-  }
-
-  showEdit(room: Room): void {
-    room.isEditable = true;
-    this.currentRoom.id = room.id;
-    this.currentRoom.name = room.name;
-    this.currentRoom.capacity = room.capacity;
-  }
-
-  cancel(room: Room): void {
-    room.isEditable = false;
-    this.roomForm.reset();
   }
 }

@@ -16,9 +16,9 @@
   "license": "MIT",
   "dependencies": {
     "@angular/animations": "^7.1.0",
-    "@angular/common": "^7.1.0",
-    "@angular/compiler": "^7.1.0",
     "@angular/cli": "^7.1.0",
+    "@angular/common": "^7.2.11",
+    "@angular/compiler": "^7.1.0",
     "@angular/compiler-cli": "^7.1.0",
     "@angular/core": "^7.1.0",
     "@angular/forms": "^7.1.0",
@@ -28,8 +28,14 @@
     "@angular/router": "^7.1.0",
     "@angular/upgrade": "^7.1.0",
     "angular-in-memory-web-api": "github:brandonroberts/in-memory-web-api-bazel#50a34d8",
+    "angular4-material-table": "^0.7.0",
     "core-js": "^2.5.4",
+    "deep-equal": "^1.0.1",
+    "ng-editable-table": "^0.3.15",
+    "ng2-completer": "^2.0.8",
+    "ng2-smart-table": "^1.4.0",
     "rxjs": "^6.3.0",
+    "rxjs-compat": "^6.4.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
