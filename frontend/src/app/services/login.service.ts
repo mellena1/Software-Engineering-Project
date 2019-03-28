@@ -10,7 +10,7 @@ import { Observable, throwError as observableThrowError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 import { Login } from "../data_models/login";
-import { WriteResponse } from "./writeResponse";
+import { WriteResponse } from "./writeResponse"; //not sure if i can use this
 
 @Injectable({
   providedIn: "root"
@@ -21,5 +21,8 @@ export class LoginService {
 	private apiURL = environment.apiURL;
 	jsonHeaders = new HttpHeaders().set("Content-Type", "application/json");
 
-	
+	submitLogin(username: string, password: string) {
+		var obj = {username: username, password: password};
+		return this.http.post<WriteResponse>(this.apiUrl + "/login", obj); //need to double check path
+	}
 }
