@@ -143,6 +143,8 @@ export class TimeslotsComponent implements OnInit {
   showEdit(timeslot: Timeslot): void {
     timeslot.isEditable = true;
     this.editedTimeslot.id = timeslot.id;
+    this.editedTimeslot.startTime = timeslot.startTime;
+    this.editedTimeslot.endTime = timeslot.endTime;
   }
 
   cancel(timeslot: Timeslot): void {

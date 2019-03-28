@@ -15,11 +15,12 @@ export class RoomsComponent implements OnInit {
   room = new Room("", 0);
   currentRoom = new Room("", 0);
 
-  //  isEditable = false;
+
   roomForm = new FormGroup({
     roomName: new FormControl(""),
     roomCapacity: new FormControl("")
   });
+
 
   ngOnInit() {
     this.getAllRooms();
@@ -72,11 +73,11 @@ export class RoomsComponent implements OnInit {
   showEdit(room: Room): void {
     room.isEditable = true;
     this.currentRoom.id = room.id;
-
+    this.room.name = room.name;
+    this.room.capacity = room.capacity;
   }
 
   cancel(room: Room): void {
     room.isEditable = false;
-    this.roomForm.reset();
   }
 }

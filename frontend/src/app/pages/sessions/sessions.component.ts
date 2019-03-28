@@ -43,11 +43,18 @@ export class SessionsComponent implements OnInit {
     new Timeslot("", "")
   );
 
+  //currentSession = new Session(
+    //"",
+    //new Room("", 0),
+    //new Speaker("", "", ""),
+    //new Timeslot("", "")
+  //);
+
   currentSession = new Session(
-    "",
-    new Room("", 0),
-    new Speaker("", "", ""),
-    new Timeslot("", "")
+    this.session.name,
+    this.session.room,
+    this.session.speaker,
+    this.session.timeslot
   );
 
   selectedSession: Session;
@@ -154,12 +161,11 @@ export class SessionsComponent implements OnInit {
 
   showEdit(session: Session): void {
     session.isEditable = true;
-    this.currentSession.id = session.id;
+    this.currentSession = session;
   }
 
   cancel(session: Session): void {
     session.isEditable = false;
-    this.sessionForm.reset();
   }
 
   getCurrentDate(): String {

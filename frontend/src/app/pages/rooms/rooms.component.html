@@ -40,6 +40,7 @@
                 <td>
                   <input
                     type="number"
+                    min="0"
                     formControlName="roomCapacity"
                     [(ngModel)]="room.capacity"
                     class="form-control"
@@ -76,9 +77,11 @@
                 <td *ngIf="!room.isEditable">
                   <span>{{ room?.capacity }}</span>
                 </td>
+
                 <td *ngIf="room.isEditable">
                   <input
                     type="number"
+                    min="0"
                     formControlName="roomCapacity"
                     [(ngModel)]="currentRoom.capacity"
                     class="form-control"
