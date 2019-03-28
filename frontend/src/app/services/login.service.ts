@@ -25,4 +25,9 @@ export class LoginService {
 		var obj = {username: username, password: password};
 		return this.http.post<WriteResponse>(this.apiUrl + "/login", obj); //need to double check path
 	}
+
+	private handleError(res: HttpErrorResponse | any) {
+		console.error(res.error || res.body.error);
+		return observableThrowError(res.error || "Server error");
+	}
 }
