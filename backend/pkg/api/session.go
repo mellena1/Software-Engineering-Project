@@ -88,16 +88,16 @@ func (s sessionAPI) getAllSessions(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
-// writeASessionRequest request for writeASession
-type writeASessionRequest struct {
+// WriteASessionRequest request for writeASession
+type WriteASessionRequest struct {
 	SpeakerID   *int64  `json:"speakerID" example:"1"`
 	RoomID      *int64  `json:"roomID" example:"1"`
 	TimeslotID  *int64  `json:"timeslotID" example:"1"`
 	SessionName *string `json:"sessionName" example:"Microservices"`
 }
 
-// Validate validates a writeASessionRequest
-func (r writeASessionRequest) Validate() error {
+// Validate validates a WriteASessionRequest
+func (r WriteASessionRequest) Validate() error {
 	if r.SpeakerID == nil && r.RoomID == nil && r.TimeslotID == nil && r.SessionName == nil {
 		return ErrInvalidRequest
 	}
@@ -109,7 +109,7 @@ func (r writeASessionRequest) Validate() error {
 // @Description Add a session to the db
 // @accept json
 // @produce json
-// @param session body api.writeASessionRequest true "the session to add"
+// @param session body api.WriteASessionRequest true "the session to add"
 // @Success 200 {} int "the id of the session added"
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
@@ -121,7 +121,7 @@ func (s sessionAPI) writeASession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sessionRequest := writeASessionRequest{}
+	sessionRequest := WriteASessionRequest{}
 	err = json.Unmarshal(j, &sessionRequest)
 	if err != nil {
 		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
@@ -142,8 +142,8 @@ func (s sessionAPI) writeASession(w http.ResponseWriter, r *http.Request) {
 	writeIDToClient(w, id)
 }
 
-// updateASessionRequest request for updateASession
-type updateASessionRequest struct {
+// UpdateASessionRequest request for updateASession
+type UpdateASessionRequest struct {
 	SessionID   *int64  `json:"sessionID" example:"1"`
 	SpeakerID   *int64  `json:"speakerID" example:"1"`
 	RoomID      *int64  `json:"roomID" example:"1"`
@@ -151,8 +151,8 @@ type updateASessionRequest struct {
 	SessionName *string `json:"sessionName" example:"Microservices"`
 }
 
-// Validate validates a updateASessionRequest
-func (r updateASessionRequest) Validate() error {
+// Validate validates a UpdateASessionRequest
+func (r UpdateASessionRequest) Validate() error {
 	if r.SessionID == nil {
 		return ErrInvalidRequest
 	}
@@ -167,7 +167,7 @@ func (r updateASessionRequest) Validate() error {
 // @Description Update an existing session in the db
 // @accept json
 // @produce json
-// @param session body api.updateASessionRequest true "the session to update with the new values"
+// @param session body api.UpdateASessionRequest true "the session to update with the new values"
 // @Success 200 "Updated properly"
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
@@ -179,7 +179,7 @@ func (s sessionAPI) updateASession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sessionRequest := updateASessionRequest{}
+	sessionRequest := UpdateASessionRequest{}
 	err = json.Unmarshal(j, &sessionRequest)
 	if err != nil {
 		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)

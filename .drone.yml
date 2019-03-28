@@ -23,12 +23,17 @@ steps:
 
 - name: Backend-Run-go-tests
   image: golang:1.11.5
+  environment:
+    CODECAMP_DBUSER: root
+    CODECAMP_DBPASS: codecamp
+    CODECAMP_DBADDR: mysql-test-db
+    CODECAMP_DBNET: tcp
   volumes:
   - name: gomod_cache
     path: /go/pkg/mod
   commands:
   - cd backend
-  - go test -v ./...
+  - go test -v -tags=integration ./...
 
 - name: Backend-gofmt
   image: golang:1.11.5
@@ -47,6 +52,14 @@ steps:
   - prettier --check "**/*.ts"
   - prettier --check "**/*.html"
   
+services:
+- name: mysql-test-db
+  image: mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: codecamp
+  ports:
+  - 3306
+
 volumes:
 - name: gomod_cache
   temp: {}

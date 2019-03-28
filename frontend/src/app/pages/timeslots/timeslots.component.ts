@@ -10,11 +10,21 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 })
 export class TimeslotsComponent implements OnInit {
   constructor(private timeslotService: TimeslotService) {}
+
   timeslots: Timeslot[];
   error: any;
   timeslot = new Timeslot("", "");
-  currentTimeslot = new Timeslot("", "");
-  //oldTimeslot = new Timeslot("", "");
+  editedTimeslot = new Timeslot("", "");
+
+  eventDate = "2019-04-06";
+  twelveHourIsChecked = true;
+
+  seconds = ":00";
+  startHour = "00";
+  startMin = "00";
+  endHour = "00";
+  endMin = "00";
+
   timeslotForm = new FormGroup({
     timeslotStart: new FormControl(""),
     timeslotEnd: new FormControl("")
@@ -33,72 +43,123 @@ export class TimeslotsComponent implements OnInit {
       );
   }
 
-  onSubmit(): void {
+  writeTimeslot(): void {
+    // format timeslots
+    if (!this.twelveHourIsChecked) {
+      var fullStart = this.format24HourTime(
+        this.startHour,
+        this.startMin,
+        this.seconds
+      );
+      var fullEnd = this.format24HourTime(
+        this.endHour,
+        this.endHour,
+        this.seconds
+      );
+    } else {
+      var fullStart = this.format12HourTime(
+        this.timeslot.startTime,
+        this.seconds
+      );
+      var fullEnd = this.format12HourTime(this.timeslot.endTime, this.seconds);
+    }
+
+    this.timeslot.startTime = fullStart;
+    this.timeslot.endTime = fullEnd;
+
     if (this.timeslot.startTime == "" || this.timeslot.endTime == "") {
       alert("Please enter a date and time for both fields");
       this.timeslotForm.reset();
     }
 
-    var seconds = ":00Z";
-    this.timeslot.startTime = this.timeslot.startTime.concat(seconds);
-    this.timeslot.endTime = this.timeslot.endTime.concat(seconds);
-
+    // create new timeslot with user input
     var newTimeslot = new Timeslot(
       this.timeslot.startTime,
       this.timeslot.endTime
     );
 
+    // pass new timeslot to timeslotService to send to database
     this.timeslotService
       .writeTimeslot(this.timeslot.startTime, this.timeslot.endTime)
-      .subscribe(error => (this.error = error), id => (newTimeslot.id = id));
-    console.log("Timeslot Submitted!", this.timeslotForm.value);
+      .subscribe(
+        response => (newTimeslot.id = response.id),
+        error => (this.error = error)
+      );
     this.timeslotForm.reset();
     this.timeslots.push(newTimeslot);
   }
 
-  deleteTimeslot(timeslotid): void {
-    if (confirm("Are you sure you want to remove it?")) {
-      this.timeslotService
-        .deleteTimeslot(timeslotid)
-        .subscribe(error => (this.error = error));
-      console.log("The following Timeslot Deleted :", this.timeslotForm.value);
-      this.timeslots = this.timeslots.filter(item => item.id !== timeslotid);
-    }
+  deleteTimeslot(id: number): void {
+    this.timeslotService
+      .deleteTimeslot(id)
+      .subscribe(error => (this.error = error));
+    this.timeslots = this.timeslots.filter(item => item.id !== id);
   }
 
   updateTimeslot(): void {
-    if (this.timeslot.startTime == "" || this.timeslot.endTime == "") {
+    var index = this.timeslots.findIndex(
+      item => item.id === this.editedTimeslot.id
+    );
+    var curTimeslot = this.timeslots[index];
+    curTimeslot.isEditable = false;
+
+    if (!this.twelveHourIsChecked) {
+      var fullStart = this.format24HourTime(
+        this.startHour,
+        this.startMin,
+        this.seconds
+      );
+      var fullEnd = this.format24HourTime(
+        this.endHour,
+        this.endMin,
+        this.seconds
+      );
+    } else {
+      var fullStart = this.format12HourTime(
+        this.editedTimeslot.startTime,
+        this.seconds
+      );
+      var fullEnd = this.format12HourTime(
+        this.editedTimeslot.endTime,
+        this.seconds
+      );
+    }
+
+    curTimeslot.startTime = fullStart;
+    curTimeslot.endTime = fullEnd;
+
+    if (curTimeslot.startTime == "" || curTimeslot.endTime == "") {
       alert("Please enter a date and time for both fields");
       this.timeslotForm.reset();
     }
 
-    var seconds = ":00Z";
-    this.currentTimeslot.startTime = this.currentTimeslot.startTime.concat(
-      seconds
-    );
-    this.currentTimeslot.endTime = this.currentTimeslot.endTime.concat(seconds);
-
-    if (confirm("Are you sure you want to update?")) {
-      this.timeslotService
-        .updateTimeslot(this.currentTimeslot)
-        .subscribe(
-          error => (this.error = error),
-          id => (this.currentTimeslot.id = id)
-        );
-      console.log("The following Timeslot Udpated :", this.timeslotForm.value);
-      //this.timeslots = this.timeslots.filter(item => item.id !== timeslotid);
-    }
+    this.timeslotService
+      .updateTimeslot(curTimeslot)
+      .subscribe(error => (this.error = error));
 
     this.timeslotForm.reset();
   }
 
   showEdit(timeslot: Timeslot): void {
     timeslot.isEditable = true;
-    this.currentTimeslot.id = timeslot.id;
+    this.editedTimeslot.id = timeslot.id;
   }
 
   cancel(timeslot: Timeslot): void {
     timeslot.isEditable = false;
     this.timeslotForm.reset();
+  }
+  formatDate(timeslotValue: string): Date {
+    var newTimeslotValue = timeslotValue.slice(0, -1);
+    var newDate = new Date(newTimeslotValue);
+    return newDate;
+  }
+
+  format24HourTime(hour: string, min: string, sec: string): string {
+    return `${this.eventDate}T${hour}:${min}${sec}Z`;
+  }
+
+  format12HourTime(startTime: string, sec: string): string {
+    return `${this.eventDate}T${startTime}${sec}Z`;
   }
 }

@@ -6,7 +6,9 @@ USE codecamp;
 DROP TABLE IF EXISTS session,
                      timeslot,
                      room,
-                     speaker;
+                     speaker,
+                     count,
+                     user;
 
 CREATE TABLE speaker (
     speakerID   INT          AUTO_INCREMENT NOT NULL,
@@ -25,8 +27,8 @@ CREATE TABLE room (
 
 CREATE TABLE timeslot (
     timeslotID  INT     AUTO_INCREMENT NOT NULL,
-    startTime   DATETIME,
-    endTime     DATETIME,
+    startTime   DATETIME NOT NULL,
+    endTime     DATETIME NOT NULL,
     PRIMARY KEY (timeslotID)
 );
 
@@ -36,9 +38,21 @@ CREATE TABLE session (
     roomID          INT,
     timeslotID      INT,
     sessionName     VARCHAR(32),
-    FOREIGN KEY (speakerID)  REFERENCES speaker (speakerID) ON DELETE SET NULL,
-    FOREIGN KEY (timeslotID) REFERENCES timeslot (timeslotID) ON DELETE SET NULL,
-    FOREIGN KEY (roomID)     REFERENCES room (roomID) ON DELETE SET NULL,
-    FOREIGN KEY (timeslotID) REFERENCES timeslot (timeslotID) ON DELETE SET NULL,
+    FOREIGN KEY (speakerID)  REFERENCES speaker (speakerID)     ON DELETE SET NULL,
+    FOREIGN KEY (timeslotID) REFERENCES timeslot (timeslotID)   ON DELETE SET NULL,
+    FOREIGN KEY (roomID)     REFERENCES room (roomID)           ON DELETE SET NULL,
+    FOREIGN KEY (timeslotID) REFERENCES timeslot (timeslotID)   ON DELETE SET NULL,
     PRIMARY KEY (sessionID)
 );
+
+
+CREATE TABLE count (
+    time      ENUM('beginning', 'middle', 'end'),
+    count     INT,
+    userName  VARCHAR(32),
+    sessionID INT,
+    FOREIGN KEY (sessionID) REFERENCES session (sessionID)  ON DELETE CASCADE,
+    PRIMARY KEY (time, sessionID)
+);
+
+

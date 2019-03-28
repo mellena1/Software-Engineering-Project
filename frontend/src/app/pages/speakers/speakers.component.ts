@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { SpeakerService } from "src/app/services/speaker.service";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Speaker } from "src/app/data_models/speaker";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { SpeakerService } from "src/app/services/speaker.service";
 
 @Component({
   selector: "app-speakers",
@@ -13,7 +13,8 @@ export class SpeakersComponent implements OnInit {
   speakers: Speaker[];
   error: any;
   speaker = new Speaker("", "", "");
-  isEditable = false;
+  currentSpeaker = new Speaker("", "", "");
+  //isEditable = false;
   speakerForm = new FormGroup({
     firstName: new FormControl(""),
     lastName: new FormControl(""),
@@ -34,16 +35,16 @@ export class SpeakersComponent implements OnInit {
   }
 
   deleteSpeaker(id): void {
-    if (confirm("Are you sure you want to remove it?")) {
-      this.speakerService
-        .deleteSpeaker(id)
-        .subscribe(error => (this.error = error));
-      console.log("The following Speaker Deleted :", this.speakerForm.value);
-      this.speakers = this.speakers.filter(item => item.id !== id);
-    }
+    this.speakerService.deleteSpeaker(id).subscribe(error => {
+      this.error = error;
+      if (this.error == null) {
+        this.speakers = this.speakers.filter(speaker => speaker.id !== id);
+        console.log("The following Speaker Deleted :", this.speakerForm.value);
+      }
+    });
   }
 
-  onSubmit(): void {
+  writeSpeaker(): void {
     var newSpeaker = new Speaker(
       this.speaker.firstName,
       this.speaker.lastName,
@@ -56,11 +57,44 @@ export class SpeakersComponent implements OnInit {
         this.speaker.email
       )
       .subscribe(
-        response => (newSpeaker.id = response.id),
-        error => (this.error = error)
+        response => {
+          newSpeaker.id = response.id;
+          this.speakerForm.reset();
+          this.speakers.push(newSpeaker);
+          console.log("Speaker Submitted!", this.speakerForm.value);
+        },
+        error => {
+          this.error = error;
+          console.log(this.error);
+        }
       );
-    console.log("Speaker Submitted!", this.speakerForm.value);
+  }
+
+  updateSpeaker(): void {
+    var index = this.speakers.findIndex(
+      item => item.id === this.currentSpeaker.id
+    );
+    var currentSpeaker = this.speakers[index];
+
+    currentSpeaker.isEditable = false;
+    this.speakerService.updateSpeaker(this.currentSpeaker).subscribe(error => {
+      this.error = error;
+    });
+
+    currentSpeaker.firstName = this.currentSpeaker.firstName;
+    currentSpeaker.lastName = this.currentSpeaker.lastName;
+    currentSpeaker.email = this.currentSpeaker.email;
+
     this.speakerForm.reset();
-    this.speakers.push(newSpeaker);
+  }
+
+  showEdit(speaker: Speaker): void {
+    speaker.isEditable = true;
+    this.currentSpeaker.id = speaker.id;
+  }
+
+  cancel(speaker: Speaker): void {
+    speaker.isEditable = false;
+    this.speakerForm.reset();
   }
 }

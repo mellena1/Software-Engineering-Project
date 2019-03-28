@@ -39,7 +39,7 @@ export class SpeakerService {
     return this.http.post<WriteResponse>(this.apiUrl + "/speaker", obj);
   }
 
-  updateSpeakers(updatedSpeaker: Speaker) {
+  updateSpeaker(updatedSpeaker: Speaker) {
     return this.http.put(this.apiUrl + "/speaker", updatedSpeaker);
   }
 
