@@ -11,6 +11,7 @@ import { Speaker } from "../../data_models/speaker";
 import { Timeslot } from "../../data_models/timeslot";
 
 import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { AppComponent } from "src/app/app.component";
 
 @Component({
   selector: "app-sessions",
@@ -22,7 +23,8 @@ export class SessionsComponent implements OnInit {
     private sessionService: SessionService,
     private roomService: RoomService,
     private speakerService: SpeakerService,
-    private timeslotService: TimeslotService
+    private timeslotService: TimeslotService,
+    private app: AppComponent
   ) {}
 
   sessions: Session[];
@@ -31,8 +33,6 @@ export class SessionsComponent implements OnInit {
   speakers: Speaker[];
   timeslots: Timeslot[];
 
-  twelveHourIsChecked = true;
-  timeFormat: "12hour";
   date = new Date();
   currentDate: any;
 

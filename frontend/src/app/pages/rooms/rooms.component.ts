@@ -14,6 +14,8 @@ export class RoomsComponent implements OnInit {
   error: any;
   room = new Room("", 0);
   currentRoom = new Room("", 0);
+  emptyRoom = new Room ("", 0);
+  disableEdit= false;
 
 
   roomForm = new FormGroup({
@@ -67,17 +69,20 @@ export class RoomsComponent implements OnInit {
     updatedRoom.name = this.currentRoom.name;
     updatedRoom.capacity = this.currentRoom.capacity;
 
+    this.disableEdit = false;
     this.roomForm.reset();
   }
 
   showEdit(room: Room): void {
     room.isEditable = true;
-    this.currentRoom.id = room.id;
-    this.room.name = room.name;
-    this.room.capacity = room.capacity;
+    this.currentRoom = room;
+    this.disableEdit = true;
   }
 
   cancel(room: Room): void {
     room.isEditable = false;
+    this.currentRoom = this.emptyRoom;
+    this.disableEdit = false;
+    //this.roomForm.reset();
   }
 }

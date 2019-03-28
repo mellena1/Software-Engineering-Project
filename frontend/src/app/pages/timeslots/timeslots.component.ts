@@ -2,22 +2,26 @@ import { Component, OnInit } from "@angular/core";
 import { Timeslot } from "src/app/data_models/timeslot";
 import { TimeslotService } from "src/app/services/timeslot.service";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { AppComponent } from "src/app/app.component";
 
 @Component({
   selector: "app-timeslots",
   templateUrl: "./timeslots.component.html",
   styleUrls: ["./timeslots.component.css"]
 })
-export class TimeslotsComponent implements OnInit {
-  constructor(private timeslotService: TimeslotService) {}
+export class TimeslotsComponent implements OnInit{
+  constructor(private timeslotService: TimeslotService,
+              private app: AppComponent) {}
 
   timeslots: Timeslot[];
   error: any;
   timeslot = new Timeslot("", "");
   editedTimeslot = new Timeslot("", "");
+  emptyTimeslot = new Timeslot("", "");
+  disableEdit = false;
 
   eventDate = "2019-04-06";
-  twelveHourIsChecked = true;
+  //twelveHourIsChecked = this.app.getTimeFormat();
 
   seconds = ":00";
   startHour = "00";
@@ -45,7 +49,7 @@ export class TimeslotsComponent implements OnInit {
 
   writeTimeslot(): void {
     // format timeslots
-    if (!this.twelveHourIsChecked) {
+    if (!this.app.getTimeFormat()) {
       var fullStart = this.format24HourTime(
         this.startHour,
         this.startMin,
@@ -67,8 +71,8 @@ export class TimeslotsComponent implements OnInit {
     this.timeslot.startTime = fullStart;
     this.timeslot.endTime = fullEnd;
 
-    if (this.timeslot.startTime == "" || this.timeslot.endTime == "") {
-      alert("Please enter a date and time for both fields");
+    if (this.timeslot.startTime == this.eventDate || this.timeslot.endTime == this.eventDate) {
+      alert("Please enter a time for both fields");
       this.timeslotForm.reset();
     }
 
@@ -103,7 +107,7 @@ export class TimeslotsComponent implements OnInit {
     var curTimeslot = this.timeslots[index];
     curTimeslot.isEditable = false;
 
-    if (!this.twelveHourIsChecked) {
+    if (!this.app.getTimeFormat()) {
       var fullStart = this.format24HourTime(
         this.startHour,
         this.startMin,
@@ -137,20 +141,23 @@ export class TimeslotsComponent implements OnInit {
       .updateTimeslot(curTimeslot)
       .subscribe(error => (this.error = error));
 
+    this.disableEdit = false;
     this.timeslotForm.reset();
   }
 
   showEdit(timeslot: Timeslot): void {
     timeslot.isEditable = true;
-    this.editedTimeslot.id = timeslot.id;
-    this.editedTimeslot.startTime = timeslot.startTime;
-    this.editedTimeslot.endTime = timeslot.endTime;
+    this.editedTimeslot = timeslot;
+    this.disableEdit = true;
   }
 
   cancel(timeslot: Timeslot): void {
     timeslot.isEditable = false;
-    this.timeslotForm.reset();
+    this.editedTimeslot = this.emptyTimeslot;
+    this.disableEdit = false;
+    //this.timeslotForm.reset();
   }
+
   formatDate(timeslotValue: string): Date {
     var newTimeslotValue = timeslotValue.slice(0, -1);
     var newDate = new Date(newTimeslotValue);

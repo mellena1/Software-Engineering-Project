@@ -38,7 +38,6 @@
                     formControlName="firstName"
                     [(ngModel)]="speaker.firstName"
                     class="form-control"
-                    placeholder="First Name"
                     ng-required="true"
                   />
                 </td>
@@ -48,7 +47,6 @@
                     formControlName="lastName"
                     [(ngModel)]="speaker.lastName"
                     class="form-control"
-                    placeholder="Last Name"
                     ng-required="true"
                   />
                 </td>
@@ -58,7 +56,6 @@
                     formControlName="email"
                     [(ngModel)]="speaker.email"
                     class="form-control"
-                    placeholder="Email Address"
                     ng-required="true"
                   />
                 </td>
@@ -119,6 +116,7 @@
                     type="button"
                     class="btn btn-primary btn-sm"
                     (click)="showEdit(speaker)"
+                    [disabled]="this.disableEdit"
                   >
                     Edit
                   </button>

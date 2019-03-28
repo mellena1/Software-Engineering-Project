@@ -27,3 +27,6 @@ nav a:hover {
 nav a.active {
   color: #eee;
 }
+div {
+  text-align: center;
+}

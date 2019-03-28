@@ -5,4 +5,20 @@
   <a routerLink="/speakers">Speakers</a>
   <a routerLink="/timeslots">Timeslots</a>
 </nav>
+<div>
+  <input
+  type="radio"
+  name="timeformat"
+  [value]="true"
+  [(ngModel)]="twelveHourIsChecked"
+  />
+  12 Hour
+  <input
+  type="radio"
+  name="timeformat"
+  [value]="false"
+  [(ngModel)]="twelveHourIsChecked"
+  />
+  24 Hour
+</div>
 <router-outlet></router-outlet>
