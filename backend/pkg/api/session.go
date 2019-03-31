@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -31,6 +32,7 @@ func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) [
 		NewRoute("/api/v1/session", sessAPI.writeASession, "POST"),
 		NewRoute("/api/v1/session", sessAPI.updateASession, "PUT"),
 		NewRoute("/api/v1/session", sessAPI.deleteASession, "DELETE"),
+		NewRoute("/api/v1/sessionsByTimeslot", sessAPI.getAllSessionsByTimeslot, "GET"),
 	}
 
 	return routes
@@ -102,6 +104,48 @@ func (r WriteASessionRequest) Validate() error {
 		return ErrInvalidRequest
 	}
 	return nil
+}
+
+// getAllSessions Gets all sessions from the db
+// @Summary Get all sessions
+// @Description Return a list of all sessions
+// @Produce json
+// @Success 200 {array} db.SessionsByTimeslotResponse
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
+// @Router /api/v1/sessionsByTimeslot [get]
+func (s sessionAPI) getAllSessionsByTimeslot(w http.ResponseWriter, r *http.Request) {
+
+	sessions, err := s.sessionReader.ReadAllSessions()
+
+	sessionsByTimeslot := map[*int64][]*string{}
+
+	for _, session := range sessions {
+		// index is the index where we are
+		// element is the element from someSlice for where we are
+
+		sessionsByTimeslot[session.Timeslot.ID] = append(sessionsByTimeslot[session.Timeslot.ID], session.Name)
+
+	}
+
+	var dataItems []db.SessionsByTimeslotResponse
+	for key, value := range sessionsByTimeslot {
+		data := db.SessionsByTimeslotResponse{
+			Timeslot: key,
+			Sessions: value,
+		}
+		fmt.Print(data)
+
+		dataItems = append(dataItems, data)
+	}
+	if err != nil {
+		ReportError(err, "Failed to get ", http.StatusBadRequest, w)
+
+		return
+	}
+
+	j, _ := json.Marshal(dataItems)
+	w.Write(j)
 }
 
 // writeASession Add a session to the db
