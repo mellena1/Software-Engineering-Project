@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"strconv"
+	"time"
 
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
@@ -124,7 +124,7 @@ func (s sessionAPI) getAllSessionsByTimeslot(w http.ResponseWriter, r *http.Requ
 	// Making a map of sessions to timeslots, where the key is just the time of the session (i.e 12:00 to 1:00)
 	sessionsByTimeslot := make(map[string][]db.Session)
 	for _, session := range sessions {
-		key := strconv.Itoa(session.Timeslot.StartTime.Hour()) + "-" + strconv.Itoa(session.Timeslot.EndTime.Hour())
+		key := session.Timeslot.StartTime.Format(time.Kitchen) + "-" + session.Timeslot.EndTime.Format(time.Kitchen)
 		sessionsByTimeslot[key] = append(sessionsByTimeslot[key], session)
 	}
 
