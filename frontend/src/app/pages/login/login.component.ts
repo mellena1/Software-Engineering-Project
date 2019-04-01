@@ -33,3 +33,21 @@ export class LoginComponent implements OnInit {
 		 );
 	}
 }
+
+export function setCookie(username: string, val: string): void {
+		document.cookie = username+"="+val;
+	}
+
+export function getCookie(username: string){
+	return document.cookie;
+}
+
+export function deleteCookie(username: string) {
+	 const date = new Date();
+
+    // Set it expire in -1 days
+    date.setTime(date.getTime() + (-1 * 24 * 60 * 60 * 1000));
+
+    // Set it
+    document.cookie = name+"=; expires="+date.toUTCString();
+}
