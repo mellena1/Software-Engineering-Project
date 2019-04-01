@@ -19,7 +19,8 @@ export class RoomsComponent implements OnInit {
   ngOnInit() {
     var columns = {
       name: {
-        title: 'Room Name'
+        title: 'Room Name',
+        filter: false,
       },
       capacity: {
         title: 'Room Capacity',
@@ -27,6 +28,7 @@ export class RoomsComponent implements OnInit {
           type: 'custom',
           component: NumberInputComponent,
         },
+        filter: false,
       },
     };
     this.tableSettings = new TableSetting(columns);
@@ -42,8 +44,6 @@ export class RoomsComponent implements OnInit {
   deleteRoom(event): void {
     var id = event.data.id;
 
-    console.log(id);
-
     this.roomService.deleteRoom(id).subscribe(error => (this.error = error));
     event.confirm.resolve();
     this.rooms = this.rooms.filter(item => item.id !== id);
@@ -58,7 +58,6 @@ export class RoomsComponent implements OnInit {
       .subscribe(
         response => {
           room.id = response.id
-          this.rooms.push(room);
           event.confirm.resolve();
         },
         error => {

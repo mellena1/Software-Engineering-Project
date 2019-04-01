@@ -8,7 +8,7 @@ export class TableSetting {
             },
             add: {
                 confirmCreate: true,
-                addButtonContent: '<div class="btn btn-success btn-sm mx-1 px-2">Add</div>',
+                addButtonContent: '<div class="btn btn-success btn-sm mx-1 px-2">New Room</div>',
                 createButtonContent: '<div class="btn btn-success btn-sm mx-1 px-2">Create</div>',
                 cancelButtonContent: '<div class="btn btn-danger btn-sm mx-1 px-2">Cancel</div>',
             },
