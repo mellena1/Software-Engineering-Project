@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <title>Rooms List</title>
+  </head>
+  <body>
+    <div class="container">
+      <br />
+      <h3 style="text-align:center">Rooms</h3>
+      <br />
+      <div class="table-responsive" ng-app="app-rooms" ng-init="getAllRooms()">
+        <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Room Name</th>
+                <th>Room Capacity</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    formControlName="roomName"
+                    [(ngModel)]="room.name"
+                    class="form-control"
+                    placeholder="{{ this.room.name }}"
+                    ng-required="true"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    formControlName="roomCapacity"
+                    [(ngModel)]="room.capacity"
+                    class="form-control"
+                    placeholder="{{ this.room.capacity }}"
+                    ng-required="true"
+                  />
+                </td>
+                <td>
+                  <button
+                    type="submit"
+                    class="btn btn-success btn-sm"
+                    ng-disabled="roomForm.$invalid"
+                  >
+                    Add
+                  </button>
+                </td>
+              </tr>
+
+              <tr *ngFor="let room of rooms">
+                <td *ngIf="!room.isEditable">
+                  <span>{{ room.name }}</span>
+                </td>
+
+                <td *ngIf="room.isEditable">
+                  <input
+                    type="text"
+                    formControlName="roomName"
+                    [(ngModel)]="currentRoom.name"
+                    class="form-control"
+                    ng-required="true"
+                  />
+                </td>
+
+                <td *ngIf="!room.isEditable">
+                  <span>{{ room.capacity }}</span>
+                </td>
+                <td *ngIf="room.isEditable">
+                  <input
+                    type="number"
+                    formControlName="roomCapacity"
+                    [(ngModel)]="currentRoom.capacity"
+                    class="form-control"
+                    ng-required="true"
+                  />
+                </td>
+
+                <td *ngIf="!room.isEditable">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    (click)="showEdit(room)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="deleteRoom(room.id)"
+                  >
+                    Delete
+                  </button>
+                </td>
+
+                <td *ngIf="room.isEditable">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    (click)="updateRoom(room)"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="cancel(room)"
+                  >
+                    Cancel
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
