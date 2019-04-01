@@ -8,10 +8,7 @@ import { HttpClientInMemoryWebApiModule } from "angular-in-memory-web-api";
 import { AppRoutingModule } from "./app-routing.module";
 
 import { AppComponent } from "./app.component";
-import { SessionsComponent } from "./pages/sessions/sessions.component";
-import { RoomsComponent } from "./pages/rooms/rooms.component";
-import { SpeakersComponent } from "./pages/speakers/speakers.component";
-import { TimeslotsComponent } from "./pages/timeslots/timeslots.component";
+import { CountsComponent } from "./pages/counts/counts.component";
 
 @NgModule({
   imports: [
@@ -23,10 +20,7 @@ import { TimeslotsComponent } from "./pages/timeslots/timeslots.component";
   ],
   declarations: [
     AppComponent,
-    SessionsComponent,
-    RoomsComponent,
-    SpeakersComponent,
-    TimeslotsComponent
+    CountsComponent
   ],
   bootstrap: [AppComponent]
 })
