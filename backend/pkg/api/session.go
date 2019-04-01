@@ -105,8 +105,8 @@ func (r WriteASessionRequest) Validate() error {
 	return nil
 }
 
-// @Summary Get all sessions
-// @Description Return a list of all sessions
+// @Summary Get all sessions, sorted by speaker
+// @Description Return a list of all sessions sorted by speaker
 // @Produce json
 // @Success 200 {array} string "An array of speakerName: Sessions map entries"
 // @Failure 400 {} _ "the request was bad"
