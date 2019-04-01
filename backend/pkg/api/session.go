@@ -117,18 +117,22 @@ func (r WriteASessionRequest) Validate() error {
 func (s sessionAPI) getAllSessionsByTimeslot(w http.ResponseWriter, r *http.Request) {
 	sessions, err := s.sessionReader.ReadAllSessions()
 	if err != nil {
-		ReportError(err, "Failed to get ", http.StatusBadRequest, w)
+		ReportError(err, "Failed to get all session", http.StatusBadRequest, w)
 		return
 	}
 
 	// Making a map of sessions to timeslots, where the key is just the time of the session (i.e 12:00 to 1:00)
-	sessionsByTimeslot := make(map[string][]*string)
+	sessionsByTimeslot := make(map[string][]db.Session)
 	for _, session := range sessions {
 		key := strconv.Itoa(session.Timeslot.StartTime.Hour()) + "-" + strconv.Itoa(session.Timeslot.EndTime.Hour())
-		sessionsByTimeslot[key] = append(sessionsByTimeslot[key], session.Name)
+		sessionsByTimeslot[key] = append(sessionsByTimeslot[key], session)
 	}
 
-	j, _ := json.Marshal(sessionsByTimeslot)
+	j, err := json.Marshal(sessionsByTimeslot)
+	if err != nil {
+		ReportError(err, "Failed to marshal data", http.StatusBadRequest, w)
+		return
+	}
 	w.Write(j)
 }
 
