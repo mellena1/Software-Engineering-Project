@@ -23,12 +23,6 @@ func NewSession() Session {
 	}
 }
 
-//SessionsByTimeslotResponse holds all data about a session
-type SessionsByTimeslotResponse struct {
-	Timeslot *int64
-	Sessions []*string
-}
-
 // SessionReaderWriterUpdaterDeleter implements everything that a facade for a Session would need
 type SessionReaderWriterUpdaterDeleter interface {
 	SessionReader
