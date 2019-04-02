@@ -20,16 +20,17 @@ export class CountsComponent implements OnInit {
     console.log(this.sessionsMap)
   }
 
-  sessionsMap: Map<String, Session>
+  sessionsMap: any;
   error: any
 
-  getSessionsByTimeslot(): void {
-    this.sessionService.
-      getSessionsByTimeslot()
+  getSessionsByTimeslot() {
+    this.sessionService.getSessionsByTimeslot()
       .subscribe(
-        data => (this.sessionsMap = data),
+        data => {
+          console.log(data)
+          this.sessionsMap = data
+        },
         error => (this.error = error)
       );
-      //.subscribe(data => console.log(data));
   }
 }
