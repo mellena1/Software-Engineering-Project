@@ -15,19 +15,18 @@ import { WriteResponse } from "./writeResponse"; //not sure if i can use this
 @Injectable({
   providedIn: "root"
 })
-
 export class LoginService {
-	constructor(private http: HttpClient) {}
-	private apiURL = environment.apiURL;
-	jsonHeaders = new HttpHeaders().set("Content-Type", "application/json");
+  constructor(private http: HttpClient) {}
+  private apiURL = environment.apiURL;
+  jsonHeaders = new HttpHeaders().set("Content-Type", "application/json");
 
-	submitLogin(username: string, password: string) {
-		var obj = {username: username, password: password};
-		return this.http.post<WriteResponse>(this.apiUrl + "/login", obj); //need to double check path
-	}
+  submitLogin(username: string, password: string) {
+    var obj = { username: username, password: password };
+    return this.http.post<WriteResponse>(this.apiUrl + "/login", obj); //need to double check path
+  }
 
-	private handleError(res: HttpErrorResponse | any) {
-		console.error(res.error || res.body.error);
-		return observableThrowError(res.error || "Server error");
-	}
+  private handleError(res: HttpErrorResponse | any) {
+    console.error(res.error || res.body.error);
+    return observableThrowError(res.error || "Server error");
+  }
 }
