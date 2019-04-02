@@ -1,0 +1,9 @@
+<ul>
+    <li *ngFor="let item of sessionsMap | keyvalue">
+        {{ item.key }}: 
+        <tr *ngFor="let session of item.value">
+            <td> {{ session.name }} </td>
+        </tr>
+    </li>
+</ul>
+
