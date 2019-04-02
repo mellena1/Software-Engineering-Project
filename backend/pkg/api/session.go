@@ -32,6 +32,7 @@ func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) [
 		NewRoute("/api/v1/session", sessAPI.writeASession, "POST"),
 		NewRoute("/api/v1/session", sessAPI.updateASession, "PUT"),
 		NewRoute("/api/v1/session", sessAPI.deleteASession, "DELETE"),
+		NewRoute("/api/v1/sessionsBySpeaker", sessAPI.getAllSessionsBySpeaker, "GET"),
 		NewRoute("/api/v1/sessionsByTimeslot", sessAPI.getAllSessionsByTimeslot, "GET"),
 	}
 
@@ -106,11 +107,38 @@ func (r WriteASessionRequest) Validate() error {
 	return nil
 }
 
-// getAllSessions Gets all sessions from the db
-// @Summary Get all sessions
-// @Description Return a list of all sessions
+// @Summary Get all sessions, sorted by speaker
+// @Description Return a list of all sessions sorted by speaker
 // @Produce json
-// @Success 200 {array} map[string][]*string
+// @Success 200 {array} string "An array of speakerName: Sessions map entries"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
+// @Router /api/v1/sessionsBySpeaker [get]
+func (s sessionAPI) getAllSessionsBySpeaker(w http.ResponseWriter, r *http.Request) {
+	sessions, err := s.sessionReader.ReadAllSessions()
+	if err != nil {
+		ReportError(err, "Failed to get all session", http.StatusBadRequest, w)
+		return
+	}
+	sessionsBySpeaker := make(map[string][]db.Session)
+	for _, session := range sessions {
+		key := *session.Speaker.FirstName + " " + *session.Speaker.LastName
+		sessionsBySpeaker[key] = append(sessionsBySpeaker[key], session)
+	}
+
+	jjson, err := json.Marshal(sessionsBySpeaker)
+	if err != nil {
+		ReportError(err, "Failed to marshal data", http.StatusBadRequest, w)
+		return
+	}
+	w.Write(jjson)
+}
+
+// getAllSessions Gets all sessions from the db, sorted by timeslot
+// @Summary Get all sessions, sorted by timeslot
+// @Description Return a list of all sessions, sorted by timeslot
+// @Produce json
+// @Success 200 {array} string "An array of timeslotString: Sessions map entries"
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/sessionsByTimeslot [get]
