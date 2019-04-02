@@ -67,7 +67,7 @@ export class SessionService {
     }
 
     getSessionsByTimeslot() {
-        return this.http.get(this.apiUrl + "/sessionsByTimeslot")
+        return this.http.get<Map<String, Session[]>>(this.apiUrl + "/sessionsByTimeslot")
     }
     private handleError(res: HttpErrorResponse | any) {
         console.error(res.error || res.body.error);
