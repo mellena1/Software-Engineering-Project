@@ -2,8 +2,10 @@
 <h3 style="text-align:center">Rooms</h3>
 <br />
 <ng2-smart-table
-      [settings]="tableSettings.settings"
-      [source]="rooms"
-      (createConfirm)="addARoom($event)"
-      (editConfirm)="updateRoom($event)"
-      (deleteConfirm)="deleteRoom($event)"></ng2-smart-table>
+  #table
+  [settings]="tableSettings.settings"
+  [source]="tableDataSource"
+  (createConfirm)="addARoom($event)"
+  (editConfirm)="updateRoom($event)"
+  (deleteConfirm)="deleteRoom($event)"
+></ng2-smart-table>

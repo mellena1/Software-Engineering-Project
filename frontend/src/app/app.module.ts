@@ -13,7 +13,7 @@ import { RoomsComponent } from "./pages/rooms/rooms.component";
 import { SpeakersComponent } from "./pages/speakers/speakers.component";
 import { TimeslotsComponent } from "./pages/timeslots/timeslots.component";
 
-import { NumberInputComponent } from "./shared_components/number_input.component"
+import { NumberInputComponent, TextRenderComponent, TextInputComponent } from "./shared_components"
 
 @NgModule({
   imports: [
@@ -30,10 +30,14 @@ import { NumberInputComponent } from "./shared_components/number_input.component
     RoomsComponent,
     SpeakersComponent,
     TimeslotsComponent,
-    NumberInputComponent
+    NumberInputComponent,
+    TextInputComponent,
+    TextRenderComponent
   ],
   entryComponents: [
-    NumberInputComponent
+    NumberInputComponent,
+    TextInputComponent,
+    TextRenderComponent
   ],
   bootstrap: [AppComponent]
 })
