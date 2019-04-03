@@ -13,6 +13,7 @@ import { Cell, DefaultEditor, Editor } from "ng2-smart-table";
 })
 export class NumberInputComponent extends DefaultEditor {
   ngOnInit() {
-    this.cell.newValue = this.cell.getValue();
+    var curVal = this.cell.getValue();
+    this.cell.newValue = parseInt(curVal);
   }
 }

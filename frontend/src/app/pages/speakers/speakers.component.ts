@@ -5,8 +5,7 @@ import { SpeakerService } from "src/app/services/speaker.service";
 
 @Component({
   selector: "app-speakers",
-  templateUrl: "./speakers.component.html",
-  styleUrls: ["./speakers.component.css"]
+  templateUrl: "./speakers.component.html"
 })
 export class SpeakersComponent implements OnInit {
   constructor(private speakerService: SpeakerService) {}
