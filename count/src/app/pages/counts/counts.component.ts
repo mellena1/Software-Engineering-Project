@@ -15,12 +15,12 @@ export class CountsComponent implements OnInit {
 
   ngOnInit() {
     this.getSessionsByTimeslot()
-    this.getAllSessions()
   }
 
-  sessionsMap: Map<String, Session[]>;
+  sessionsMap: Map<String, Session[]> 
   sessions: Session[]
   error: any
+  sessionIsClicked = false;
 
   getSessionsByTimeslot() {
     this.sessionService.getSessionsByTimeslot()
@@ -33,11 +33,9 @@ export class CountsComponent implements OnInit {
       );
   }
 
-  getMapEntries() {
-    return Array.from(this.sessionsMap.entries())
-  }
-
-  getAllSessions() {
-    return this.sessionService.getAllSessions().subscribe(data => this.sessions = data)
+  goToCount(session: Session) {
+    console.log(session)
+    this.sessionIsClicked = true;
+    
   }
 }

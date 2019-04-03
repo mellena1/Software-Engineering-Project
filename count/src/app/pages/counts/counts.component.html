@@ -1,9 +1,12 @@
-<ul>
+<p></p>
+<ul *ngIf="!sessionIsClicked" style="list-style-type:none; padding:0">
     <li *ngFor="let item of sessionsMap | keyvalue">
-        {{ item.key }}: 
+        <b><u>{{ item.key }}</u></b>
         <tr *ngFor="let session of item.value">
-            <td> {{ session.name }} </td>
+            <td (click)="goToCount(session)">
+                <a>{{ session.name }}</a>
+            </td>
         </tr>
+        <p></p>
     </li>
 </ul>
-
