@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 
-import { Count } from '../../data_models/count';
+import { Count, time, timeMapping } from '../../data_models/count';
 import { CountService } from '../../services/count.service';
 import { SessionService } from '../../services/session.service'
 import { Session } from 'src/app/data_models/session';
@@ -16,26 +16,40 @@ export class CountsComponent implements OnInit {
   ngOnInit() {
     this.getSessionsByTimeslot()
   }
+  username = "test"
 
   sessionsMap: Map<String, Session[]> 
   sessions: Session[]
-  error: any
   sessionIsClicked = false;
+  selectedSession = new Session(null, null, null, null);
+  model = new Count(null, null, this.username)
+  times = Object.values(timeMapping)
+  error: any
 
+  onSubmit() {
+    this.writeACount(this.model)
+    this.sessionIsClicked = false;
+  }
+  
   getSessionsByTimeslot() {
     this.sessionService.getSessionsByTimeslot()
       .subscribe(
-        data => {
-          console.log(data)
-          this.sessionsMap = data
-        },
-        error => (this.error = error)
+        data => this.sessionsMap = data,
+        error => this.error = error
       );
   }
 
   goToCount(session: Session) {
-    console.log(session)
     this.sessionIsClicked = true;
-    
+    this.selectedSession = session;
+    // resets model so fields are entry
+    this.model = new Count(null, null, this.username)
+  }
+
+  writeACount(count: Count) {
+    this.countService.writeACount(this.selectedSession.id, count).subscribe(
+      response => console.log(response),
+      error => this.error = error
+    )
   }
 }

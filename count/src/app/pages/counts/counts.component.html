@@ -10,3 +10,22 @@
         <p></p>
     </li>
 </ul>
+
+<div *ngIf="sessionIsClicked" class="container">
+    <form (ngSubmit)="onSubmit()" #countForm="ngForm">
+    <div class="form-group">
+        <label for="time">Time</label>
+        <select class="form-control" id="time" required [(ngModel)]="model.time" name="time">
+            <option *ngFor="let time of times" [value]="time">
+                {{ time }}
+            </option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="name">Count</label>
+        <input type="number" class="form-control" id="name" required [(ngModel)]="model.count" name="count">
+    </div>
+    <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+</div>
