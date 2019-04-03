@@ -8,6 +8,10 @@ services:
     build: count/.
     ports:
       - "8080:8080"
+  count_retrieval:
+    build: count-retrieval/.
+    ports:
+      - "8081:8080"
   backend:
     build: backend/.
     environment:
