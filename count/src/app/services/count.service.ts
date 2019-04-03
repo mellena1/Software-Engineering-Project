@@ -19,7 +19,7 @@ export class CountService {
   private apiUrl = environment.apiUrl;
 
   getAllCounts() {
-    return this.http.get<Count>(this.apiUrl + "/counts").pipe(
+    return this.http.get<Count[]>(this.apiUrl + "/counts").pipe(
       map(data => data),
       catchError(this.handleError)
     );
@@ -27,7 +27,7 @@ export class CountService {
 
   getACount(sessionID: number) {
     var params = new HttpParams().set("id", sessionID.toString());
-    return this.http.get<Count[]>(this.apiUrl + "/count", {
+    return this.http.get<Count>(this.apiUrl + "/count", {
       params: params
     });
   }

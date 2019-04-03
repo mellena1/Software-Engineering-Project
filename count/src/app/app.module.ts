@@ -8,7 +8,9 @@ import { HttpClientInMemoryWebApiModule } from "angular-in-memory-web-api";
 import { AppRoutingModule } from "./app-routing.module";
 
 import { AppComponent } from "./app.component";
-import { CountsComponent } from "./pages/counts/counts.component";
+import { CounterComponent } from "./pages/counter/counter.component";
+import { LoginComponent } from "./pages/login/login.component";
+// import {  } from "./pages/phase2sessions/phase2sessions.component";
 
 @NgModule({
   imports: [
@@ -20,7 +22,8 @@ import { CountsComponent } from "./pages/counts/counts.component";
   ],
   declarations: [
     AppComponent,
-    CountsComponent
+    CounterComponent,
+    LoginComponent,
   ],
   bootstrap: [AppComponent]
 })

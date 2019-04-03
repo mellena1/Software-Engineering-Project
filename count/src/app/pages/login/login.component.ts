@@ -11,6 +11,11 @@ import { LoginService } from "src/app/services/login.service";
 export class LoginComponent implements OnInit {
   constructor(private loginService: LoginService) {}
 
+  login = {username: "", password: ""};
+  error: any;
+
+  ngOnInit() { }
+
   submitLogin(): void {
     var newUser = new Login(this.login.username, this.login.password);
     this.loginService

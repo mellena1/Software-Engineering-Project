@@ -10,18 +10,21 @@ import { CountService } from "src/app/services/count.service";
 })
 export class CounterComponent implements OnInit {
   constructor(private countService: CountService) {}
-  username: document.cookie; //need to set username here from login
+  // username: document.cookie; //need to set username here from login
+  count: Count;
   error: any;
 
   countForm = new FormGroup({
-    userName: document.cookie, //passed in
+    userName: new FormControl(""), //document.cookie, //passed in
     count: new FormControl(""),
     time: new FormControl(""), //going to be button, not form
-    sessionID: new formControl("") //this will be passed as well
+    sessionID: new FormControl("") //this will be passed as well
   });
 
+  ngOnInit() { }
+
   getACount(sessionID): void {
-    this.CountService()
+    this.countService
       .getACount(sessionID)
       .subscribe(count => (this.count = count), error => (this.error = error));
   }
@@ -29,17 +32,11 @@ export class CounterComponent implements OnInit {
   writeACount(): void {
     var newCount = new Count(
       this.count.count,
-      this.count.username,
-      this.count.sessionID,
-      this.count.time
+      this.count.time,
+      this.count.userName
     );
     this.countService
-      .writeACount(
-        this.count.count,
-        this.count.username,
-        this.count.sessionID,
-        this.count.time
-      )
+      .writeACount(newCount)
       .subscribe(
         response => {
           this.countForm.reset();
@@ -54,6 +51,6 @@ export class CounterComponent implements OnInit {
 
   updateCount(): void {
     //not sure where to take this
-    var index = this.count.findIndex(item => item.id);
+    // var index = this.count.findIndex(item => item.id);
   }
 }

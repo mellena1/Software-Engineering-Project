@@ -17,7 +17,7 @@ import { WriteResponse } from "./writeResponse"; //not sure if i can use this
 })
 export class LoginService {
   constructor(private http: HttpClient) {}
-  private apiURL = environment.apiURL;
+  private apiUrl = environment.apiUrl;
   jsonHeaders = new HttpHeaders().set("Content-Type", "application/json");
 
   submitLogin(username: string, password: string) {
