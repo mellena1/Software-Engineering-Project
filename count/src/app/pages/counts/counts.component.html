@@ -1,31 +1,46 @@
 <p></p>
 <ul *ngIf="!sessionIsClicked" style="list-style-type:none; padding:0">
-    <li *ngFor="let item of sessionsMap | keyvalue">
-        <b><u>{{ item.key }}</u></b>
-        <tr *ngFor="let session of item.value">
-            <td (click)="goToCount(session)">
-                <a>{{ session.name }}</a>
-            </td>
-        </tr>
-        <p></p>
-    </li>
+  <li *ngFor="let item of (sessionsMap | keyvalue)">
+    <b
+      ><u>{{ item.key }}</u></b
+    >
+    <tr *ngFor="let session of item.value">
+      <td (click)="goToCount(session)">
+        <a>{{ session.name }}</a>
+      </td>
+    </tr>
+    <p></p>
+  </li>
 </ul>
 
 <div *ngIf="sessionIsClicked" class="container">
-    <form (ngSubmit)="onSubmit()" #countForm="ngForm">
+  <form (ngSubmit)="onSubmit()" #countForm="ngForm">
     <div class="form-group">
-        <label for="time">Time</label>
-        <select class="form-control" id="time" required [(ngModel)]="model.time" name="time">
-            <option *ngFor="let time of times" [value]="time">
-                {{ time }}
-            </option>
-        </select>
+      <label for="time">Time</label>
+      <select
+        class="form-control"
+        id="time"
+        required
+        [(ngModel)]="model.time"
+        name="time"
+      >
+        <option *ngFor="let time of times" [value]="time">
+          {{ time }}
+        </option>
+      </select>
     </div>
-    
+
     <div class="form-group">
-        <label for="name">Count</label>
-        <input type="number" class="form-control" id="name" required [(ngModel)]="model.count" name="count">
+      <label for="name">Count</label>
+      <input
+        type="number"
+        class="form-control"
+        id="name"
+        required
+        [(ngModel)]="model.count"
+        name="count"
+      />
     </div>
     <button type="submit" class="btn btn-success">Submit</button>
-    </form>
+  </form>
 </div>

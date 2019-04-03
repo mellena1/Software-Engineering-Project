@@ -7,7 +7,7 @@ export const timeMapping = {
   [time.beginning]: "beginning",
   [time.middle]: "middle",
   [time.end]: "end"
-}
+};
 
 export class Count {
   count: number;

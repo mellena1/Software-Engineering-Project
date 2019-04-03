@@ -32,7 +32,12 @@ export class CountService {
   }
 
   writeACount(sessionID: number, count: Count) {
-    var obj = { sessionID: sessionID, count: count.count, time: count.time, userName: count.userName };
+    var obj = {
+      sessionID: sessionID,
+      count: count.count,
+      time: count.time,
+      userName: count.userName
+    };
     return this.http.post<WriteResponse>(this.apiUrl + "/count", obj);
   }
 
