@@ -4,7 +4,11 @@ import { RoomService } from "../../services/room.service";
 import { Ng2SmartTableComponent } from "ng2-smart-table/ng2-smart-table.component";
 
 import { TableSetting } from "../table_setting";
-import { NumberInputComponent, TextRenderComponent, TextInputComponent } from "../../shared_components"
+import {
+  NumberInputComponent,
+  TextRenderComponent,
+  TextInputComponent
+} from "../../shared_components";
 import { LocalDataSource } from "ng2-smart-table";
 
 @Component({
@@ -86,8 +90,10 @@ export class RoomsComponent implements OnInit {
 
   deleteRoom(event): void {
     this.roomService.deleteRoom(event.data.id).subscribe(
-      () => {}, 
-      error => { console.log(error); }
+      () => {},
+      error => {
+        console.log(error);
+      }
     );
     event.confirm.resolve();
   }

@@ -10,8 +10,7 @@ export class TableSetting {
         confirmCreate: true,
         createButtonContent:
           '<div class="btn btn-success btn-sm mx-1 px-2">Add</div>',
-        cancelButtonContent:
-          '<div></div>',
+        cancelButtonContent: "<div></div>"
       },
       edit: {
         confirmSave: true,
@@ -31,7 +30,7 @@ export class TableSetting {
         class: "table table-bordered table-striped test"
       },
       hideSubHeader: true,
-      columns: columns,
+      columns: columns
     };
   }
 }

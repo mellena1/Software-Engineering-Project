@@ -3,7 +3,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 
-import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { Ng2SmartTableModule } from "ng2-smart-table";
 
 import { AppRoutingModule } from "./app-routing.module";
 
@@ -13,7 +13,11 @@ import { RoomsComponent } from "./pages/rooms/rooms.component";
 import { SpeakersComponent } from "./pages/speakers/speakers.component";
 import { TimeslotsComponent } from "./pages/timeslots/timeslots.component";
 
-import { NumberInputComponent, TextRenderComponent, TextInputComponent } from "./shared_components"
+import {
+  NumberInputComponent,
+  TextRenderComponent,
+  TextInputComponent
+} from "./shared_components";
 
 @NgModule({
   imports: [
