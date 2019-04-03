@@ -49,4 +49,8 @@ getAllSpeakers(): void {
       );
 }
 
+showSpeaker(speakers: Speaker): void {
+  this.c
+}
+
 }
