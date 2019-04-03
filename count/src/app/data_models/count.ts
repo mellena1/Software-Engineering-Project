@@ -5,12 +5,12 @@ export enum time {
 }
 export class Count {
   count: number;
-  countID: number;
+  sessionID: number;
   time: time;
   userName: string;
 
   constructor(count: number, time: time, userName: string) {
-    this.countID = -1;
+    this.sessionID = -1;
     this.count = count;
     this.userName = userName;
     this.time = time;
