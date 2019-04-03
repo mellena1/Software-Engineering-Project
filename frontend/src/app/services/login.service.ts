@@ -22,7 +22,7 @@ export class LoginService {
 
   submitLogin(username: string, password: string) {
     var obj = { username: username, password: password };
-    return this.http.post<WriteResponse>(this.apiUrl + "/login", obj); //need to double check path
+    return this.http.post<WriteResponse>(this.apiUrl + "/login", obj);
   }
 
   private handleError(res: HttpErrorResponse | any) {
