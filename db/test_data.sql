@@ -23,7 +23,9 @@ INSERT INTO timeslot (`startTime`, `endTime`) VALUES
 
 INSERT INTO session (`speakerID`, `roomID`, `timeslotID`, `sessionName`) VALUES
                     (1, 5, 4, 'Clean Code Smean Code'),
-                    (2, 1, 5, 'Microservices'),        
+                    (2, 1, 5, 'Microservices'), 
+                    (2, 2, 2, 'KennyServices'),         
+                    (5, 3, 2, 'RobinsonServices'), 
                     (3, 2, 1, 'Connected Devices'),
                     (4, 3, 2, 'Exploring Blockchain'),
                     (5, 4, 3, 'Bet You Didt Think');          
