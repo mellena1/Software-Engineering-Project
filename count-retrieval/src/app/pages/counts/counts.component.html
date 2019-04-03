@@ -1,2 +1,51 @@
-<h2>Counts</h2>
-I'm Useless!
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  <title>Phase 3</title>
+  </head>
+  <body>  
+    
+      <div class="container">
+          <br />
+          <h2 style="text-align:center">Phase 3 Main Menu</h2>
+          <br />
+    
+    
+    <h3>Select Speaker</h3>  
+      <select>
+          <option value="" disabled selected> -- Select Speaker-- </option>
+          <option *ngFor="let speaker of speakers" [ngValue]="speaker">
+            {{ speaker.firstName }} {{ speaker.lastName }}
+          </option>
+      </select>
+
+       <button
+        type="submit"
+        class="btn btn-success btn-sm"
+        (click)="showSpeaker(speaker)"
+      >
+      Submit
+      </button>
+      <h3>Or Select Session</h3>
+        <select>
+            <option value="" disabled selected>--Select Sessions--</option>
+            <option *ngFor="let session of sessions" [ngValue]="session">{{
+              session.name
+              }}</option>
+          </select>
+          <button
+            type="submit"
+            class="btn btn-success btn-sm"
+          >
+          Submit
+          </button>
+          </div>
+    </body>
+</html>
