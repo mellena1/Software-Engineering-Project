@@ -12,5 +12,9 @@ export class TextRenderComponent implements ViewCell, OnInit {
   @Input() value: string;
   @Input() rowData: any;
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.value == null) {
+      this.value = "";
+    }
+  }
 }

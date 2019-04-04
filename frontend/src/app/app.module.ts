@@ -14,6 +14,8 @@ import { RoomsComponent } from "./pages/rooms/rooms.component";
 import { SpeakersComponent } from "./pages/speakers/speakers.component";
 import { TimeslotsComponent } from "./pages/timeslots/timeslots.component";
 
+import { TwelveTwentyfourHourRadioComponent } from "./shared_components/twelve_twentyfour_hour_radio.component";
+
 import {
   NumberInputComponent,
   TextRenderComponent,
@@ -43,14 +45,16 @@ import { TimeslotGlobals } from "./globals/timeslot.global";
     TextInputComponent,
     TextRenderComponent,
     TimeslotRenderComponent,
-    TimeslotInputComponent
+    TimeslotInputComponent,
+    TwelveTwentyfourHourRadioComponent
   ],
   entryComponents: [
     NumberInputComponent,
     TextInputComponent,
     TextRenderComponent,
     TimeslotRenderComponent,
-    TimeslotInputComponent
+    TimeslotInputComponent,
+    TwelveTwentyfourHourRadioComponent
   ],
   providers: [TimeslotGlobals],
   bootstrap: [AppComponent]

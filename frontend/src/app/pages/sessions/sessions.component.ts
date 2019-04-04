@@ -172,9 +172,7 @@ export class SessionsComponent implements OnInit {
         data.forEach(timeslot => {
           this.timeslotsListForTable.push({
             value: timeslot,
-            title: `${this.timeslotGlobals.formatTime(
-              timeslot.startTime
-            )}-${this.timeslotGlobals.formatTime(timeslot.endTime)}`
+            title: `${this.timeslotGlobals.formatTime(timeslot.startTime)}-${this.timeslotGlobals.formatTime(timeslot.endTime)}`
           });
         });
         this.tableSettings = new TableSetting(this.columns);
