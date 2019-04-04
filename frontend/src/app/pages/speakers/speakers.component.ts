@@ -5,7 +5,6 @@ import { Ng2SmartTableComponent } from "ng2-smart-table/ng2-smart-table.componen
 
 import { TableSetting } from "../table_setting";
 import {
-  NumberInputComponent,
   TextRenderComponent,
   TextInputComponent
 } from "../../shared_components";
@@ -15,7 +14,6 @@ import { LocalDataSource } from "ng2-smart-table";
   selector: "app-speakers",
   templateUrl: "./speakers.component.html"
 })
-
 export class SpeakersComponent implements OnInit {
   @ViewChild("table") table: Ng2SmartTableComponent;
   tableDataSource: LocalDataSource;
@@ -73,16 +71,18 @@ export class SpeakersComponent implements OnInit {
 
   addASpeaker(event): void {
     var speaker = event.newData;
-    this.speakerService.writeSpeaker(speaker.firstName, speaker.lastName, speaker.email).subscribe(
-      response => {
-        speaker.id = response.id;
-        event.confirm.resolve(speaker);
-      },
-      error => {
-        console.log(error);
-        event.confirm.reject();
-      }
-    );
+    this.speakerService
+      .writeSpeaker(speaker.firstName, speaker.lastName, speaker.email)
+      .subscribe(
+        response => {
+          speaker.id = response.id;
+          event.confirm.resolve(speaker);
+        },
+        error => {
+          console.log(error);
+          event.confirm.reject();
+        }
+      );
   }
 
   updateSpeaker(event): void {
@@ -100,7 +100,7 @@ export class SpeakersComponent implements OnInit {
 
   deleteSpeaker(event): void {
     this.speakerService.deleteSpeaker(event.data.id).subscribe(
-      () => { },
+      () => {},
       error => {
         console.log(error);
       }
