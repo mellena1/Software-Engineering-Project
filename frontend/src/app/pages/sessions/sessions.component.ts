@@ -32,7 +32,13 @@ export class SessionsComponent implements OnInit {
     },
     room: {
       title: "Room Name",
-      valuePrepareFunction: (room: Room) => { return room.name },
+      valuePrepareFunction: (room) => { 
+        if (room == null) {
+          return ""
+        } else {
+          return room.name
+        }
+      },
       type: "custom",
       renderComponent: TextRenderComponent,
       editor: {
@@ -42,7 +48,13 @@ export class SessionsComponent implements OnInit {
     },
     speaker: {
       title: "Speaker Name",
-      valuePrepareFunction: (speaker: Speaker) => { return speaker.lastName },
+      valuePrepareFunction: (speaker) => { 
+        if (speaker == null) {
+          return ""
+        } else {
+          return speaker.firstName + " " + speaker.lastName
+        }
+      },
       type: "custom",
       renderComponent: TextRenderComponent,
       editor: {
