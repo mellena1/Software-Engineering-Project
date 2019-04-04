@@ -7,9 +7,9 @@ import { DefaultEditor } from "ng2-smart-table";
     <input
       type="number"
       [(ngModel)]="stringNumber"
+      (change)="parseToInt()"
       class="table-text"
     />
-    <div [hidden]="true" [innerHTML]="parseToInt()" #htmlValue></div>
   `,
   styleUrls: ["./table.components.css"]
 })

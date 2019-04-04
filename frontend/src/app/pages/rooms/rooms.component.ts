@@ -44,9 +44,14 @@ export class RoomsComponent implements OnInit {
   constructor(private roomService: RoomService) {
     this.tableDataSource = new LocalDataSource();
 
-    this.roomService.getAllRooms().subscribe(data => {
-      this.tableDataSource.load(data);
-    });
+    this.roomService.getAllRooms().subscribe(
+      data => {
+        this.tableDataSource.load(data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   ngOnInit() {

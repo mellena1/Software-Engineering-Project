@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 
 import { Ng2SmartTableModule } from "ng2-smart-table";
-import { NgbTimepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTimepickerModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppRoutingModule } from "./app-routing.module";
 
@@ -52,9 +52,7 @@ import { TimeslotGlobals } from "./globals/timeslot.global";
     TimeslotRenderComponent,
     TimeslotInputComponent
   ],
-  providers: [
-    TimeslotGlobals
-  ],
+  providers: [TimeslotGlobals],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

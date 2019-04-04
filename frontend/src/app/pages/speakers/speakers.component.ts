@@ -52,9 +52,14 @@ export class SpeakersComponent implements OnInit {
   constructor(private speakerService: SpeakerService) {
     this.tableDataSource = new LocalDataSource();
 
-    this.speakerService.getAllSpeakers().subscribe(data => {
-      this.tableDataSource.load(data);
-    });
+    this.speakerService.getAllSpeakers().subscribe(
+      data => {
+        this.tableDataSource.load(data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   ngOnInit() {

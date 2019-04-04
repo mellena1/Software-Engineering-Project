@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { TimeslotService } from "src/app/services/timeslot.service";
-import { TimeslotGlobals } from '../../globals/timeslot.global';
+import { TimeslotGlobals } from "../../globals/timeslot.global";
 
 import { Ng2SmartTableComponent } from "ng2-smart-table/ng2-smart-table.component";
 
@@ -41,12 +41,20 @@ export class TimeslotsComponent implements OnInit {
   };
   tableSettings = new TableSetting(this.columns);
 
-  constructor(private timeslotService: TimeslotService, private timeslotGlobals: TimeslotGlobals) {
+  constructor(
+    private timeslotService: TimeslotService,
+    private timeslotGlobals: TimeslotGlobals
+  ) {
     this.tableDataSource = new LocalDataSource();
 
-    this.timeslotService.getAllTimeslots().subscribe(data => {
-      this.tableDataSource.load(data);
-    });
+    this.timeslotService.getAllTimeslots().subscribe(
+      data => {
+        this.tableDataSource.load(data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   ngOnInit() {
@@ -64,16 +72,18 @@ export class TimeslotsComponent implements OnInit {
   addATimeslot(event): void {
     var timeslot = event.newData;
 
-    this.timeslotService.writeTimeslot(timeslot.startTime, timeslot.endTime).subscribe(
-      response => {
-        timeslot.id = response.id;
-        event.confirm.resolve(timeslot);
-      },
-      error => {
-        console.log(error);
-        event.confirm.reject();
-      }
-    );
+    this.timeslotService
+      .writeTimeslot(timeslot.startTime, timeslot.endTime)
+      .subscribe(
+        response => {
+          timeslot.id = response.id;
+          event.confirm.resolve(timeslot);
+        },
+        error => {
+          console.log(error);
+          event.confirm.reject();
+        }
+      );
   }
 
   updateTimeslot(event): void {
@@ -86,14 +96,14 @@ export class TimeslotsComponent implements OnInit {
         console.log(error);
         event.confirm.reject();
       }
-    )
+    );
   }
 
   deleteTimeslot(event): void {
     this.timeslotService.deleteTimeslot(event.data.id).subscribe(
       () => {
         event.confirm.resolve();
-      }, 
+      },
       error => {
         console.log(error);
         event.confirm.reject();

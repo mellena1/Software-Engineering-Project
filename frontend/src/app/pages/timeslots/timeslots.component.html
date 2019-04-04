@@ -5,18 +5,20 @@
 <input
   type="radio"
   name="timeformat"
-  [value]=true
+  [value]="true"
   (change)="tableDataSource.refresh()"
   [(ngModel)]="timeslotGlobals.twelveHourIsChecked"
-/> 12 Hour
+/>
+12 Hour
 
 <input
   type="radio"
   name="timeformat"
-  [value]=false
+  [value]="false"
   (change)="tableDataSource.refresh()"
   [(ngModel)]="timeslotGlobals.twelveHourIsChecked"
-/> 24 Hour
+/>
+24 Hour
 
 <ng2-smart-table
   #table
