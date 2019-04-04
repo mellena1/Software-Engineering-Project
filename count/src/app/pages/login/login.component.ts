@@ -11,7 +11,7 @@ import { LoginService } from "src/app/services/login.service";
 export class LoginComponent implements OnInit {
   constructor(private loginService: LoginService) {}
 
-  login = new Login("", ""); //need to work on getting data from form
+  login = new Login("", "");
   error: any;
 
   loginForm = new FormGroup({
@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
 
   submitLogin(username: string, password: string): void {
     var newUser = new Login(this.login.username, this.login.password);
-    console.log(newUser);
+    console.log("this is the user: " + this.login.username);
     this.loginService.writeLogin(this.login.password).subscribe(
       //response => {} not sure if I have a response here
       error => {
@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
       }
     );
     this.loginService.setCookie(this.login.username);
-    console.log("hello this is the cookie: " + this.loginService.getCookie());
+    console.log("hello this is the cookie: " + this.loginService.getCookie()); //prints username
     //console.log("deleting the cookie: " + this.loginService.deleteCookie());
     this.loginForm.reset();
   }

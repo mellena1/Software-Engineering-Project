@@ -30,8 +30,10 @@
                     <div class="form-group">
                       <label for="usernameInput">Username</label>
                       <input
-                        type="username"
+                        type="text"
                         class="form-control"
+                        formControlName="username"
+                        [(ngModel)]= "login.username"
                         id="username"
                         placeholder="Enter Name"
                       />
@@ -39,8 +41,10 @@
                     <div class="form-group">
                       <label for="passwordInput">Password</label>
                       <input
-                        type="password"
+                        type="text"
                         class="form-control"
+                        formControlName="password"
+                        [(ngModel)]= "login.password"
                         id="password"
                         placeholder="Password"
                       />

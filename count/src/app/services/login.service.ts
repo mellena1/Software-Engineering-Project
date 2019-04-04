@@ -32,7 +32,7 @@ export class LoginService {
   }
 
   setCookie(username: string) {
-    document.cookie = "username = " + "hello";
+    document.cookie = "username = " + username;
   }
 
   getCookie() {
