@@ -26,6 +26,7 @@ ul {
 </ul>
 
 <div *ngIf="sessionIsClicked" class="container">
+  <h5>Entering count for {{ selectedSession.name }}</h5>
   <form (ngSubmit)="onSubmit()" #countForm="ngForm">
     <div class="form-group">
       <label for="time">Time</label>
