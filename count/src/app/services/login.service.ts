@@ -21,7 +21,7 @@ export class LoginService {
   jsonHeaders = new HttpHeaders().set("Content-Type", "application/json");
 
   writeLogin(password: string) {
-    var obj = {password: password };
+    var obj = { password: password };
     return this.http.post<WriteResponse>(this.apiUrl + "/login", obj);
   }
 
@@ -39,12 +39,12 @@ export class LoginService {
   }
 
   deleteCookie(username: string) {
-  const date = new Date();
+    const date = new Date();
 
-  // Set it expire in -1 days
-  date.setTime(date.getTime() + -1 * 24 * 60 * 60 * 1000);
+    // Set it expire in -1 days
+    date.setTime(date.getTime() + -1 * 24 * 60 * 60 * 1000);
 
-  // Set it
-  document.cookie = name + "=; expires=" + date.toUTCString();
-  }  
+    // Set it
+    document.cookie = name + "=; expires=" + date.toUTCString();
+  }
 }

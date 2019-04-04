@@ -5,11 +5,10 @@ import { CounterComponent } from "./pages/counter/counter.component";
 import { LoginComponent } from "./pages/login/login.component";
 // import {  } from "./pages/phase2sessions/phase2sessions.component";
 
-
 const routes: Routes = [
   { path: "", redirectTo: "/login", pathMatch: "full" },
   { path: "counter", component: CounterComponent },
-  { path: "login", component: LoginComponent },
+  { path: "login", component: LoginComponent }
   // { path: "sessions", component:  },
 ];
 

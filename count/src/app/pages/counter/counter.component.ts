@@ -21,7 +21,7 @@ export class CounterComponent implements OnInit {
     sessionID: new FormControl("") //this will be passed as well
   });
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   getACount(sessionID): void {
     this.countService
@@ -35,18 +35,16 @@ export class CounterComponent implements OnInit {
       this.count.time,
       this.count.userName
     );
-    this.countService
-      .writeACount(newCount)
-      .subscribe(
-        response => {
-          this.countForm.reset();
-          console.log("Count Submitted");
-        },
-        error => {
-          this.error = error;
-          console.log(this.error);
-        }
-      );
+    this.countService.writeACount(newCount).subscribe(
+      response => {
+        this.countForm.reset();
+        console.log("Count Submitted");
+      },
+      error => {
+        this.error = error;
+        console.log(this.error);
+      }
+    );
   }
 
   updateCount(): void {

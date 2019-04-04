@@ -20,11 +20,7 @@ import { LoginComponent } from "./pages/login/login.component";
     ReactiveFormsModule,
     HttpClientModule
   ],
-  declarations: [
-    AppComponent,
-    CounterComponent,
-    LoginComponent,
-  ],
+  declarations: [AppComponent, CounterComponent, LoginComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
