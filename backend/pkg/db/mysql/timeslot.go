@@ -28,18 +28,18 @@ func scanATimeslot(timeslot *db.Timeslot, row rowScanner) error {
 }
 
 // ReadATimeslot reads a timeslot from the db given an id
-func (t TimeslotMySQL) ReadATimeslot(id int64) (db.Timeslot, error) {
-	if t.db == nil {
+func (myTimeslotSQL TimeslotMySQL) ReadATimeslot(id int64) (db.Timeslot, error) {
+	if myTimeslotSQL.db == nil {
 		return db.Timeslot{}, ErrDBNotSet
 	}
 
-	stmt, err := t.db.Prepare("SELECT timeslotID, startTime, endTime FROM timeslot where timeslotID = ?;")
+	statement, err := myTimeslotSQL.db.Prepare("SELECT timeslotID, startTime, endTime FROM timeslot where timeslotID = ?;")
 	if err != nil {
 		return db.Timeslot{}, err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	row := stmt.QueryRow(id)
+	row := statement.QueryRow(id)
 
 	timeslot := db.NewTimeslot()
 	err = scanATimeslot(&timeslot, row)
@@ -48,14 +48,14 @@ func (t TimeslotMySQL) ReadATimeslot(id int64) (db.Timeslot, error) {
 }
 
 // ReadAllTimeslots reads all timeslots from the db
-func (t TimeslotMySQL) ReadAllTimeslots() ([]db.Timeslot, error) {
-	if t.db == nil {
+func (myTimeslotSQL TimeslotMySQL) ReadAllTimeslots() ([]db.Timeslot, error) {
+	if myTimeslotSQL.db == nil {
 		return nil, ErrDBNotSet
 	}
 
-	q := "SELECT timeslotID, startTime, endTime FROM timeslot;"
+	query := "SELECT timeslotID, startTime, endTime FROM timeslot;"
 
-	rows, err := t.db.Query(q)
+	rows, err := myTimeslotSQL.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -77,18 +77,18 @@ func (t TimeslotMySQL) ReadAllTimeslots() ([]db.Timeslot, error) {
 }
 
 // WriteATimeslot writes a timeslot to the db
-func (t TimeslotMySQL) WriteATimeslot(startTime, endTime time.Time) (int64, error) {
-	if t.db == nil {
+func (myTimeslotSQL TimeslotMySQL) WriteATimeslot(startTime, endTime time.Time) (int64, error) {
+	if myTimeslotSQL.db == nil {
 		return 0, ErrDBNotSet
 	}
 
-	stmt, err := t.db.Prepare("INSERT INTO timeslot (`startTime`, `endTime`) VALUES (?, ?);")
+	statement, err := myTimeslotSQL.db.Prepare("INSERT INTO timeslot (`startTime`, `endTime`) VALUES (?, ?);")
 	if err != nil {
 		return 0, err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	result, err := stmt.Exec(startTime.Format(MySQLTimeFormat), endTime.Format(MySQLTimeFormat))
+	result, err := statement.Exec(startTime.Format(MySQLTimeFormat), endTime.Format(MySQLTimeFormat))
 	if err != nil {
 		return 0, err
 	}
@@ -97,18 +97,18 @@ func (t TimeslotMySQL) WriteATimeslot(startTime, endTime time.Time) (int64, erro
 }
 
 // UpdateATimeslot updates a timeslot in the db given an id and the updated timeslot
-func (t TimeslotMySQL) UpdateATimeslot(id int64, startTime, endTime time.Time) error {
-	if t.db == nil {
+func (myTimeslotSQL TimeslotMySQL) UpdateATimeslot(id int64, startTime, endTime time.Time) error {
+	if myTimeslotSQL.db == nil {
 		return ErrDBNotSet
 	}
 
-	stmt, err := t.db.Prepare("UPDATE timeslot SET startTime = ?, endTime = ? WHERE timeslotID = ?;")
+	statement, err := myTimeslotSQL.db.Prepare("UPDATE timeslot SET startTime = ?, endTime = ? WHERE timeslotID = ?;")
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	result, err := stmt.Exec(startTime.Format(MySQLTimeFormat), endTime.Format(MySQLTimeFormat), id)
+	result, err := statement.Exec(startTime.Format(MySQLTimeFormat), endTime.Format(MySQLTimeFormat), id)
 	if err != nil {
 		return err
 	}
@@ -123,18 +123,18 @@ func (t TimeslotMySQL) UpdateATimeslot(id int64, startTime, endTime time.Time) e
 }
 
 // DeleteATimeslot deletes a timeslot given an id
-func (t TimeslotMySQL) DeleteATimeslot(id int64) error {
-	if t.db == nil {
+func (myTimeslotSQL TimeslotMySQL) DeleteATimeslot(id int64) error {
+	if myTimeslotSQL.db == nil {
 		return ErrDBNotSet
 	}
 
-	stmt, err := t.db.Prepare("DELETE FROM timeslot WHERE timeslotID = ?;")
+	statement, err := myTimeslotSQL.db.Prepare("DELETE FROM timeslot WHERE timeslotID = ?;")
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	result, err := stmt.Exec(id)
+	result, err := statement.Exec(id)
 	if err != nil {
 		return err
 	}

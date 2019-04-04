@@ -20,7 +20,7 @@ type timeslotAPI struct {
 
 // CreateTimeslotRoutes makes all of the routes for room related calls
 func CreateTimeslotRoutes(timeslotDBFacade db.TimeslotReaderWriterUpdaterDeleter) []Route {
-	tAPI := timeslotAPI{
+	myTimeslotAPI := timeslotAPI{
 		timeslotReader:  timeslotDBFacade,
 		timeslotWriter:  timeslotDBFacade,
 		timeslotUpdater: timeslotDBFacade,
@@ -28,11 +28,11 @@ func CreateTimeslotRoutes(timeslotDBFacade db.TimeslotReaderWriterUpdaterDeleter
 	}
 
 	routes := []Route{
-		NewRoute("/api/v1/timeslots", tAPI.getAllTimeslots, "GET"),
-		NewRoute("/api/v1/timeslot", tAPI.getATimeslot, "GET"),
-		NewRoute("/api/v1/timeslot", tAPI.writeATimeslot, "POST"),
-		NewRoute("/api/v1/timeslot", tAPI.updateATimeslot, "PUT"),
-		NewRoute("/api/v1/timeslot", tAPI.deleteATimeslot, "DELETE"),
+		NewRoute("/api/v1/timeslots", myTimeslotAPI.getAllTimeslots, "GET"),
+		NewRoute("/api/v1/timeslot", myTimeslotAPI.getATimeslot, "GET"),
+		NewRoute("/api/v1/timeslot", myTimeslotAPI.writeATimeslot, "POST"),
+		NewRoute("/api/v1/timeslot", myTimeslotAPI.updateATimeslot, "PUT"),
+		NewRoute("/api/v1/timeslot", myTimeslotAPI.deleteATimeslot, "DELETE"),
 	}
 
 	return routes
@@ -46,19 +46,19 @@ func CreateTimeslotRoutes(timeslotDBFacade db.TimeslotReaderWriterUpdaterDeleter
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslots [get]
-func (t timeslotAPI) getAllTimeslots(w http.ResponseWriter, r *http.Request) {
-	timeslots, err := t.timeslotReader.ReadAllTimeslots()
+func (myTimeslotAPI timeslotAPI) getAllTimeslots(writer http.ResponseWriter, request *http.Request) {
+	timeslots, err := myTimeslotAPI.timeslotReader.ReadAllTimeslots()
 	if err != nil {
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 
 	responseJSON, _ := json.Marshal(timeslots)
-	w.Write(responseJSON)
+	writer.Write(responseJSON)
 }
 
-// getATimeslot Get a timeslot from the db
-// @Summary Get a timeslot from the db
+// getATimeslot Get a timeslot with a specific timeslotID from the db
+// @Summary Get a timeslot with a specific timeslotID from the db
 // @Description Get a timeslot from the db
 // @produce json
 // @param id query int true "the timeslot to retrieve"
@@ -66,28 +66,28 @@ func (t timeslotAPI) getAllTimeslots(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslot [get]
-func (t timeslotAPI) getATimeslot(w http.ResponseWriter, r *http.Request) {
-	requestedID, err := getIDFromQueries(r)
+func (myTimeslotAPI timeslotAPI) getATimeslot(writer http.ResponseWriter, request *http.Request) {
+	requestedID, err := getIDFromQueries(request)
 	switch err {
 	case ErrQueryNotSet:
-		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, writer)
 		return
 	case ErrBadQuery:
-		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, writer)
 		return
 	case ErrBadQueryType:
-		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
+		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, writer)
 		return
 	}
 
-	timeslot, err := t.timeslotReader.ReadATimeslot(requestedID)
+	timeslot, err := myTimeslotAPI.timeslotReader.ReadATimeslot(requestedID)
 	if err != nil {
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 
 	responseJSON, _ := json.Marshal(timeslot)
-	w.Write(responseJSON)
+	writer.Write(responseJSON)
 }
 
 // WriteATimeslotRequest request for writeATimeslot
@@ -97,8 +97,8 @@ type WriteATimeslotRequest struct {
 }
 
 // Validate validates a WriteATimeslotRequest
-func (r WriteATimeslotRequest) Validate() error {
-	if r.StartTime == nil || r.EndTime == nil {
+func (request WriteATimeslotRequest) Validate() error {
+	if request.StartTime == nil || request.EndTime == nil {
 		return ErrInvalidRequest
 	}
 	return nil
@@ -114,46 +114,46 @@ func (r WriteATimeslotRequest) Validate() error {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslot [post]
-func (t timeslotAPI) writeATimeslot(w http.ResponseWriter, r *http.Request) {
-	j, err := ioutil.ReadAll(r.Body)
+func (myTimeslotAPI timeslotAPI) writeATimeslot(writer http.ResponseWriter, request *http.Request) {
+	requestJSON, err := ioutil.ReadAll(request.Body)
 	if err != nil {
-		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+		ReportError(err, "unable to read body", http.StatusBadRequest, writer)
 		return
 	}
 
 	timeslotRequest := WriteATimeslotRequest{}
-	err = json.Unmarshal(j, &timeslotRequest)
+	err = json.Unmarshal(requestJSON, &timeslotRequest)
 	if err != nil {
-		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
+		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, writer)
 		return
 	}
 
 	if err = timeslotRequest.Validate(); err != nil {
-		ReportError(err, "must set both startTime and endTime", http.StatusBadRequest, w)
+		ReportError(err, "must set both startTime and endTime", http.StatusBadRequest, writer)
 		return
 	}
 
 	startTime, err := time.Parse(db.TimeFormat, *timeslotRequest.StartTime)
 	if err != nil {
 		msg := fmt.Sprintf("start time invalid. please use the format %s", db.TimeFormat)
-		ReportError(err, msg, http.StatusBadRequest, w)
+		ReportError(err, msg, http.StatusBadRequest, writer)
 		return
 	}
 
 	endTime, err := time.Parse(db.TimeFormat, *timeslotRequest.EndTime)
 	if err != nil {
 		msg := fmt.Sprintf("end time invalid. please use the format %s", db.TimeFormat)
-		ReportError(err, msg, http.StatusBadRequest, w)
+		ReportError(err, msg, http.StatusBadRequest, writer)
 		return
 	}
 
-	id, err := t.timeslotWriter.WriteATimeslot(startTime, endTime)
+	id, err := myTimeslotAPI.timeslotWriter.WriteATimeslot(startTime, endTime)
 	if err != nil {
-		ReportError(err, "failed to write a room", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to write a room", http.StatusServiceUnavailable, writer)
 		return
 	}
 
-	writeIDToClient(w, id)
+	writeIDToClient(writer, id)
 }
 
 // UpdateATimeslotRequest request for updateATimeslot
@@ -164,11 +164,11 @@ type UpdateATimeslotRequest struct {
 }
 
 // Validate validates a UpdateATimeslotRequest
-func (r UpdateATimeslotRequest) Validate() error {
-	if r.ID == nil {
+func (request UpdateATimeslotRequest) Validate() error {
+	if request.ID == nil {
 		return ErrInvalidRequest
 	}
-	if r.StartTime == nil || r.EndTime == nil {
+	if request.StartTime == nil || request.EndTime == nil {
 		return ErrInvalidRequest
 	}
 	return nil
@@ -184,49 +184,49 @@ func (r UpdateATimeslotRequest) Validate() error {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslot [put]
-func (t timeslotAPI) updateATimeslot(w http.ResponseWriter, r *http.Request) {
-	j, err := ioutil.ReadAll(r.Body)
+func (myTimeslotAPI timeslotAPI) updateATimeslot(writer http.ResponseWriter, request *http.Request) {
+	requestJSON, err := ioutil.ReadAll(request.Body)
 	if err != nil {
-		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+		ReportError(err, "unable to read body", http.StatusBadRequest, writer)
 		return
 	}
 
 	timeslotRequest := UpdateATimeslotRequest{}
-	err = json.Unmarshal(j, &timeslotRequest)
+	err = json.Unmarshal(requestJSON, &timeslotRequest)
 	if err != nil {
-		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
+		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, writer)
 		return
 	}
 
 	if err = timeslotRequest.Validate(); err != nil {
-		ReportError(err, "must set both startTime and endTime", http.StatusBadRequest, w)
+		ReportError(err, "must set both startTime and endTime", http.StatusBadRequest, writer)
 		return
 	}
 
 	startTime, err := time.Parse(db.TimeFormat, *timeslotRequest.StartTime)
 	if err != nil {
 		msg := fmt.Sprintf("start time invalid. please use the format %s", db.TimeFormat)
-		ReportError(err, msg, http.StatusBadRequest, w)
+		ReportError(err, msg, http.StatusBadRequest, writer)
 		return
 	}
 
 	endTime, err := time.Parse(db.TimeFormat, *timeslotRequest.EndTime)
 	if err != nil {
 		msg := fmt.Sprintf("end time invalid. please use the format %s", db.TimeFormat)
-		ReportError(err, msg, http.StatusBadRequest, w)
+		ReportError(err, msg, http.StatusBadRequest, writer)
 		return
 	}
 
-	err = t.timeslotUpdater.UpdateATimeslot(*timeslotRequest.ID, startTime, endTime)
+	err = myTimeslotAPI.timeslotUpdater.UpdateATimeslot(*timeslotRequest.ID, startTime, endTime)
 	switch err {
 	case nil:
-		w.Write(nil)
+		writer.Write(nil)
 		return
 	case db.ErrNothingChanged:
-		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, writer)
 		return
 	default:
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 }
@@ -246,30 +246,30 @@ type deleteATimeslotRequest struct {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/timeslot [delete]
-func (t timeslotAPI) deleteATimeslot(w http.ResponseWriter, r *http.Request) {
-	requestedID, err := getIDFromQueries(r)
+func (myTimeslotAPI timeslotAPI) deleteATimeslot(writer http.ResponseWriter, request *http.Request) {
+	requestedID, err := getIDFromQueries(request)
 	switch err {
 	case ErrQueryNotSet:
-		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, writer)
 		return
 	case ErrBadQuery:
-		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, writer)
 		return
 	case ErrBadQueryType:
-		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
+		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, writer)
 		return
 	}
 
-	err = t.timeslotDeleter.DeleteATimeslot(requestedID)
+	err = myTimeslotAPI.timeslotDeleter.DeleteATimeslot(requestedID)
 	switch err {
 	case nil:
-		w.Write(nil)
+		writer.Write(nil)
 		return
 	case db.ErrNothingChanged:
-		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, writer)
 		return
 	default:
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 }

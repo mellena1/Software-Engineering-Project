@@ -28,7 +28,7 @@ func main() {
 		app.CreatePrefixedRoutes(swaggerRoute)
 	}
 
-	addr := fmt.Sprintf(":%d", config.Values.Port)
-	log.Printf("Starting the server at %s...", addr)
-	log.Fatal(app.ListenAndServe(addr))
+	address := fmt.Sprintf(":%d", config.Values.Port)
+	log.Printf("Starting the server at %s...", address)
+	log.Fatal(app.ListenAndServe(address))
 }

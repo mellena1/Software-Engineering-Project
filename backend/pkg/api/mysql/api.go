@@ -63,16 +63,16 @@ func NewAPI(mySQLConfig mysqlDriver.Config, logWriter io.Writer) (*API, error) {
 }
 
 // ListenAndServe basically runs http.ListenAndServe
-func (a API) ListenAndServe(addr string) error {
-	return http.ListenAndServe(addr, a.getHandler())
+func (myAPI API) ListenAndServe(address string) error {
+	return http.ListenAndServe(address, myAPI.getHandler())
 }
 
 // Gets the handler for this API
-func (a API) getHandler() http.Handler {
+func (myAPI API) getHandler() http.Handler {
 	// Add logging if there is a logWriter defined
-	var handler http.Handler = a.router
-	if a.logWriter != nil {
-		handler = handlers.LoggingHandler(a.logWriter, a.router)
+	var handler http.Handler = myAPI.router
+	if myAPI.logWriter != nil {
+		handler = handlers.LoggingHandler(myAPI.logWriter, myAPI.router)
 	}
 
 	// Add CORS stuff
@@ -86,28 +86,28 @@ func (a API) getHandler() http.Handler {
 }
 
 // CreateRoutes adds a route(s) to the router
-func (a API) CreateRoutes(route ...api.Route) {
-	for _, r := range route {
-		if len(r.Methods) > 0 {
-			a.router.HandleFunc(r.Path, r.Handler).Methods(r.Methods...)
+func (myAPI API) CreateRoutes(route ...api.Route) {
+	for _, myRoute := range route {
+		if len(myRoute.Methods) > 0 {
+			myAPI.router.HandleFunc(myRoute.Path, myRoute.Handler).Methods(myRoute.Methods...)
 		} else {
-			a.router.HandleFunc(r.Path, r.Handler)
+			myAPI.router.HandleFunc(myRoute.Path, myRoute.Handler)
 		}
 	}
 }
 
 // CreatePrefixedRoutes adds route(s) for a prefix to the router
-func (a API) CreatePrefixedRoutes(route ...api.PrefixedRoute) {
-	for _, r := range route {
-		if len(r.Methods) > 0 {
-			a.router.PathPrefix(r.Path).Handler(r.Handler).Methods(r.Methods...)
+func (myAPI API) CreatePrefixedRoutes(route ...api.PrefixedRoute) {
+	for _, myRoute := range route {
+		if len(myRoute.Methods) > 0 {
+			myAPI.router.PathPrefix(myRoute.Path).Handler(myRoute.Handler).Methods(myRoute.Methods...)
 		} else {
-			a.router.PathPrefix(r.Path).Handler(r.Handler)
+			myAPI.router.PathPrefix(myRoute.Path).Handler(myRoute.Handler)
 		}
 	}
 }
 
 // Close closes the API's db
-func (a API) Close() error {
-	return a.db.Close()
+func (myAPI API) Close() error {
+	return myAPI.db.Close()
 }
