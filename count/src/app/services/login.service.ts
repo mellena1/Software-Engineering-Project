@@ -20,13 +20,17 @@ export class LoginService {
   private apiUrl = environment.apiUrl;
   jsonHeaders = new HttpHeaders().set("Content-Type", "application/json");
 
-  submitLogin(username: string, password: string) {
-    var obj = { username: username, password: password };
+  writeLogin(password: string) {
+    var obj = {password: password };
     return this.http.post<WriteResponse>(this.apiUrl + "/login", obj);
   }
 
   private handleError(res: HttpErrorResponse | any) {
     console.error(res.error || res.body.error);
     return observableThrowError(res.error || "Server error");
+  }
+
+  setCookie(username: string) {
+    document.cookie = "username = " + username;
   }
 }

@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   submitLogin(): void {
     var newUser = new Login(this.login.username, this.login.password);
     this.loginService
-      .submitLogin(this.login.username, this.login.password)
+      .writeLogin(this.login.password)
       .subscribe(
         //response => {} not sure if I have a response here
         error => {
@@ -27,6 +27,7 @@ export class LoginComponent implements OnInit {
           console.log(this.error);
         }
       );
+    this.loginService.setCookie(this.login.username);
   }
 }
 
