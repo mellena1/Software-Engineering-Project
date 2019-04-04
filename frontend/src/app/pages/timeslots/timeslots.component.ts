@@ -9,7 +9,7 @@ import {
   TimeslotInputComponent,
   TimeslotRenderComponent
 } from "../../shared_components";
-import { LocalDataSource, ViewCell } from "ng2-smart-table";
+import { LocalDataSource } from "ng2-smart-table";
 
 @Component({
   selector: "app-timeslots",
