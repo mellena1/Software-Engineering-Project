@@ -6,7 +6,8 @@ import { Ng2SmartTableComponent } from "ng2-smart-table/ng2-smart-table.componen
 import { TableSetting } from "../table_setting";
 import {
   TextRenderComponent,
-  TextInputComponent
+  TextInputComponent,
+  TimeslotRenderComponent
 } from "../../shared_components";
 import { LocalDataSource } from "ng2-smart-table";
 import { Speaker } from "src/app/data_models/speaker";
@@ -33,7 +34,7 @@ export class SessionsComponent implements OnInit {
     room: {
       title: "Room Name",
       valuePrepareFunction: (room) => { 
-        if (room == null) {
+        if (room === null) {
           return ""
         } else {
           return room.name
@@ -64,8 +65,15 @@ export class SessionsComponent implements OnInit {
     },
     timeslot: {
       title: "Timeslot",
+      valuePrepareFunction: (timeslot) => { 
+        if (timeslot == null) {
+          return "";
+        } else {
+          return timeslot.startTime + " " + timeslot.endTime;
+        }
+      },
       type: "custom",
-      renderComponent: TextRenderComponent,
+      renderComponent: TimeslotRenderComponent,
       editor: {
         type: "custom",
         component: TextInputComponent

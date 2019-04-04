@@ -1,18 +1,19 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
-import { Cell, DefaultEditor, Editor } from "ng2-smart-table";
+import { DefaultEditor } from "ng2-smart-table";
 
 @Component({
   template: `
     <input
       type="number"
       [(ngModel)]="stringNumber"
-      style="font-size: 20px;"
+      class="table-text"
     />
     <div [hidden]="true" [innerHTML]="parseToInt()" #htmlValue></div>
-  `
+  `,
+  styleUrls: ["./table.components.css"]
 })
-export class NumberInputComponent extends DefaultEditor {
+export class NumberInputComponent extends DefaultEditor implements OnInit {
   stringNumber: string;
 
   ngOnInit() {

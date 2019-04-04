@@ -1,8 +1,8 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
-import { TimeslotGlobals } from '../globals/timeslot.global';
+import { TimeslotGlobals } from '../../globals/timeslot.global';
 
-import { DefaultEditor, } from "ng2-smart-table";
+import { DefaultEditor } from "ng2-smart-table";
 
 import * as moment from "moment";
 
@@ -11,9 +11,10 @@ import * as moment from "moment";
     <ngb-timepicker *ngIf="timeslotGlobals.twelveHourIsChecked" [(ngModel)]="time" [meridian]=true></ngb-timepicker>
     <ngb-timepicker *ngIf="!timeslotGlobals.twelveHourIsChecked" [(ngModel)]="time" [meridian]=false></ngb-timepicker>
     <div [hidden]="true" [innerHTML]="formatToRFC3331()" #htmlValue></div>
-  `
+  `,
+  styleUrls: ["./table.components.css"]
 })
-export class TimeslotInputComponent extends DefaultEditor {
+export class TimeslotInputComponent extends DefaultEditor implements OnInit {
   time: object;
 
   constructor(private timeslotGlobals: TimeslotGlobals) {
