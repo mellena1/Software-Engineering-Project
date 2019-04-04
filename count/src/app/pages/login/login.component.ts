@@ -11,13 +11,14 @@ import { LoginService } from "src/app/services/login.service";
 export class LoginComponent implements OnInit {
   constructor(private loginService: LoginService) {}
 
-  login = {username: "", password: ""};
+  login = {username: "", password: ""}; //need to work on getting data from form
   error: any;
 
   ngOnInit() { }
 
   submitLogin(): void {
     var newUser = new Login(this.login.username, this.login.password);
+    console.log(newUser);
     this.loginService
       .writeLogin(this.login.password)
       .subscribe(
@@ -29,22 +30,4 @@ export class LoginComponent implements OnInit {
       );
     this.loginService.setCookie(this.login.username);
   }
-}
-
-export function setCookie(username: string, val: string): void {
-  document.cookie = username + "=" + val;
-}
-
-export function getCookie(username: string) {
-  return document.cookie;
-}
-
-export function deleteCookie(username: string) {
-  const date = new Date();
-
-  // Set it expire in -1 days
-  date.setTime(date.getTime() + -1 * 24 * 60 * 60 * 1000);
-
-  // Set it
-  document.cookie = name + "=; expires=" + date.toUTCString();
 }
