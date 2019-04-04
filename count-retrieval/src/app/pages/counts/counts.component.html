@@ -43,9 +43,242 @@
           <button
             type="submit"
             class="btn btn-success btn-sm"
+           
           >
           Submit
           </button>
           </div>
+
+          <div class="table-responsive" ng-app="app-counts" ng-init="getAllSessions()" id="sessions-by-speaker">
+              <form [formGroup]="sessionForm" (ngSubmit)="onSubmit()">
+                <table class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                        <th>Presentation Name</th>
+                        <th>Room Name</th>
+                        <th>Speaker Name</th>
+                        <th>Timeslot</th>
+                        <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td>
+                            <input
+                              type="text"
+                              formControlName="sessionName"
+                              [(ngModel)]="session.name"
+                              class="form-control"
+                              placeholder="Enter Presentation Name"
+                              id="Name"
+                              ngRequired="true"
+                            />
+                          </td>
+          
+                          <td>
+                            <select
+                              formControlName="sessionRoom"
+                              [(ngModel)]="session.room"
+                              class="form-control"
+                              id="Room"
+                              ngRequired="true"
+                            >
+                              <option value="" disabled selected>--Select Room--</option>
+                              <option value=" " label="[N/A]"></option>
+                              <option *ngFor="let room of rooms" [ngValue]="room">{{
+                                room.name
+                              }}</option>
+                            </select>
+                          </td>
+          
+                          <td>
+                            <select
+                              formControlName="sessionSpeaker"
+                              [(ngModel)]="session.speaker"
+                              class="form-control"
+                              id="Speaker"
+                              ngRequired="true"
+                            >
+                              <option value="" disabled selected
+                                >--Select Speaker--</option
+                              >
+                              <option value=" " label="[N/A]"></option>
+                              <option *ngFor="let speaker of speakers" [ngValue]="speaker"
+                                >{{ speaker.firstName }} {{ speaker.lastName }}</option
+                              >
+                            </select>
+                          </td>
+          
+                          <td *ngIf="twelveHourIsChecked">
+                            <select
+                              formControlName="sessionTimeslot"
+                              [(ngModel)]="session.timeslot"
+                              class="form-control"
+                              id="Timeslot"
+                              ngRequired="true"
+                            >
+                              <option value="" disabled selected>--Select Time--</option>
+                              <option value=" " label="[N/A]"></option>
+                              <option
+                                *ngFor="let timeslot of timeslots"
+                                [ngValue]="timeslot"
+                                >{{ makeDate(timeslot.startTime) | date: "h:mma" }} -
+                                {{ makeDate(timeslot.endTime) | date: "h:mma" }}</option
+                              >
+                            </select>
+                          </td>
+          
+                          <td *ngIf="!twelveHourIsChecked">
+                            <select
+                              formControlName="sessionTimeslot"
+                              [(ngModel)]="session.timeslot"
+                              class="form-control"
+                              id="Timeslot"
+                              ngRequired="true"
+                            >
+                              <option value="" disabled selected>--Select Time--</option>
+                              <option value=" " label="[N/A]"></option>
+                              <option
+                                *ngFor="let timeslot of timeslots"
+                                [ngValue]="timeslot"
+                                >{{ makeDate(timeslot.startTime) | date: "HH:mm" }} -
+                                {{ makeDate(timeslot.endTime) | date: "HH:mm" }}</option
+                              >
+                            </select>
+                          </td>
+                        </tr>
+          
+                        <tr *ngFor="let session of sessions">
+                          <td *ngIf="!session.isEditable">
+                            <span>{{ session.name }}</span>
+                          </td>
+          
+                          <td *ngIf="session.isEditable">
+                            <input
+                              type="text"
+                              formControlName="sessionName"
+                              [(ngModel)]="currentSession.name"
+                              class="form-control"
+                              id="Current Name"
+                              value="{{ session.name }}"
+                            />
+                          </td>
+          
+                          <td *ngIf="!session.isEditable">
+                            <span>{{ session.room.name }}</span>
+                          </td>
+          
+                          <td *ngIf="session.isEditable">
+                            <select
+                              formControlName="sessionRoom"
+                              [(ngModel)]="currentSession.room"
+                              class="form-control"
+                              id="Current Room"
+                              value="{{ session.room }}"
+                            >
+                              <option value="" disabled selected>--Select Room--</option>
+                              <option value=" " label="[N/A]"></option>
+                              <option *ngFor="let room of rooms" [ngValue]="room">{{
+                                room.name
+                              }}</option>
+                            </select>
+                          </td>
+          
+                          <td *ngIf="!session.isEditable">
+                            <span
+                              >{{ session.speaker.firstName }}
+                              {{ session.speaker.lastName }}</span
+                            >
+                          </td>
+          
+                          <td *ngIf="session.isEditable">
+                            <select
+                              formControlName="sessionSpeaker"
+                              [(ngModel)]="currentSession.speaker"
+                              class="form-control"
+                              id="Current Speaker"
+                            >
+                              <option value="" disabled selected
+                                >--Select Speaker--</option
+                              >
+                              <option value=" " label="[N/A]"></option>
+                              <option *ngFor="let speaker of speakers" [ngValue]="speaker"
+                                >{{ speaker.firstName }} {{ speaker.lastName }}</option
+                              >
+                            </select>
+                          </td>
+          
+                          <td *ngIf="!session.isEditable && twelveHourIsChecked">
+                            <span
+                              >{{ makeDate(session.timeslot.startTime) | date: "h:mma" }}
+                              -
+                              {{
+                                makeDate(session.timeslot.endTime) | date: "h:mma"
+                              }}</span
+                            >
+                          </td>
+          
+                          <td *ngIf="!session.isEditable && !twelveHourIsChecked">
+                            <span
+                              >{{ makeDate(session.timeslot.startTime) | date: "HH:mm" }}
+                              -
+                              {{
+                                makeDate(session.timeslot.endTime) | date: "HH:mm"
+                              }}</span
+                            >
+                          </td>
+          
+                          <td *ngIf="session.isEditable && !twelveHourIsChecked">
+                            <select
+                              formControlName="sessionTimeslot"
+                              [(ngModel)]="currentSession.timeslot"
+                              class="form-control"
+                              id="Current Timeslot"
+                            >
+                              <option value="" disabled selected>--Select Time--</option>
+                              <option value=" " label="[N/A]"></option>
+                              <option
+                                *ngFor="let timeslot of timeslots"
+                                [ngValue]="timeslot"
+                                >{{ makeDate(timeslot.startTime) | date: "HH:mm" }} -
+                                {{ makeDate(timeslot.endTime) | date: "HH:mm" }}</option
+                              >
+                            </select>
+                          </td>
+          
+                          <td *ngIf="session.isEditable && twelveHourIsChecked">
+                            <select
+                              formControlName="sessionTimeslot"
+                              [(ngModel)]="currentSession.timeslot"
+                              class="form-control"
+                              id="Current Timeslot"
+                            >
+                              <option value="" disabled selected>--Select Time--</option>
+                              <option value=" " label="[N/A]"></option>
+                              <option
+                                *ngFor="let timeslot of timeslots"
+                                [ngValue]="timeslot"
+                                >{{ makeDate(timeslot.startTime) | date: "hh:mma" }} -
+                                {{ makeDate(timeslot.endTime) | date: "hh:mma" }}</option
+                              >
+                            </select>
+                          </td>
+          
+                          
+                        </tr>
+                      </tbody>
+                </table>
+              </form>
+            </div>
+            <script type = "text/javascript">
+            function toggleSessions(){
+              var divToToggle = document.getElementById("sessions-by-speaker");
+              if(divToToggle.style.display === 'none')
+                divToToggle.style.display = 'block';
+               else 
+                divToToggle.style.display ='none';
+              
+            }
+            </script>
     </body>
 </html>
