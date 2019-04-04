@@ -9,6 +9,8 @@ import {
   TextInputComponent
 } from "../../shared_components";
 import { LocalDataSource } from "ng2-smart-table";
+import { Speaker } from "src/app/data_models/speaker";
+import { Room } from "src/app/data_models/room";
 
 @Component({
   selector: "app-sessions",
@@ -30,7 +32,7 @@ export class SessionsComponent implements OnInit {
     },
     room: {
       title: "Room Name",
-      valuePrepareFunction: (room) => { return room.name },
+      valuePrepareFunction: (room: Room) => { return room.name },
       type: "custom",
       renderComponent: TextRenderComponent,
       editor: {
@@ -40,7 +42,7 @@ export class SessionsComponent implements OnInit {
     },
     speaker: {
       title: "Speaker Name",
-      valuePrepareFunction: (speaker) => { return speaker.lastName },
+      valuePrepareFunction: (speaker: Speaker) => { return speaker.lastName },
       type: "custom",
       renderComponent: TextRenderComponent,
       editor: {
