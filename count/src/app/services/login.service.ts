@@ -22,6 +22,7 @@ export class LoginService {
 
   writeLogin(password: string) {
     var obj = { password: password };
+    console.log(obj);
     return this.http.post<WriteResponse>(this.apiUrl + "/login", obj);
   }
 
@@ -31,20 +32,20 @@ export class LoginService {
   }
 
   setCookie(username: string) {
-    document.cookie = "username = " + username;
+    document.cookie = "username = " + "hello";
   }
 
   getCookie() {
     return document.cookie;
   }
 
-  deleteCookie(username: string) {
+  deleteCookie() {
     const date = new Date();
 
     // Set it expire in -1 days
     date.setTime(date.getTime() + -1 * 24 * 60 * 60 * 1000);
 
     // Set it
-    document.cookie = name + "=; expires=" + date.toUTCString();
+    document.cookie = "username=; expires=" + date.toUTCString();
   }
 }

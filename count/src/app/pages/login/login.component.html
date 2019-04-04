@@ -8,7 +8,7 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
-    <title>Login</title>
+    <title>Boston Code Camp Login</title>
   </head>
   <body>
     <div class="container">
@@ -20,52 +20,39 @@
             <tbody>
               <tr>
                 <td>
-                  <h3 style="text-align:center">Login</h3>
+                  <h3 style="text-align:center">Boston Code Camp Login</h3>
                 </td>
               </tr>
 
               <tr>
                 <td>
-                  <div class="container">
-                    <input
-                      class="form-control"
-                      type="text"
-                      name="username"
-                      placeholder="Username"
-                      id="username_input"
-                      required
-                    />
-                    <input
-                      class="form-control"
-                      type="password"
-                      name="password"
-                      placeholder="Password"
-                      required
-                    />
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div class="container" style="text-align:center;">
-                    <div class="btn-group-justified">
-                      <button
-                        type="button"
-                        class="btn btn-primary btn-sm"
-                        (click)="submitLogin(username, password)"
-                      >
-                        Save
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-danger btn-sm"
-                        (click)="cancel(room)"
-                      >
-                        Cancel
-                      </button>
+                  <form [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+                    <div class="form-group">
+                      <label for="usernameInput">Username</label>
+                      <input
+                        type="username"
+                        class="form-control"
+                        id="username"
+                        placeholder="Enter Name"
+                      />
                     </div>
-                  </div>
+                    <div class="form-group">
+                      <label for="passwordInput">Password</label>
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="password"
+                        placeholder="Password"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      class="btn btn-success btn-sm"
+                      ng-disabled="loginForm.$invalid"
+                    >
+                      Login
+                    </button>
+                  </form>
                 </td>
               </tr>
             </tbody>
