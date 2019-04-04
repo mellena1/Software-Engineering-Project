@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 
 import { Ng2SmartTableModule } from "ng2-smart-table";
+import { NgbTimepickerModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from "./app-routing.module";
 
@@ -16,8 +17,11 @@ import { TimeslotsComponent } from "./pages/timeslots/timeslots.component";
 import {
   NumberInputComponent,
   TextRenderComponent,
-  TextInputComponent
+  TextInputComponent,
+  TimeslotRenderComponent,
+  TimeslotInputComponent
 } from "./shared_components";
+import { TimeslotGlobals } from "./globals/timeslot.global";
 
 @NgModule({
   imports: [
@@ -26,7 +30,8 @@ import {
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    Ng2SmartTableModule
+    Ng2SmartTableModule,
+    NgbTimepickerModule
   ],
   declarations: [
     AppComponent,
@@ -36,12 +41,19 @@ import {
     TimeslotsComponent,
     NumberInputComponent,
     TextInputComponent,
-    TextRenderComponent
+    TextRenderComponent,
+    TimeslotRenderComponent,
+    TimeslotInputComponent
   ],
   entryComponents: [
     NumberInputComponent,
     TextInputComponent,
-    TextRenderComponent
+    TextRenderComponent,
+    TimeslotRenderComponent,
+    TimeslotInputComponent
+  ],
+  providers: [
+    TimeslotGlobals
   ],
   bootstrap: [AppComponent]
 })

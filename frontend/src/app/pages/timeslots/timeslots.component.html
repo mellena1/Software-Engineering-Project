@@ -1,4 +1,33 @@
-<!DOCTYPE html>
+<br />
+<h3 style="text-align:center">Timeslots</h3>
+<br />
+
+<input
+  type="radio"
+  name="timeformat"
+  [value]=true
+  (change)="tableDataSource.refresh()"
+  [(ngModel)]="timeslotGlobals.twelveHourIsChecked"
+/> 12 Hour
+
+<input
+  type="radio"
+  name="timeformat"
+  [value]=false
+  (change)="tableDataSource.refresh()"
+  [(ngModel)]="timeslotGlobals.twelveHourIsChecked"
+/> 24 Hour
+
+<ng2-smart-table
+  #table
+  [settings]="tableSettings.settings"
+  [source]="tableDataSource"
+  (createConfirm)="addATimeslot($event)"
+  (editConfirm)="updateTimeslot($event)"
+  (deleteConfirm)="deleteTimeslot($event)"
+></ng2-smart-table>
+
+<!-- <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -577,4 +606,4 @@
       </div>
     </div>
   </body>
-</html>
+</html> -->

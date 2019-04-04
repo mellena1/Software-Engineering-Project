@@ -90,11 +90,13 @@ export class RoomsComponent implements OnInit {
 
   deleteRoom(event): void {
     this.roomService.deleteRoom(event.data.id).subscribe(
-      () => {},
+      () => {
+        event.confirm.resolve();
+      },
       error => {
         console.log(error);
+        event.confirm.reject();
       }
     );
-    event.confirm.resolve();
   }
 }
