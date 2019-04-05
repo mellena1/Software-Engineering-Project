@@ -28,6 +28,7 @@ func CreateCountRoutes(countDBFacade db.CountReaderWriterUpdaterDeleter) []Route
 	routes := []Route{
 		NewRoute("/api/v1/counts", cAPI.getAllCounts, "GET"),
 		NewRoute("/api/v1/count", cAPI.getCountsOfSession, "GET"),
+		NewRoute("/api/v1/countsBySpeaker", cAPI.getCountsBySpeaker, "GET"),
 		NewRoute("/api/v1/count", cAPI.writeACount, "POST"),
 		NewRoute("/api/v1/count", cAPI.updateACount, "PUT"),
 		NewRoute("/api/v1/count", cAPI.deleteACount, "DELETE"),
@@ -86,6 +87,41 @@ func (c countAPI) getCountsOfSession(w http.ResponseWriter, r *http.Request) {
 
 	responseJSON, _ := json.Marshal(count)
 	w.Write(responseJSON)
+}
+
+// getAllCounts Get all counts from the db, sorted by speaker
+// @Summary Get all counts from the db, sorted by speaker
+// @Description Get all counts from the db, sorted by speaker
+// @produce json
+// @Success 200 {array} db.Count "all counts in the db"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
+// @Router /api/v1/countsBySpeaker [get]
+func (myCountAPI countAPI) getCountsBySpeaker(writer http.ResponseWriter, request *http.Request) {
+	countsBySpeakerData, err := myCountAPI.countReader.ReadAllCountsBySpeaker()
+	if err != nil {
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
+		return
+	}
+
+	// Making a map of sessions to timeslots, where the key is just the time of the session (i.e 12:00 to 1:00)
+
+	countsBySessionBySpeaker := make(map[string][](map[string][]db.Count))
+	for _, data := range countsBySpeakerData {
+		countsBySession := make(map[string][]db.Count)
+
+		speakerKey := *data.SpeakerFirstName + " " + *data.SpeakerLastName
+		sessionKey := *data.SessionName
+
+		count := db.NewCount()
+		count.Time, count.SessionID, count.UserName, count.Count = data.Time, data.SessionID, data.UserName, data.Count
+
+		countsBySession[sessionKey] = append(countsBySession[sessionKey], count)
+		countsBySessionBySpeaker[speakerKey] = append(countsBySessionBySpeaker[speakerKey], countsBySession)
+	}
+
+	responseJSON, _ := json.Marshal(countsBySessionBySpeaker)
+	writer.Write(responseJSON)
 }
 
 // writeACountRequest request for writeACount
