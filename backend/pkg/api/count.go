@@ -106,7 +106,9 @@ func (myCountAPI countAPI) getCountsBySpeaker(writer http.ResponseWriter, reques
 
 	// Making a map of sessions to timeslots, where the key is just the time of the session (i.e 12:00 to 1:00)
 
-	countsBySessionBySpeaker := make(map[string][](map[string][]db.Count))
+	countsBySessionBySpeaker := make(map[string](map[string][]db.Count))
+
+	//globalArray := make(map[string][]db.Count)
 	for _, data := range countsBySpeakerData {
 		countsBySession := make(map[string][]db.Count)
 
@@ -116,8 +118,14 @@ func (myCountAPI countAPI) getCountsBySpeaker(writer http.ResponseWriter, reques
 		count := db.NewCount()
 		count.Time, count.SessionID, count.UserName, count.Count = data.Time, data.SessionID, data.UserName, data.Count
 
-		countsBySession[sessionKey] = append(countsBySession[sessionKey], count)
-		countsBySessionBySpeaker[speakerKey] = append(countsBySessionBySpeaker[speakerKey], countsBySession)
+		if countsBySessionBySpeaker[speakerKey] == nil {
+			countsBySession[sessionKey] = append(countsBySession[sessionKey], count)
+			countsBySessionBySpeaker[speakerKey] = countsBySession
+		} else {
+			countsBySessionBySpeaker[speakerKey][sessionKey] = append(countsBySessionBySpeaker[speakerKey][sessionKey], count)
+
+		}
+
 	}
 
 	responseJSON, _ := json.Marshal(countsBySessionBySpeaker)
