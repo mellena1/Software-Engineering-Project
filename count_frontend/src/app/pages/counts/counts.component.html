@@ -1,14 +1,17 @@
 <p></p>
 <ul *ngIf="!sessionIsClicked">
   <li *ngFor="let item of (sessionsMap | keyvalue)">
-    <b><u>{{ item.key }}</u></b>
+    <b
+      ><u>{{ item.key }}</u></b
+    >
     <table>
-    <tr *ngFor="let session of item.value">
-      <td (click)="goToCount(session)">
-        <a>{{ session.name }}</a>
-      </td>
-    </tr>
+      <tr *ngFor="let session of item.value">
+        <td (click)="goToCount(session)">
+          <a>{{ session.name }}</a>
+        </td>
+      </tr>
     </table>
+
     <p></p>
   </li>
 </ul>
