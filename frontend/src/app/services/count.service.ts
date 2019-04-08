@@ -32,6 +32,11 @@ export class CountService {
     });
   }
 
+  getCountsBySpeaker(speakerName: string){
+    var params = new HttpParams().set("firstName", speakerName);
+    return this.http.get<Count[]>(this.apiUrl + "/countsBySpeaker")
+  }
+
   writeACount(count: Count) {
     return this.http.post<WriteResponse>(this.apiUrl + "/count", count);
   }

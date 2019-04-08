@@ -29,7 +29,7 @@
        <button
         type="submit"
         class="btn btn-success btn-sm"
-        (click)="showSpeaker(speaker)"
+        (click)="toggle()"
       >
       Submit
       </button>
@@ -43,13 +43,13 @@
           <button
             type="submit"
             class="btn btn-success btn-sm"
-            data-toggle="collapse" data-target="#sessions-by-speaker" aria-expanded="false" aria-controls="sessions-by-speaker"
+            (click)="toggle()"
           >
           Submit
           </button>
           </div>
 
-          <div class="table-responsive" ng-app="app-counts"  id="sessions-by-speaker" ng-show="showDetails">
+          <div class="table-responsive" ng-app = counts  *ngIf= "buttonPressed">
               <form [formGroup]="sessionForm">
                 <table class="table table-bordered table-striped">
                   <thead>
@@ -61,22 +61,10 @@
                     </tr>
                   </thead>
                   <tbody>
-                     
-                          
                         
-                      </tbody>
+                  </tbody>
                 </table>
               </form>
             </div>
-            <script type = "text/javascript">
-            function toggleSessions(){
-              var divToToggle = document.getElementById("sessions-by-speaker");
-              if(divToToggle.style.display === 'none')
-                divToToggle.style.display = 'block';
-               else 
-                divToToggle.style.display ='none';
-              
-            }
-            </script>
     </body>
 </html>

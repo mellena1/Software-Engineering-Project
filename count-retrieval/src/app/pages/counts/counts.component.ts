@@ -13,6 +13,7 @@ import { Session } from "../../data_models/session";
   selector: 'app-counts',
   templateUrl: './counts.component.html',
   styleUrls: ['./counts.component.css']
+
 })
 
 export class CountsComponent implements OnInit {
@@ -25,6 +26,7 @@ export class CountsComponent implements OnInit {
   speakers: Speaker[];
   sessions: Session[];
   error: any;
+  buttonPressed: boolean = false;
 
 ngOnInit() {
   this.getAllSpeakers();
@@ -47,6 +49,14 @@ getAllSpeakers(): void {
         speakers => (this.speakers = speakers),
         error => (this.error = error)
       );
+}
+
+toggle(): void{
+  if(this.buttonPressed){
+    this.buttonPressed = false;
+  } else {
+    this.buttonPressed = true;
+  }
 }
 
 }
