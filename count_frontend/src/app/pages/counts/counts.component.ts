@@ -8,7 +8,8 @@ import { Session } from "src/app/data_models/session";
 
 @Component({
   selector: "app-counts",
-  templateUrl: "./counts.component.html"
+  templateUrl: "./counts.component.html",
+  styleUrls: ["./counts.component.css"]
 })
 export class CountsComponent implements OnInit {
   constructor(
