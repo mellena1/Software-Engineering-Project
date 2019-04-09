@@ -28,7 +28,7 @@ INSERT INTO session (`speakerID`, `roomID`, `timeslotID`, `sessionName`) VALUES
                     (5, 3, 2, 'RobinsonServices'), 
                     (3, 2, 1, 'Connected Devices'),
                     (4, 3, 2, 'Exploring Blockchain'),
-                    (5, 4, 3, 'Bet You Didt Think');          
+                    (5, 4, 3, 'Bet You Didnt Think');          
                             
 
 INSERT INTO count (`time`, `sessionID`, `userName`, `count`) VALUES

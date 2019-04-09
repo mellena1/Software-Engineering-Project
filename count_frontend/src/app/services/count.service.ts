@@ -1,13 +1,12 @@
 import { Injectable } from "@angular/core";
 import {
   HttpClient,
-  HttpHeaders,
   HttpErrorResponse,
   HttpParams
 } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { throwError as observableThrowError } from "rxjs";
-import { Count } from "../data_models/count";
+import { Count, time } from "../data_models/count";
 import { catchError, map } from "rxjs/operators";
 import { WriteResponse } from "./writeResponse";
 
@@ -32,11 +31,17 @@ export class CountService {
     });
   }
 
-  writeACount(count: Count) {
-    return this.http.post<WriteResponse>(this.apiUrl + "/count", count);
+  writeACount(sessionID: number, count: Count) {
+    var obj = {
+      sessionID: sessionID,
+      count: count.count,
+      time: count.time,
+      userName: count.userName
+    };
+    return this.http.post<WriteResponse>(this.apiUrl + "/count", obj);
   }
 
-  updateCount(count: Count) {
+  updateCount(sessionID: number, count: Count) {
     return this.http.put(this.apiUrl + "/count", count);
   }
 

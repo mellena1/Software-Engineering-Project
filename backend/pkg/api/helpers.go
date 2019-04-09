@@ -7,17 +7,15 @@ import (
 	"strconv"
 )
 
-// ReportError logs the error and respond with message
-func ReportError(err error, msg string, httpStatusCode int, w http.ResponseWriter) {
-	w.WriteHeader(httpStatusCode)
-	jsonMsg, _ := json.Marshal(msg)
-	w.Write(jsonMsg)
-	log.Printf("%s, %v\n", msg, err)
+func ReportError(err error, message string, httpStatusCode int, writer http.ResponseWriter) {
+	writer.WriteHeader(httpStatusCode)
+	jsonMessage, _ := json.Marshal(message)
+	writer.Write(jsonMessage)
+	log.Printf("%s, %v\n", message, err)
 }
 
-// getIDFromQueries given an http.Request, return back the id key as an int64
-func getIDFromQueries(r *http.Request) (int64, error) {
-	queries := r.URL.Query()
+func getIDFromQueries(request *http.Request) (int64, error) {
+	queries := request.URL.Query()
 	requestedIDArray, ok := queries["id"]
 	if !ok || len(requestedIDArray) < 1 {
 		return 0, ErrQueryNotSet
@@ -31,9 +29,8 @@ func getIDFromQueries(r *http.Request) (int64, error) {
 	return int64(requestedID), nil
 }
 
-// writeIDToClient writes the id back to the client as JSON
-func writeIDToClient(w http.ResponseWriter, id int64) {
+func writeIDToClient(writer http.ResponseWriter, id int64) {
 	response := map[string]int64{"id": id}
 	responseJSON, _ := json.Marshal(response)
-	w.Write(responseJSON)
+	writer.Write(responseJSON)
 }

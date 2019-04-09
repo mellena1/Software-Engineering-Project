@@ -4,6 +4,6 @@ package api
 type API interface {
 	CreateRoutes(route ...Route)
 	CreatePrefixedRoutes(route ...PrefixedRoute)
-	ListenAndServe(addr string) error
+	ListenAndServe(address string) error
 	Close() error
 }

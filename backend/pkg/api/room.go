@@ -8,7 +8,6 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
-// roomAPI holds all of the api functions related to Rooms and all of the variables needed to access the backend
 type roomAPI struct {
 	roomReader  db.RoomReader
 	roomWriter  db.RoomWriter
@@ -18,7 +17,7 @@ type roomAPI struct {
 
 // CreateRoomRoutes makes all of the routes for room related calls
 func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
-	roomAPI := roomAPI{
+	myRoomAPI := roomAPI{
 		roomReader:  roomDBFacade,
 		roomWriter:  roomDBFacade,
 		roomUpdater: roomDBFacade,
@@ -26,37 +25,37 @@ func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 	}
 
 	routes := []Route{
-		NewRoute("/api/v1/rooms", roomAPI.getAllRooms, "GET"),
-		NewRoute("/api/v1/room", roomAPI.getARoom, "GET"),
-		NewRoute("/api/v1/room", roomAPI.writeARoom, "POST"),
-		NewRoute("/api/v1/room", roomAPI.updateARoom, "PUT"),
-		NewRoute("/api/v1/room", roomAPI.deleteARoom, "DELETE"),
+		NewRoute("/api/v1/rooms", myRoomAPI.getAllRooms, "GET"),
+		NewRoute("/api/v1/room", myRoomAPI.getARoom, "GET"),
+		NewRoute("/api/v1/room", myRoomAPI.writeARoom, "POST"),
+		NewRoute("/api/v1/room", myRoomAPI.updateARoom, "PUT"),
+		NewRoute("/api/v1/room", myRoomAPI.deleteARoom, "DELETE"),
 	}
 
 	return routes
 }
 
 // getAllRooms Gets all rooms from the db
-// @Summary Get all rooms
+// @Summary Get all rooms room from the db
 // @Description Return a list of all rooms
 // @Produce json
 // @Success 200 {array} db.Room
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/rooms [get]
-func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
-	rooms, err := a.roomReader.ReadAllRooms()
+func (myRoomAPI roomAPI) getAllRooms(writer http.ResponseWriter, request *http.Request) {
+	rooms, err := myRoomAPI.roomReader.ReadAllRooms()
 	if err != nil {
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 
-	j, _ := json.Marshal(rooms)
-	w.Write(j)
+	responseJSON, _ := json.Marshal(rooms)
+	writer.Write(responseJSON)
 }
 
-// getRoom Gets all rooms from the db
-// @Summary Get a room
+// getRoom Gets a room from the db given a specific roomID
+// @Summary Gets a room from the db given a specific roomID
 // @Description Returns a room
 // @param id query int true "the room to retrieve"
 // @Produce json
@@ -64,28 +63,28 @@ func (a roomAPI) getAllRooms(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/room [get]
-func (a roomAPI) getARoom(w http.ResponseWriter, r *http.Request) {
-	requestedID, err := getIDFromQueries(r)
+func (myRoomAPI roomAPI) getARoom(writer http.ResponseWriter, request *http.Request) {
+	requestedID, err := getIDFromQueries(request)
 	switch err {
 	case ErrQueryNotSet:
-		ReportError(err, "the \"id\" param was not set", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param was not set", http.StatusBadRequest, writer)
 		return
 	case ErrBadQuery:
-		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, writer)
 		return
 	case ErrBadQueryType:
-		ReportError(err, "the \"id\" param is not a number", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param is not a number", http.StatusBadRequest, writer)
 		return
 	}
 
-	room, err := a.roomReader.ReadARoom(requestedID)
+	room, err := myRoomAPI.roomReader.ReadARoom(requestedID)
 	if err != nil {
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 
-	j, _ := json.Marshal(room)
-	w.Write(j)
+	responseJSON, _ := json.Marshal(room)
+	writer.Write(responseJSON)
 }
 
 // WriteARoomRequest request for writeARoom
@@ -95,8 +94,8 @@ type WriteARoomRequest struct {
 }
 
 // Validate validates a WriteARoomRequest
-func (r WriteARoomRequest) Validate() error {
-	if r.Name == "" {
+func (request WriteARoomRequest) Validate() error {
+	if request.Name == "" {
 		return ErrInvalidRequest
 	}
 	return nil
@@ -112,32 +111,32 @@ func (r WriteARoomRequest) Validate() error {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/room [post]
-func (a roomAPI) writeARoom(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
+func (myRoomAPI roomAPI) writeARoom(writer http.ResponseWriter, request *http.Request) {
+	body, err := ioutil.ReadAll(request.Body)
 	if err != nil {
-		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+		ReportError(err, "unable to read body", http.StatusBadRequest, writer)
 		return
 	}
 
 	roomRequest := WriteARoomRequest{}
 	err = json.Unmarshal(body, &roomRequest)
 	if err != nil {
-		ReportError(err, "failed to unmarshal json", http.StatusBadRequest, w)
+		ReportError(err, "failed to unmarshal json", http.StatusBadRequest, writer)
 		return
 	}
 
 	if err = roomRequest.Validate(); err != nil {
-		ReportError(err, "must set name for a room", http.StatusBadRequest, w)
+		ReportError(err, "must set name for a room", http.StatusBadRequest, writer)
 		return
 	}
 
-	id, err := a.roomWriter.WriteARoom(roomRequest.Name, roomRequest.Capacity)
+	id, err := myRoomAPI.roomWriter.WriteARoom(roomRequest.Name, roomRequest.Capacity)
 	if err != nil {
-		ReportError(err, "failed to write a room", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to write a room", http.StatusServiceUnavailable, writer)
 		return
 	}
 
-	writeIDToClient(w, id)
+	writeIDToClient(writer, id)
 }
 
 // UpdateARoomRequest request for updateARoom
@@ -148,8 +147,8 @@ type UpdateARoomRequest struct {
 }
 
 // Validate validates a UpdateARoomRequest
-func (r UpdateARoomRequest) Validate() error {
-	if r.Name == "" || r.ID == nil {
+func (request UpdateARoomRequest) Validate() error {
+	if request.Name == "" || request.ID == nil {
 		return ErrInvalidRequest
 	}
 	return nil
@@ -166,35 +165,35 @@ func (r UpdateARoomRequest) Validate() error {
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/room [PUT]
 // @Param room body api.UpdateARoomRequest true "Room to update"
-func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
+func (myRoomAPI roomAPI) updateARoom(writer http.ResponseWriter, request *http.Request) {
+	body, err := ioutil.ReadAll(request.Body)
 	if err != nil {
-		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+		ReportError(err, "unable to read body", http.StatusBadRequest, writer)
 		return
 	}
 
 	updateRequest := UpdateARoomRequest{}
 	err = json.Unmarshal(body, &updateRequest)
 	if err != nil {
-		ReportError(err, "failed to unmarshal json", http.StatusBadRequest, w)
+		ReportError(err, "failed to unmarshal json", http.StatusBadRequest, writer)
 		return
 	}
 
 	if err = updateRequest.Validate(); err != nil {
-		ReportError(err, "must set name for a room and pass an ID", http.StatusBadRequest, w)
+		ReportError(err, "must set name for a room and pass an ID", http.StatusBadRequest, writer)
 		return
 	}
 
-	err = a.roomUpdater.UpdateARoom(*updateRequest.ID, updateRequest.Name, updateRequest.Capacity)
+	err = myRoomAPI.roomUpdater.UpdateARoom(*updateRequest.ID, updateRequest.Name, updateRequest.Capacity)
 	switch err {
 	case nil:
-		w.Write(nil)
+		writer.Write(nil)
 		return
 	case db.ErrNothingChanged:
-		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, writer)
 		return
 	default:
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 }
@@ -209,30 +208,30 @@ func (a roomAPI) updateARoom(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/room [delete]
-func (a roomAPI) deleteARoom(w http.ResponseWriter, r *http.Request) {
-	requestedID, err := getIDFromQueries(r)
+func (myRoomAPI roomAPI) deleteARoom(writer http.ResponseWriter, request *http.Request) {
+	requestedID, err := getIDFromQueries(request)
 	switch err {
 	case ErrQueryNotSet:
-		ReportError(err, "the \"id\" param was not set", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param was not set", http.StatusBadRequest, writer)
 		return
 	case ErrBadQuery:
-		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, writer)
 		return
 	case ErrBadQueryType:
-		ReportError(err, "the \"id\" param is not a number", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param is not a number", http.StatusBadRequest, writer)
 		return
 	}
 
-	err = a.roomDeleter.DeleteARoom(requestedID)
+	err = myRoomAPI.roomDeleter.DeleteARoom(requestedID)
 	switch err {
 	case nil:
-		w.Write(nil)
+		writer.Write(nil)
 		return
 	case db.ErrNothingChanged:
-		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, writer)
 		return
 	default:
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 }

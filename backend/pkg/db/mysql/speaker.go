@@ -25,18 +25,18 @@ func scanASpeaker(speaker *db.Speaker, row rowScanner) error {
 }
 
 // ReadASpeaker reads a speaker from the db given email
-func (s SpeakerMySQL) ReadASpeaker(speakerID int64) (db.Speaker, error) {
-	if s.db == nil {
+func (mySpeakerSQL SpeakerMySQL) ReadASpeaker(speakerID int64) (db.Speaker, error) {
+	if mySpeakerSQL.db == nil {
 		return db.Speaker{}, ErrDBNotSet
 	}
 
-	stmt, err := s.db.Prepare("SELECT speakerID, email, firstName, lastName FROM speaker where speakerID = ?;")
+	statement, err := mySpeakerSQL.db.Prepare("SELECT speakerID, email, firstName, lastName FROM speaker where speakerID = ?;")
 	if err != nil {
 		return db.Speaker{}, err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	row := stmt.QueryRow(speakerID)
+	row := statement.QueryRow(speakerID)
 
 	speaker := db.NewSpeaker()
 	err = scanASpeaker(&speaker, row)
@@ -45,14 +45,14 @@ func (s SpeakerMySQL) ReadASpeaker(speakerID int64) (db.Speaker, error) {
 }
 
 // ReadAllSpeakers reads all speakers from the db
-func (s SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
-	if s.db == nil {
+func (mySpeakerSQL SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
+	if mySpeakerSQL.db == nil {
 		return nil, ErrDBNotSet
 	}
 
-	q := "SELECT speakerID, email, firstName, lastName FROM speaker;"
+	query := "SELECT speakerID, email, firstName, lastName FROM speaker;"
 
-	rows, err := s.db.Query(q)
+	rows, err := mySpeakerSQL.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -74,18 +74,18 @@ func (s SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
 }
 
 // WriteASpeaker writes a speaker to the db
-func (s SpeakerMySQL) WriteASpeaker(email *string, firstName *string, lastName *string) (int64, error) {
-	if s.db == nil {
+func (mySpeakerSQL SpeakerMySQL) WriteASpeaker(email *string, firstName *string, lastName *string) (int64, error) {
+	if mySpeakerSQL.db == nil {
 		return 0, ErrDBNotSet
 	}
 
-	stmt, err := s.db.Prepare("INSERT INTO speaker (`email`, `firstName`, `lastName`) VALUES (?, ?, ?);")
+	statement, err := mySpeakerSQL.db.Prepare("INSERT INTO speaker (`email`, `firstName`, `lastName`) VALUES (?, ?, ?);")
 	if err != nil {
 		return 0, err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	result, err := stmt.Exec(StringToNullString(email), StringToNullString(firstName), StringToNullString(lastName))
+	result, err := statement.Exec(StringToNullString(email), StringToNullString(firstName), StringToNullString(lastName))
 	if err != nil {
 		return 0, err
 	}
@@ -94,18 +94,18 @@ func (s SpeakerMySQL) WriteASpeaker(email *string, firstName *string, lastName *
 }
 
 // UpdateASpeaker updates a speaker in the db given an email and the updated speaker
-func (s SpeakerMySQL) UpdateASpeaker(id int64, email *string, firstName *string, lastName *string) error {
-	if s.db == nil {
+func (mySpeakerSQL SpeakerMySQL) UpdateASpeaker(id int64, email *string, firstName *string, lastName *string) error {
+	if mySpeakerSQL.db == nil {
 		return ErrDBNotSet
 	}
 
-	stmt, err := s.db.Prepare("UPDATE speaker SET email = ?, firstName = ?, lastName = ? WHERE speakerID = ?;")
+	statement, err := mySpeakerSQL.db.Prepare("UPDATE speaker SET email = ?, firstName = ?, lastName = ? WHERE speakerID = ?;")
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	result, err := stmt.Exec(StringToNullString(email), StringToNullString(firstName), StringToNullString(lastName), id)
+	result, err := statement.Exec(StringToNullString(email), StringToNullString(firstName), StringToNullString(lastName), id)
 	if err != nil {
 		return err
 	}
@@ -120,18 +120,18 @@ func (s SpeakerMySQL) UpdateASpeaker(id int64, email *string, firstName *string,
 }
 
 // DeleteASpeaker deletes a speaker given an email
-func (s SpeakerMySQL) DeleteASpeaker(id int64) error {
-	if s.db == nil {
+func (mySpeakerSQL SpeakerMySQL) DeleteASpeaker(id int64) error {
+	if mySpeakerSQL.db == nil {
 		return ErrDBNotSet
 	}
 
-	stmt, err := s.db.Prepare("DELETE FROM speaker WHERE speakerID = ?;")
+	statement, err := mySpeakerSQL.db.Prepare("DELETE FROM speaker WHERE speakerID = ?;")
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	result, err := stmt.Exec(id)
+	result, err := statement.Exec(id)
 	if err != nil {
 		return err
 	}
