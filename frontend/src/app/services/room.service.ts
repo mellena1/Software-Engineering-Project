@@ -6,7 +6,7 @@ import {
   HttpParams
 } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { throwError as observableThrowError } from "rxjs";
+import { throwError as observableThrowError, Observable } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 import { Room } from "../data_models/room";
@@ -19,30 +19,29 @@ export class RoomService {
   constructor(private http: HttpClient) {}
   private apiUrl = environment.apiUrl;
 
-  getAllRooms() {
-    return this.http.get<Room[]>(this.apiUrl + "/rooms").pipe(
-      map(data => data),
-      catchError(this.handleError)
-    );
+  getAllRooms(): Observable<Room[]> {
+    return this.http
+      .get<Room[]>(this.apiUrl + "/rooms")
+      .pipe(catchError(this.handleError));
   }
 
-  getARoom(id: number) {
+  getARoom(id: number): Observable<Room> {
     var params = new HttpParams().set("id", id.toString());
     return this.http.get<Room>(this.apiUrl + "/room", {
       params: params
     });
   }
 
-  writeRoom(name: string, capacity: number) {
+  writeRoom(name: string, capacity: number): Observable<WriteResponse> {
     var obj = { name: name, capacity: capacity };
     return this.http.post<WriteResponse>(this.apiUrl + "/room", obj);
   }
 
-  updateRoom(updatedRoom: Room) {
+  updateRoom(updatedRoom: Room): Observable<any> {
     return this.http.put(this.apiUrl + "/room", updatedRoom);
   }
 
-  deleteRoom(id: number) {
+  deleteRoom(id: number): Observable<any> {
     var params = new HttpParams().set("id", id.toString());
     return this.http.delete(this.apiUrl + "/room", {
       params: params

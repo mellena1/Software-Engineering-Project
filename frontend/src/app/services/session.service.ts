@@ -20,14 +20,14 @@ export class SessionService {
   private apiUrl = environment.apiUrl;
   jsonHeaders = new HttpHeaders().set("Content-Type", "application/json");
 
-  getAllSessions() {
+  getAllSessions(): Observable<Session[]> {
     return this.http.get<Session[]>(this.apiUrl + "/sessions").pipe(
       map(data => data),
       catchError(this.handleError)
     );
   }
 
-  getSession(id: number) {
+  getSession(id: number): Observable<Session> {
     var params = new HttpParams().set("id", id.toString());
     return this.http.get<Session>(this.apiUrl + "/session", {
       params: params
@@ -39,7 +39,7 @@ export class SessionService {
     roomID: number,
     speakerID: number,
     timeslotID: number
-  ) {
+  ): Observable<WriteResponse> {
     var obj = {
       sessionName: name,
       roomID: roomID,
@@ -49,7 +49,7 @@ export class SessionService {
     return this.http.post<WriteResponse>(this.apiUrl + "/session", obj);
   }
 
-  updateSession(updatedSession: Session) {
+  updateSession(updatedSession: Session): Observable<any> {
     var obj = {
       roomID: updatedSession.room.id,
       sessionID: updatedSession.id,
@@ -60,7 +60,7 @@ export class SessionService {
     return this.http.put(this.apiUrl + "/session", obj);
   }
 
-  deleteSession(id: number) {
+  deleteSession(id: number): Observable<any> {
     var params = new HttpParams().set("id", id.toString());
     return this.http.delete(this.apiUrl + "/session", {
       params: params

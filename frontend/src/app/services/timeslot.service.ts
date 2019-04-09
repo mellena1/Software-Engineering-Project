@@ -20,26 +20,26 @@ export class TimeslotService {
   private apiUrl = environment.apiUrl;
   jsonHeaders = new HttpHeaders().set("Content-Type", "application/json");
 
-  getAllTimeslots() {
+  getAllTimeslots(): Observable<Timeslot[]> {
     return this.http.get<Timeslot[]>(this.apiUrl + "/timeslots").pipe(
       map(timeslots => timeslots),
       catchError(this.handleError)
     );
   }
 
-  getTimeslot(id: number) {
+  getTimeslot(id: number): Observable<Timeslot> {
     var params = new HttpParams().set("id", id.toString());
     return this.http.get<Timeslot>(this.apiUrl + "/timeslot", {
       params: params
     });
   }
 
-  writeTimeslot(startTime: string, endTime: string) {
+  writeTimeslot(startTime: string, endTime: string): Observable<WriteResponse> {
     var obj = { startTime: startTime, endTime: endTime };
     return this.http.post<WriteResponse>(this.apiUrl + "/timeslot", obj);
   }
 
-  updateTimeslot(updatedTimeslot: Timeslot) {
+  updateTimeslot(updatedTimeslot: Timeslot): Observable<any> {
     var obj = {
       id: updatedTimeslot.id,
       startTime: updatedTimeslot.startTime,
@@ -48,7 +48,7 @@ export class TimeslotService {
     return this.http.put(this.apiUrl + "/timeslot", obj);
   }
 
-  deleteTimeslot(id: number) {
+  deleteTimeslot(id: number): Observable<any> {
     var params = new HttpParams().set("id", id.toString());
     return this.http.delete(this.apiUrl + "/timeslot", {
       params: params
