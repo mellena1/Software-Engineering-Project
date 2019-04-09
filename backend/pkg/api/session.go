@@ -19,7 +19,7 @@ type sessionAPI struct {
 
 // CreateSessionRoutes makes all of the routes for session related calls
 func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) []Route {
-	sessAPI := sessionAPI{
+	mySessionAPI := sessionAPI{
 		sessionReader:  sessionDBFacade,
 		sessionWriter:  sessionDBFacade,
 		sessionUpdater: sessionDBFacade,
@@ -27,68 +27,68 @@ func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) [
 	}
 
 	routes := []Route{
-		NewRoute("/api/v1/session", sessAPI.getASession, "GET"),
-		NewRoute("/api/v1/sessions", sessAPI.getAllSessions, "GET"),
-		NewRoute("/api/v1/session", sessAPI.writeASession, "POST"),
-		NewRoute("/api/v1/session", sessAPI.updateASession, "PUT"),
-		NewRoute("/api/v1/session", sessAPI.deleteASession, "DELETE"),
-		NewRoute("/api/v1/sessionsBySpeaker", sessAPI.getAllSessionsBySpeaker, "GET"),
-		NewRoute("/api/v1/sessionsByTimeslot", sessAPI.getAllSessionsByTimeslot, "GET"),
+		NewRoute("/api/v1/session", mySessionAPI.getASession, "GET"),
+		NewRoute("/api/v1/sessions", mySessionAPI.getAllSessions, "GET"),
+		NewRoute("/api/v1/session", mySessionAPI.writeASession, "POST"),
+		NewRoute("/api/v1/session", mySessionAPI.updateASession, "PUT"),
+		NewRoute("/api/v1/session", mySessionAPI.deleteASession, "DELETE"),
+		NewRoute("/api/v1/sessionsBySpeaker", mySessionAPI.getAllSessionsBySpeaker, "GET"),
+		NewRoute("/api/v1/sessionsByTimeslot", mySessionAPI.getAllSessionsByTimeslot, "GET"),
 	}
 
 	return routes
 }
 
-// getASession Gets a session from the db
-// @Summary Get a session
-// @Description Return a session
+// getASession Gets a session from the db given a specified sessionID
+// @Summary Gets a session from the db given a specified sessionID
+// @Description Gets a session from the db given a specified sessionID
 // @Produce json
 // @param id query int true "the session to retrieve"
 // @Success 200 {object} db.Session
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/session [get]
-func (s sessionAPI) getASession(w http.ResponseWriter, r *http.Request) {
-	requestedID, err := getIDFromQueries(r)
+func (mySessionAPI sessionAPI) getASession(writer http.ResponseWriter, request *http.Request) {
+	requestedID, err := getIDFromQueries(request)
 	switch err {
 	case ErrQueryNotSet:
-		ReportError(err, "the \"id\" param was not set", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param was not set", http.StatusBadRequest, writer)
 		return
 	case ErrBadQuery:
-		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, writer)
 		return
 	case ErrBadQueryType:
-		ReportError(err, "the \"id\" param is not a number", http.StatusBadRequest, w)
+		ReportError(err, "the \"id\" param is not a number", http.StatusBadRequest, writer)
 		return
 	}
 
-	session, err := s.sessionReader.ReadASession(requestedID)
+	session, err := mySessionAPI.sessionReader.ReadASession(requestedID)
 	if err != nil {
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 
-	j, _ := json.Marshal(session)
-	w.Write(j)
+	responseJSON, _ := json.Marshal(session)
+	writer.Write(responseJSON)
 }
 
 // getAllSessions Gets all sessions from the db
-// @Summary Get all sessions
+// @Summary Gets all sessions from the db
 // @Description Return a list of all sessions
 // @Produce json
 // @Success 200 {array} db.Session
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/sessions [get]
-func (s sessionAPI) getAllSessions(w http.ResponseWriter, r *http.Request) {
-	sessions, err := s.sessionReader.ReadAllSessions()
+func (mySessionAPI sessionAPI) getAllSessions(writer http.ResponseWriter, request *http.Request) {
+	sessions, err := mySessionAPI.sessionReader.ReadAllSessions()
 	if err != nil {
-		ReportError(err, "Failed to get all sessions", http.StatusBadRequest, w)
+		ReportError(err, "Failed to get all sessions", http.StatusBadRequest, writer)
 		return
 	}
 
-	j, _ := json.Marshal(sessions)
-	w.Write(j)
+	responseJSON, _ := json.Marshal(sessions)
+	writer.Write(responseJSON)
 }
 
 // WriteASessionRequest request for writeASession
@@ -100,8 +100,8 @@ type WriteASessionRequest struct {
 }
 
 // Validate validates a WriteASessionRequest
-func (r WriteASessionRequest) Validate() error {
-	if r.SpeakerID == nil && r.RoomID == nil && r.TimeslotID == nil && r.SessionName == nil {
+func (request WriteASessionRequest) Validate() error {
+	if request.SpeakerID == nil && request.RoomID == nil && request.TimeslotID == nil && request.SessionName == nil {
 		return ErrInvalidRequest
 	}
 	return nil
@@ -114,10 +114,10 @@ func (r WriteASessionRequest) Validate() error {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/sessionsBySpeaker [get]
-func (s sessionAPI) getAllSessionsBySpeaker(w http.ResponseWriter, r *http.Request) {
-	sessions, err := s.sessionReader.ReadAllSessions()
+func (mySessionAPI sessionAPI) getAllSessionsBySpeaker(writer http.ResponseWriter, request *http.Request) {
+	sessions, err := mySessionAPI.sessionReader.ReadAllSessions()
 	if err != nil {
-		ReportError(err, "Failed to get all session", http.StatusBadRequest, w)
+		ReportError(err, "Failed to get all session", http.StatusBadRequest, writer)
 		return
 	}
 	sessionsBySpeaker := make(map[string][]db.Session)
@@ -126,12 +126,12 @@ func (s sessionAPI) getAllSessionsBySpeaker(w http.ResponseWriter, r *http.Reque
 		sessionsBySpeaker[key] = append(sessionsBySpeaker[key], session)
 	}
 
-	jjson, err := json.Marshal(sessionsBySpeaker)
+	responseJSON, err := json.Marshal(sessionsBySpeaker)
 	if err != nil {
-		ReportError(err, "Failed to marshal data", http.StatusBadRequest, w)
+		ReportError(err, "Failed to marshal data", http.StatusBadRequest, writer)
 		return
 	}
-	w.Write(jjson)
+	writer.Write(responseJSON)
 }
 
 // getAllSessions Gets all sessions from the db, sorted by timeslot
@@ -142,10 +142,10 @@ func (s sessionAPI) getAllSessionsBySpeaker(w http.ResponseWriter, r *http.Reque
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/sessionsByTimeslot [get]
-func (s sessionAPI) getAllSessionsByTimeslot(w http.ResponseWriter, r *http.Request) {
-	sessions, err := s.sessionReader.ReadAllSessions()
+func (mySessionAPI sessionAPI) getAllSessionsByTimeslot(writer http.ResponseWriter, request *http.Request) {
+	sessions, err := mySessionAPI.sessionReader.ReadAllSessions()
 	if err != nil {
-		ReportError(err, "Failed to get all session", http.StatusBadRequest, w)
+		ReportError(err, "Failed to get all session", http.StatusBadRequest, writer)
 		return
 	}
 
@@ -156,12 +156,12 @@ func (s sessionAPI) getAllSessionsByTimeslot(w http.ResponseWriter, r *http.Requ
 		sessionsByTimeslot[key] = append(sessionsByTimeslot[key], session)
 	}
 
-	j, err := json.Marshal(sessionsByTimeslot)
+	responseJSON, err := json.Marshal(sessionsByTimeslot)
 	if err != nil {
-		ReportError(err, "Failed to marshal data", http.StatusBadRequest, w)
+		ReportError(err, "Failed to marshal data", http.StatusBadRequest, writer)
 		return
 	}
-	w.Write(j)
+	writer.Write(responseJSON)
 }
 
 // writeASession Add a session to the db
@@ -174,32 +174,32 @@ func (s sessionAPI) getAllSessionsByTimeslot(w http.ResponseWriter, r *http.Requ
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/session [post]
-func (s sessionAPI) writeASession(w http.ResponseWriter, r *http.Request) {
-	j, err := ioutil.ReadAll(r.Body)
+func (mySessionAPI sessionAPI) writeASession(writer http.ResponseWriter, request *http.Request) {
+	requestJSON, err := ioutil.ReadAll(request.Body)
 	if err != nil {
-		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+		ReportError(err, "unable to read body", http.StatusBadRequest, writer)
 		return
 	}
 
 	sessionRequest := WriteASessionRequest{}
-	err = json.Unmarshal(j, &sessionRequest)
+	err = json.Unmarshal(requestJSON, &sessionRequest)
 	if err != nil {
-		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
+		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, writer)
 		return
 	}
 
 	if err = sessionRequest.Validate(); err != nil {
-		ReportError(err, "must set one of speakerID, roomID, timeslotID, sessionName", http.StatusBadRequest, w)
+		ReportError(err, "must set one of speakerID, roomID, timeslotID, sessionName", http.StatusBadRequest, writer)
 		return
 	}
 
-	id, err := s.sessionWriter.WriteASession(sessionRequest.SpeakerID, sessionRequest.RoomID, sessionRequest.TimeslotID, sessionRequest.SessionName)
+	id, err := mySessionAPI.sessionWriter.WriteASession(sessionRequest.SpeakerID, sessionRequest.RoomID, sessionRequest.TimeslotID, sessionRequest.SessionName)
 	if err != nil {
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 
-	writeIDToClient(w, id)
+	writeIDToClient(writer, id)
 }
 
 // UpdateASessionRequest request for updateASession
@@ -212,11 +212,11 @@ type UpdateASessionRequest struct {
 }
 
 // Validate validates a UpdateASessionRequest
-func (r UpdateASessionRequest) Validate() error {
-	if r.SessionID == nil {
+func (request UpdateASessionRequest) Validate() error {
+	if request.SessionID == nil {
 		return ErrInvalidRequest
 	}
-	if r.SpeakerID == nil && r.RoomID == nil && r.TimeslotID == nil && r.SessionName == nil {
+	if request.SpeakerID == nil && request.RoomID == nil && request.TimeslotID == nil && request.SessionName == nil {
 		return ErrInvalidRequest
 	}
 	return nil
@@ -232,35 +232,35 @@ func (r UpdateASessionRequest) Validate() error {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/session [put]
-func (s sessionAPI) updateASession(w http.ResponseWriter, r *http.Request) {
-	j, err := ioutil.ReadAll(r.Body)
+func (mySessionAPI sessionAPI) updateASession(writer http.ResponseWriter, request *http.Request) {
+	requestJSON, err := ioutil.ReadAll(request.Body)
 	if err != nil {
-		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+		ReportError(err, "unable to read body", http.StatusBadRequest, writer)
 		return
 	}
 
 	sessionRequest := UpdateASessionRequest{}
-	err = json.Unmarshal(j, &sessionRequest)
+	err = json.Unmarshal(requestJSON, &sessionRequest)
 	if err != nil {
-		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
+		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, writer)
 		return
 	}
 
 	if err = sessionRequest.Validate(); err != nil {
-		ReportError(err, "must set sessionID and must set one of speakerID, roomID, timeslotID, sessionName", http.StatusBadRequest, w)
+		ReportError(err, "must set sessionID and must set one of speakerID, roomID, timeslotID, sessionName", http.StatusBadRequest, writer)
 		return
 	}
 
-	err = s.sessionUpdater.UpdateASession(*sessionRequest.SessionID, sessionRequest.SpeakerID, sessionRequest.RoomID, sessionRequest.TimeslotID, sessionRequest.SessionName)
+	err = mySessionAPI.sessionUpdater.UpdateASession(*sessionRequest.SessionID, sessionRequest.SpeakerID, sessionRequest.RoomID, sessionRequest.TimeslotID, sessionRequest.SessionName)
 	switch err {
 	case nil:
-		w.Write(nil)
+		writer.Write(nil)
 		return
 	case db.ErrNothingChanged:
-		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, writer)
 		return
 	default:
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 }
@@ -274,30 +274,30 @@ func (s sessionAPI) updateASession(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/session [delete]
-func (s sessionAPI) deleteASession(w http.ResponseWriter, r *http.Request) {
-	requestedID, err := getIDFromQueries(r)
+func (mySessionAPI sessionAPI) deleteASession(writer http.ResponseWriter, request *http.Request) {
+	requestedID, err := getIDFromQueries(request)
 	switch err {
 	case ErrQueryNotSet:
-		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, writer)
 		return
 	case ErrBadQuery:
-		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, writer)
 		return
 	case ErrBadQueryType:
-		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
+		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, writer)
 		return
 	}
 
-	err = s.sessionDeleter.DeleteASession(requestedID)
+	err = mySessionAPI.sessionDeleter.DeleteASession(requestedID)
 	switch err {
 	case nil:
-		w.Write(nil)
+		writer.Write(nil)
 		return
 	case db.ErrNothingChanged:
-		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, writer)
 		return
 	default:
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 }

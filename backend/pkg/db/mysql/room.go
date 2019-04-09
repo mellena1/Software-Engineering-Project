@@ -25,19 +25,19 @@ func scanARoom(room *db.Room, row rowScanner) error {
 }
 
 // ReadARoom reads a room from the db given roomID
-func (r RoomMySQL) ReadARoom(roomID int64) (db.Room, error) {
-	if r.db == nil {
+func (myRoomSQL RoomMySQL) ReadARoom(roomID int64) (db.Room, error) {
+	if myRoomSQL.db == nil {
 		return db.Room{}, ErrDBNotSet
 	}
 
-	stmt, err := r.db.Prepare("SELECT roomID, roomName, capacity FROM room WHERE roomID = ?;")
+	statement, err := myRoomSQL.db.Prepare("SELECT roomID, roomName, capacity FROM room WHERE roomID = ?;")
 	if err != nil {
 		return db.Room{}, err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
 	room := db.NewRoom()
-	row := stmt.QueryRow(roomID)
+	row := statement.QueryRow(roomID)
 
 	err = scanARoom(&room, row)
 
@@ -45,14 +45,14 @@ func (r RoomMySQL) ReadARoom(roomID int64) (db.Room, error) {
 }
 
 // ReadAllRooms reads all rooms from the db
-func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
-	if r.db == nil {
+func (myRoomSQL RoomMySQL) ReadAllRooms() ([]db.Room, error) {
+	if myRoomSQL.db == nil {
 		return nil, ErrDBNotSet
 	}
 
-	q := "SELECT roomID, roomName, capacity FROM room;"
+	query := "SELECT roomID, roomName, capacity FROM room;"
 
-	rows, err := r.db.Query(q)
+	rows, err := myRoomSQL.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -74,17 +74,17 @@ func (r RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 }
 
 // WriteARoom writes a room to the db
-func (r RoomMySQL) WriteARoom(name string, capacity *int64) (int64, error) {
-	if r.db == nil {
+func (myRoomSQL RoomMySQL) WriteARoom(name string, capacity *int64) (int64, error) {
+	if myRoomSQL.db == nil {
 		return 0, ErrDBNotSet
 	}
-	stmt, err := r.db.Prepare("INSERT INTO room(`roomName`, `capacity`) VALUES (?, ?)")
+	statement, err := myRoomSQL.db.Prepare("INSERT INTO room(`roomName`, `capacity`) VALUES (?, ?)")
 	if err != nil {
 		return 0, err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	result, err := stmt.Exec(name, IntToNullInt(capacity))
+	result, err := statement.Exec(name, IntToNullInt(capacity))
 	if err != nil {
 		return 0, err
 	}
@@ -93,18 +93,18 @@ func (r RoomMySQL) WriteARoom(name string, capacity *int64) (int64, error) {
 }
 
 // UpdateARoom updates a room in the db given a roomName and the updated room
-func (r RoomMySQL) UpdateARoom(id int64, name string, capacity *int64) error {
-	if r.db == nil {
+func (myRoomSQL RoomMySQL) UpdateARoom(id int64, name string, capacity *int64) error {
+	if myRoomSQL.db == nil {
 		return ErrDBNotSet
 	}
 
-	stmt, err := r.db.Prepare("UPDATE room SET roomName = ?, capacity = ? WHERE roomID = ?;")
+	statement, err := myRoomSQL.db.Prepare("UPDATE room SET roomName = ?, capacity = ? WHERE roomID = ?;")
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	result, err := stmt.Exec(name, IntToNullInt(capacity), id)
+	result, err := statement.Exec(name, IntToNullInt(capacity), id)
 	if err != nil {
 		return err
 	}
@@ -119,18 +119,18 @@ func (r RoomMySQL) UpdateARoom(id int64, name string, capacity *int64) error {
 }
 
 // DeleteARoom deletes a room given a roomName
-func (r RoomMySQL) DeleteARoom(id int64) error {
-	if r.db == nil {
+func (myRoomSQL RoomMySQL) DeleteARoom(id int64) error {
+	if myRoomSQL.db == nil {
 		return ErrDBNotSet
 	}
 
-	stmt, err := r.db.Prepare("DELETE FROM room WHERE roomID = ?;")
+	statement, err := myRoomSQL.db.Prepare("DELETE FROM room WHERE roomID = ?;")
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	result, err := stmt.Exec(id)
+	result, err := statement.Exec(id)
 	if err != nil {
 		return err
 	}
