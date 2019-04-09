@@ -7,6 +7,7 @@ import { TableSetting } from "../table_setting";
 import {
   TextRenderComponent,
   TextInputComponent,
+  TextListInputComponent,
   TimeslotRenderComponent,
   TimeslotListInputComponent
 } from "../../shared_components";
@@ -18,8 +19,6 @@ import { Timeslot } from "src/app/data_models/timeslot";
 import { RoomService } from "src/app/services/room.service";
 import { SpeakerService } from "src/app/services/speaker.service";
 import { TimeslotService } from "src/app/services/timeslot.service";
-
-import { TimeslotGlobals } from "../../globals/timeslot.global";
 
 @Component({
   selector: "app-sessions",
@@ -54,7 +53,8 @@ export class SessionsComponent implements OnInit {
       type: "custom",
       renderComponent: TextRenderComponent,
       editor: {
-        type: "list",
+        type: "custom",
+        component: TextListInputComponent,
         config: {
           list: this.roomsListForTable
         }
@@ -72,7 +72,8 @@ export class SessionsComponent implements OnInit {
       type: "custom",
       renderComponent: TextRenderComponent,
       editor: {
-        type: "list",
+        type: "custom",
+        component: TextListInputComponent,
         config: {
           list: this.speakersListForTable
         }
@@ -105,7 +106,6 @@ export class SessionsComponent implements OnInit {
     private roomService: RoomService,
     private speakerService: SpeakerService,
     private timeslotService: TimeslotService,
-    private timeslotGlobals: TimeslotGlobals
   ) {
     this.tableDataSource = new LocalDataSource();
 

@@ -1,10 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 
-import { TimeslotGlobals } from "../../globals/timeslot.global";
-
 import { DefaultEditor } from "ng2-smart-table";
-
-import { TimeslotRenderHelpers } from "./timeslot_render.helpers";
 
 @Component({
   template: `
@@ -17,19 +13,15 @@ import { TimeslotRenderHelpers } from "./timeslot_render.helpers";
     (keydown.enter)="onEdited.emit($event)"
     (keydown.esc)="onStopEditing.emit()">
     <option *ngFor="let option of cell.getColumn().getConfig()?.list" [ngValue]="option.value"
-      [selected]="option.value === cell.getValue()">{{ formatTimeForCell(option.title) }}
+      [selected]="option.value === cell.getValue()">{{ option.title }}
     </option>
   </select>
   `
 })
-export class TimeslotListInputComponent extends DefaultEditor implements OnInit {
-  constructor(private timeslotGlobals: TimeslotGlobals) {
+export class TextListInputComponent extends DefaultEditor implements OnInit {
+  constructor() {
     super();
   }
 
   ngOnInit() { }
-
-  formatTimeForCell(time: string): string {
-    return TimeslotRenderHelpers.formatTimeForCell(time, this.timeslotGlobals);
-  }
 }

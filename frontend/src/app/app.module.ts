@@ -19,6 +19,7 @@ import {
   NumberInputComponent,
   TextRenderComponent,
   TextInputComponent,
+  TextListInputComponent,
   TimeslotRenderComponent,
   TimeslotInputComponent,
   TimeslotListInputComponent
@@ -44,6 +45,7 @@ import { TimeslotGlobals } from "./globals/timeslot.global";
     NumberInputComponent,
     TextInputComponent,
     TextRenderComponent,
+    TextListInputComponent,
     TimeslotRenderComponent,
     TimeslotInputComponent,
     TimeslotListInputComponent,
@@ -53,6 +55,7 @@ import { TimeslotGlobals } from "./globals/timeslot.global";
     NumberInputComponent,
     TextInputComponent,
     TextRenderComponent,
+    TextListInputComponent,
     TimeslotRenderComponent,
     TimeslotInputComponent,
     TimeslotListInputComponent,
