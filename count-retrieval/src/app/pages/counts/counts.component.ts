@@ -25,12 +25,14 @@ export class CountsComponent implements OnInit {
 
   speakers: Speaker[];
   sessions: Session[];
+  speakerSessionMap: Map<String, Map<String, Count[]>>;
   error: any;
   buttonPressed: boolean = false;
-
+  
 ngOnInit() {
   this.getAllSpeakers();
   this.getAllSessions();
+  this.getSessionsBySpeaker();
 }
 
 getAllSessions(): void {
@@ -49,6 +51,15 @@ getAllSpeakers(): void {
         speakers => (this.speakers = speakers),
         error => (this.error = error)
       );
+}
+
+getSessionsBySpeaker(): void{
+  this.countService
+    .getCountsBySpeaker()
+    .subscribe(
+      speakerSessionMap => (this.speakerSessionMap = speakerSessionMap),
+      error => (this.error = error)
+    );
 }
 
 toggle(): void{
