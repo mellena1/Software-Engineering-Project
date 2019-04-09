@@ -10,6 +10,7 @@ import {
   TimeslotRenderComponent
 } from "../../shared_components";
 import { LocalDataSource } from "ng2-smart-table";
+import { Session } from "src/app/data_models/session";
 import { Speaker } from "src/app/data_models/speaker";
 import { Room } from "src/app/data_models/room";
 import { Timeslot } from "src/app/data_models/timeslot";
@@ -42,7 +43,7 @@ export class SessionsComponent implements OnInit {
     },
     room: {
       title: "Room Name",
-      valuePrepareFunction: room => {
+      valuePrepareFunction: (room: Room) => {
         if (room === null) {
           return "";
         } else {
@@ -60,11 +61,11 @@ export class SessionsComponent implements OnInit {
     },
     speaker: {
       title: "Speaker Name",
-      valuePrepareFunction: speaker => {
-        if (speaker == null) {
-          return "";
+      valuePrepareFunction: (speaker: Speaker) => {
+        if (speaker != null && typeof speaker === 'object') {
+          return Speaker.getFullName(speaker);
         } else {
-          return speaker.firstName + " " + speaker.lastName;
+          return '';
         }
       },
       type: "custom",
@@ -78,7 +79,7 @@ export class SessionsComponent implements OnInit {
     },
     timeslot: {
       title: "Timeslot",
-      valuePrepareFunction: timeslot => {
+      valuePrepareFunction: (timeslot: Timeslot) => {
         if (timeslot == null) {
           return "";
         } else {
@@ -106,15 +107,7 @@ export class SessionsComponent implements OnInit {
   ) {
     this.tableDataSource = new LocalDataSource();
 
-    this.sessionService.getAllSessions().subscribe(
-      data => {
-        this.tableDataSource.load(data);
-      },
-      error => {
-        console.log(error);
-      }
-    );
-
+    this.getAllSessions();
     this.getAllRooms();
     this.getAllSpeakers();
     this.getAllTimeslots();
@@ -130,6 +123,17 @@ export class SessionsComponent implements OnInit {
     this.tableDataSource.onChanged().subscribe(() => {
       this.table.grid.createFormShown = true;
     });
+  }
+
+  getAllSessions() {
+    this.sessionService.getAllSessions().subscribe(
+      (data: Session[]) => {
+        this.tableDataSource.load(data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   getAllRooms() {

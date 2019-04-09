@@ -31,12 +31,24 @@ export class TimeslotRenderComponent implements ViewCell, OnInit {
     var splitValue = time.split(" ");
     var startTime = splitValue[0];
     var endTime = splitValue[1];
-    return `${this.timeslotGlobals.formatTime(
-      startTime
-    )}-${this.timeslotGlobals.formatTime(endTime)}`;
+
+    if (TimeslotGlobals.isValidTime(startTime) && TimeslotGlobals.isValidTime(endTime)) {
+      return `${this.formatTimeForCellSingleTime(
+        startTime
+      )}-${this.formatTimeForCellSingleTime(endTime)}`;
+    } else {
+      // will return whatever is valid, or '' if neither are valid
+      return `${this.formatTimeForCellSingleTime(
+        startTime
+      )}${this.formatTimeForCellSingleTime(endTime)}`
+    }
   }
 
   formatTimeForCellSingleTime(time: string): string {
-    return `${this.timeslotGlobals.formatTime(time)}`;
+    if (TimeslotGlobals.isValidTime(time)) {
+      return `${this.timeslotGlobals.formatTime(time)}`;
+    } else {
+      return '';
+    }
   }
 }

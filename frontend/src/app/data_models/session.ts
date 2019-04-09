@@ -8,7 +8,6 @@ export class Session {
   room: Room;
   speaker: Speaker;
   timeslot: Timeslot;
-  isEditable: boolean;
 
   constructor(name: string, room: Room, speaker: Speaker, timeslot: Timeslot) {
     this.id = -1;
@@ -16,6 +15,5 @@ export class Session {
     this.room = room;
     this.speaker = speaker;
     this.timeslot = timeslot;
-    this.isEditable = false;
   }
 }

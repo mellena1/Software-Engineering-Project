@@ -6,7 +6,7 @@ import {
   HttpParams
 } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { throwError as observableThrowError } from "rxjs";
+import { throwError as observableThrowError, Observable } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 import { Room } from "../data_models/room";

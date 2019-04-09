@@ -25,7 +25,6 @@
     "@angular/platform-browser-dynamic": "^7.2.12",
     "@angular/router": "^7.2.12",
     "@angular/upgrade": "^7.2.12",
-    "angular-in-memory-web-api": "github:brandonroberts/in-memory-web-api-bazel#50a34d8",
     "@ng-bootstrap/ng-bootstrap": "^4.1.1",
     "angular4-material-table": "^0.7.0",
     "core-js": "^2.5.4",

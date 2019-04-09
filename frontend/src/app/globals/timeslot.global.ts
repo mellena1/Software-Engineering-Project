@@ -8,17 +8,21 @@ export class TimeslotGlobals {
 
   formatTime(time: string): string {
     if (this.twelveHourIsChecked) {
-      return this.format12Hour(time);
+      return TimeslotGlobals.format12Hour(time);
     } else {
-      return this.format24Hour(time);
+      return TimeslotGlobals.format24Hour(time);
     }
   }
 
-  format12Hour(time: string): string {
+  static isValidTime(time: string): boolean {
+    return moment(time, "YYYY-MM-DDTHH:mm:ss").isValid();
+  }
+
+  static format12Hour(time: string): string {
     return moment(time, "YYYY-MM-DDTHH:mm:ss").format("h:mm a");
   }
 
-  format24Hour(time: string): string {
+  static format24Hour(time: string): string {
     return moment(time, "YYYY-MM-DDTHH:mm:ss").format("H:mm");
   }
 }
