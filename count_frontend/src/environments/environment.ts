@@ -2,9 +2,13 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import { User } from 'src/app/data_models/user';
+
 export const environment = {
   production: false,
-  apiUrl: "http://localhost:81/api/v1"
+  apiUrl: "http://localhost:81/api/v1",
+  password: "codecamp",
+  user: User
 };
 
 /*

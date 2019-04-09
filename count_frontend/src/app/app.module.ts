@@ -9,6 +9,7 @@ import { AppRoutingModule } from "./app-routing.module";
 
 import { AppComponent } from "./app.component";
 import { CountsComponent } from "./pages/counts/counts.component";
+import { LoginComponent } from './pages/login/login.component';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import { CountsComponent } from "./pages/counts/counts.component";
     ReactiveFormsModule,
     HttpClientModule
   ],
-  declarations: [AppComponent, CountsComponent],
+  declarations: [AppComponent, CountsComponent, LoginComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
