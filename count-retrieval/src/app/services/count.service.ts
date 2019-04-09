@@ -47,6 +47,10 @@ export class CountService {
     });
   }
 
+  getCountsBySpeaker(){
+    return this.http.get<Map<String, Map<String, Count[]>>>(this.apiUrl + "/countsBySpeaker");
+  }
+
   private handleError(res: HttpErrorResponse | any) {
     console.error(res.error || res.body.error);
     return observableThrowError(res.error || "Server error");
