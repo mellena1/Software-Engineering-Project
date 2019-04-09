@@ -6,7 +6,7 @@ import {
   HttpParams
 } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { Observable, throwError as observableThrowError } from "rxjs";
+import { throwError as observableThrowError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
 import { Room } from "../data_models/room";
@@ -18,7 +18,6 @@ import { WriteResponse } from "./writeResponse";
 export class RoomService {
   constructor(private http: HttpClient) {}
   private apiUrl = environment.apiUrl;
-  jsonHeaders = new HttpHeaders().set("Content-Type", "application/json");
 
   getAllRooms(): Observable<Room[]> {
     return this.http
