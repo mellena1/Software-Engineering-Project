@@ -7,7 +7,8 @@ import { TableSetting } from "../table_setting";
 import {
   TextRenderComponent,
   TextInputComponent,
-  TimeslotRenderComponent
+  TimeslotRenderComponent,
+  TimeslotListInputComponent
 } from "../../shared_components";
 import { LocalDataSource } from "ng2-smart-table";
 import { Session } from "src/app/data_models/session";
@@ -27,9 +28,9 @@ import { TimeslotGlobals } from "../../globals/timeslot.global";
 export class SessionsComponent implements OnInit {
   @ViewChild("table") table: Ng2SmartTableComponent;
   tableDataSource: LocalDataSource;
-  roomsListForTable: object[] = [{ value: null, title: "-" }];
-  speakersListForTable: object[] = [{ value: null, title: "-" }];
-  timeslotsListForTable: object[] = [{ value: null, title: "-" }];
+  roomsListForTable: object[] = [{ value: null, title: "" }];
+  speakersListForTable: object[] = [{ value: null, title: "" }];
+  timeslotsListForTable: object[] = [{ value: null, title: "" }];
 
   columns = {
     name: {
@@ -89,7 +90,8 @@ export class SessionsComponent implements OnInit {
       type: "custom",
       renderComponent: TimeslotRenderComponent,
       editor: {
-        type: "list",
+        type: "custom",
+        component: TimeslotListInputComponent,
         config: {
           list: this.timeslotsListForTable
         }
@@ -176,7 +178,7 @@ export class SessionsComponent implements OnInit {
         data.forEach(timeslot => {
           this.timeslotsListForTable.push({
             value: timeslot,
-            title: `${this.timeslotGlobals.formatTime(timeslot.startTime)}-${this.timeslotGlobals.formatTime(timeslot.endTime)}`
+            title: timeslot.startTime + " " + timeslot.endTime
           });
         });
         this.tableSettings = new TableSetting(this.columns);

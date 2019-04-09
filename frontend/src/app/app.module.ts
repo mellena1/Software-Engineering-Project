@@ -14,14 +14,14 @@ import { RoomsComponent } from "./pages/rooms/rooms.component";
 import { SpeakersComponent } from "./pages/speakers/speakers.component";
 import { TimeslotsComponent } from "./pages/timeslots/timeslots.component";
 
-import { TwelveTwentyfourHourRadioComponent } from "./shared_components/twelve_twentyfour_hour_radio.component";
-
 import {
+  TwelveTwentyfourHourRadioComponent,
   NumberInputComponent,
   TextRenderComponent,
   TextInputComponent,
   TimeslotRenderComponent,
-  TimeslotInputComponent
+  TimeslotInputComponent,
+  TimeslotListInputComponent
 } from "./shared_components";
 import { TimeslotGlobals } from "./globals/timeslot.global";
 
@@ -46,6 +46,7 @@ import { TimeslotGlobals } from "./globals/timeslot.global";
     TextRenderComponent,
     TimeslotRenderComponent,
     TimeslotInputComponent,
+    TimeslotListInputComponent,
     TwelveTwentyfourHourRadioComponent
   ],
   entryComponents: [
@@ -54,6 +55,7 @@ import { TimeslotGlobals } from "./globals/timeslot.global";
     TextRenderComponent,
     TimeslotRenderComponent,
     TimeslotInputComponent,
+    TimeslotListInputComponent,
     TwelveTwentyfourHourRadioComponent
   ],
   providers: [TimeslotGlobals],

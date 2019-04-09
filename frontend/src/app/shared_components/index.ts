@@ -1,3 +1,5 @@
+export { TwelveTwentyfourHourRadioComponent } from "./twelve_twentyfour_hour_radio.component";
+
 export {
   NumberInputComponent
 } from "./table_components/number_input.component";
@@ -9,3 +11,4 @@ export {
 export {
   TimeslotInputComponent
 } from "./table_components/timeslot_input.component";
+export { TimeslotListInputComponent } from "./table_components/timeslot_list_input.component";
