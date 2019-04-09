@@ -6,17 +6,14 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
-// SpeakerMySQL implements SpeakerReaderWriterUpdaterDeleter
 type SpeakerMySQL struct {
 	db *sql.DB
 }
 
-// NewSpeakerMySQL makes a new SpeakerMySQL object given a db
 func NewSpeakerMySQL(db *sql.DB) SpeakerMySQL {
 	return SpeakerMySQL{db}
 }
 
-// scanASpeaker takes in a speaker pointer and scans a row into it
 func scanASpeaker(speaker *db.Speaker, row rowScanner) error {
 	email, firstName, lastName := sql.NullString{}, sql.NullString{}, sql.NullString{}
 	err := row.Scan(&speaker.ID, &email, &firstName, &lastName)
@@ -24,7 +21,6 @@ func scanASpeaker(speaker *db.Speaker, row rowScanner) error {
 	return err
 }
 
-// ReadASpeaker reads a speaker from the db given email
 func (mySpeakerSQL SpeakerMySQL) ReadASpeaker(speakerID int64) (db.Speaker, error) {
 	if mySpeakerSQL.db == nil {
 		return db.Speaker{}, ErrDBNotSet
@@ -44,7 +40,6 @@ func (mySpeakerSQL SpeakerMySQL) ReadASpeaker(speakerID int64) (db.Speaker, erro
 	return speaker, err
 }
 
-// ReadAllSpeakers reads all speakers from the db
 func (mySpeakerSQL SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
 	if mySpeakerSQL.db == nil {
 		return nil, ErrDBNotSet
@@ -73,7 +68,6 @@ func (mySpeakerSQL SpeakerMySQL) ReadAllSpeakers() ([]db.Speaker, error) {
 	return speakers, nil
 }
 
-// WriteASpeaker writes a speaker to the db
 func (mySpeakerSQL SpeakerMySQL) WriteASpeaker(email *string, firstName *string, lastName *string) (int64, error) {
 	if mySpeakerSQL.db == nil {
 		return 0, ErrDBNotSet
@@ -93,7 +87,6 @@ func (mySpeakerSQL SpeakerMySQL) WriteASpeaker(email *string, firstName *string,
 	return result.LastInsertId()
 }
 
-// UpdateASpeaker updates a speaker in the db given an email and the updated speaker
 func (mySpeakerSQL SpeakerMySQL) UpdateASpeaker(id int64, email *string, firstName *string, lastName *string) error {
 	if mySpeakerSQL.db == nil {
 		return ErrDBNotSet
@@ -119,7 +112,6 @@ func (mySpeakerSQL SpeakerMySQL) UpdateASpeaker(id int64, email *string, firstNa
 	return nil
 }
 
-// DeleteASpeaker deletes a speaker given an email
 func (mySpeakerSQL SpeakerMySQL) DeleteASpeaker(id int64) error {
 	if mySpeakerSQL.db == nil {
 		return ErrDBNotSet

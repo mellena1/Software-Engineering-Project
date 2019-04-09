@@ -4,12 +4,10 @@ import (
 	"database/sql"
 )
 
-// rowScanner interface for sql.Row and sql.Rows
 type rowScanner interface {
 	Scan(dest ...interface{}) error
 }
 
-// StringToNullString takes in a string pointer and returns a sql.NullString
 func StringToNullString(myString *string) sql.NullString {
 	if myString == nil {
 		return sql.NullString{
@@ -23,7 +21,6 @@ func StringToNullString(myString *string) sql.NullString {
 	}
 }
 
-// NullStringToString takes in a sql.NullString and returns a string pointer
 func NullStringToString(myString sql.NullString) *string {
 	if myString.Valid {
 		return &myString.String
@@ -31,7 +28,6 @@ func NullStringToString(myString sql.NullString) *string {
 	return nil
 }
 
-// IntToNullInt takes in an int64 pointer and returns a sql.NullInt64
 func IntToNullInt(myInt *int64) sql.NullInt64 {
 	if myInt == nil {
 		return sql.NullInt64{
@@ -45,7 +41,6 @@ func IntToNullInt(myInt *int64) sql.NullInt64 {
 	}
 }
 
-// NullIntToInt takes in a sql.NullInt64 and returns an int pointer
 func NullIntToInt(myInt sql.NullInt64) *int64 {
 	if myInt.Valid {
 		return &myInt.Int64

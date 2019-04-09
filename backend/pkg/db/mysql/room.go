@@ -6,17 +6,14 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
-// RoomMySQL implements RoomReaderWriterUpdaterDeleter
 type RoomMySQL struct {
 	db *sql.DB
 }
 
-// NewRoomMySQL makes a new RoomMySQL object given a db
 func NewRoomMySQL(db *sql.DB) RoomMySQL {
 	return RoomMySQL{db}
 }
 
-// scanARoom takes in a room pointer and scans a row into it
 func scanARoom(room *db.Room, row rowScanner) error {
 	capacity := sql.NullInt64{}
 	err := row.Scan(&room.ID, room.Name, &capacity)
@@ -24,7 +21,6 @@ func scanARoom(room *db.Room, row rowScanner) error {
 	return err
 }
 
-// ReadARoom reads a room from the db given roomID
 func (myRoomSQL RoomMySQL) ReadARoom(roomID int64) (db.Room, error) {
 	if myRoomSQL.db == nil {
 		return db.Room{}, ErrDBNotSet
@@ -44,7 +40,6 @@ func (myRoomSQL RoomMySQL) ReadARoom(roomID int64) (db.Room, error) {
 	return room, err
 }
 
-// ReadAllRooms reads all rooms from the db
 func (myRoomSQL RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 	if myRoomSQL.db == nil {
 		return nil, ErrDBNotSet
@@ -73,7 +68,6 @@ func (myRoomSQL RoomMySQL) ReadAllRooms() ([]db.Room, error) {
 	return rooms, nil
 }
 
-// WriteARoom writes a room to the db
 func (myRoomSQL RoomMySQL) WriteARoom(name string, capacity *int64) (int64, error) {
 	if myRoomSQL.db == nil {
 		return 0, ErrDBNotSet
@@ -92,7 +86,6 @@ func (myRoomSQL RoomMySQL) WriteARoom(name string, capacity *int64) (int64, erro
 	return result.LastInsertId()
 }
 
-// UpdateARoom updates a room in the db given a roomName and the updated room
 func (myRoomSQL RoomMySQL) UpdateARoom(id int64, name string, capacity *int64) error {
 	if myRoomSQL.db == nil {
 		return ErrDBNotSet
@@ -118,7 +111,6 @@ func (myRoomSQL RoomMySQL) UpdateARoom(id int64, name string, capacity *int64) e
 	return nil
 }
 
-// DeleteARoom deletes a room given a roomName
 func (myRoomSQL RoomMySQL) DeleteARoom(id int64) error {
 	if myRoomSQL.db == nil {
 		return ErrDBNotSet

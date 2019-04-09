@@ -10,7 +10,6 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
-// timeslotAPI holds all of the api functions related to Timeslots and all of the variables needed to access the backend
 type timeslotAPI struct {
 	timeslotReader  db.TimeslotReader
 	timeslotWriter  db.TimeslotWriter
@@ -18,7 +17,6 @@ type timeslotAPI struct {
 	timeslotDeleter db.TimeslotDeleter
 }
 
-// CreateTimeslotRoutes makes all of the routes for room related calls
 func CreateTimeslotRoutes(timeslotDBFacade db.TimeslotReaderWriterUpdaterDeleter) []Route {
 	myTimeslotAPI := timeslotAPI{
 		timeslotReader:  timeslotDBFacade,
@@ -90,13 +88,11 @@ func (myTimeslotAPI timeslotAPI) getATimeslot(writer http.ResponseWriter, reques
 	writer.Write(responseJSON)
 }
 
-// WriteATimeslotRequest request for writeATimeslot
 type WriteATimeslotRequest struct {
 	StartTime *string `json:"startTime" example:"2019-02-18T21:00:00Z"`
 	EndTime   *string `json:"endTime" example:"2019-10-01T23:00:00Z"`
 }
 
-// Validate validates a WriteATimeslotRequest
 func (request WriteATimeslotRequest) Validate() error {
 	if request.StartTime == nil || request.EndTime == nil {
 		return ErrInvalidRequest
@@ -156,14 +152,12 @@ func (myTimeslotAPI timeslotAPI) writeATimeslot(writer http.ResponseWriter, requ
 	writeIDToClient(writer, id)
 }
 
-// UpdateATimeslotRequest request for updateATimeslot
 type UpdateATimeslotRequest struct {
 	ID        *int64  `json:"id" example:"1"`
 	StartTime *string `json:"startTime" example:"2019-02-18T21:00:00Z"`
 	EndTime   *string `json:"endTime" example:"2019-10-01T23:00:00Z"`
 }
 
-// Validate validates a UpdateATimeslotRequest
 func (request UpdateATimeslotRequest) Validate() error {
 	if request.ID == nil {
 		return ErrInvalidRequest
@@ -231,7 +225,6 @@ func (myTimeslotAPI timeslotAPI) updateATimeslot(writer http.ResponseWriter, req
 	}
 }
 
-// deleteATimeslotRequest request for deleteATimeslot
 type deleteATimeslotRequest struct {
 	ID int64 `json:"id" example:"1"`
 }

@@ -8,7 +8,6 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
-// countAPI holds all of the api functions related to Counts and all of the variables needed to access the backend
 type countAPI struct {
 	countReader  db.CountReader
 	countWriter  db.CountWriter
@@ -16,7 +15,6 @@ type countAPI struct {
 	countDeleter db.CountDeleter
 }
 
-// CreateCountRoutes makes all of the routes for room related calls
 func CreateCountRoutes(countDBFacade db.CountReaderWriterUpdaterDeleter) []Route {
 	myCountAPI := countAPI{
 		countReader:  countDBFacade,
@@ -126,7 +124,6 @@ func (myCountAPI countAPI) getCountsBySpeaker(writer http.ResponseWriter, reques
 	writer.Write(responseJSON)
 }
 
-// writeACountRequest request for writeACount
 type writeACountRequest struct {
 	Time      *string `json:"time" example:"beginning"`
 	SessionID *int64  `json:"sessionID" example:"2"`

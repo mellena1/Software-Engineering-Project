@@ -15,7 +15,6 @@ type roomAPI struct {
 	roomDeleter db.RoomDeleter
 }
 
-// CreateRoomRoutes makes all of the routes for room related calls
 func CreateRoomRoutes(roomDBFacade db.RoomReaderWriterUpdaterDeleter) []Route {
 	myRoomAPI := roomAPI{
 		roomReader:  roomDBFacade,
@@ -87,13 +86,11 @@ func (myRoomAPI roomAPI) getARoom(writer http.ResponseWriter, request *http.Requ
 	writer.Write(responseJSON)
 }
 
-// WriteARoomRequest request for writeARoom
 type WriteARoomRequest struct {
 	Name     string `json:"name" example:"Beatty"`
 	Capacity *int64 `json:"capacity" example:"50"`
 }
 
-// Validate validates a WriteARoomRequest
 func (request WriteARoomRequest) Validate() error {
 	if request.Name == "" {
 		return ErrInvalidRequest
@@ -139,14 +136,12 @@ func (myRoomAPI roomAPI) writeARoom(writer http.ResponseWriter, request *http.Re
 	writeIDToClient(writer, id)
 }
 
-// UpdateARoomRequest request for updateARoom
 type UpdateARoomRequest struct {
 	ID       *int64 `json:"id" example:"1"`
 	Name     string `json:"name" example:"Beatty"`
 	Capacity *int64 `json:"capacity" example:"50"`
 }
 
-// Validate validates a UpdateARoomRequest
 func (request UpdateARoomRequest) Validate() error {
 	if request.Name == "" || request.ID == nil {
 		return ErrInvalidRequest

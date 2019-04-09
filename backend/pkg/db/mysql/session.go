@@ -7,12 +7,10 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
-// SessionMySQL implements SessionReaderWriterUpdaterDeleter
 type SessionMySQL struct {
 	db *sql.DB
 }
 
-// NewSessionMySQL makes a new SessionMySQL object given a db
 func NewSessionMySQL(db *sql.DB) SessionMySQL {
 	return SessionMySQL{db}
 }
@@ -67,7 +65,6 @@ func scanASession(session *db.Session, row rowScanner) error {
 	return err
 }
 
-// ReadASession reads a session from the db given sessionID
 func (mySessionSQL SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
 	if mySessionSQL.db == nil {
 		return db.Session{}, ErrDBNotSet
@@ -94,7 +91,6 @@ func (mySessionSQL SessionMySQL) ReadASession(sessionID int64) (db.Session, erro
 	return session, err
 }
 
-// ReadAllSessions reads all sessions from the db
 func (mySessionSQL SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 	if mySessionSQL.db == nil {
 		return nil, ErrDBNotSet
@@ -130,7 +126,6 @@ func (mySessionSQL SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 	return sessions, nil
 }
 
-// WriteASession writes a session to the db
 func (mySessionSQL SessionMySQL) WriteASession(speakerID *int64, roomID *int64, timeslotID *int64, name *string) (int64, error) {
 	if mySessionSQL.db == nil {
 		return 0, ErrDBNotSet
@@ -150,7 +145,6 @@ func (mySessionSQL SessionMySQL) WriteASession(speakerID *int64, roomID *int64, 
 	return result.LastInsertId()
 }
 
-// UpdateASession updates a session in the db given a sessionID and the updated session
 func (mySessionSQL SessionMySQL) UpdateASession(sessionID int64, speakerID *int64, roomID *int64, timeslotID *int64, name *string) error {
 	if mySessionSQL.db == nil {
 		return ErrDBNotSet
@@ -176,7 +170,6 @@ func (mySessionSQL SessionMySQL) UpdateASession(sessionID int64, speakerID *int6
 	return nil
 }
 
-// DeleteASession deletes a room given a sessionID
 func (mySessionSQL SessionMySQL) DeleteASession(sessionID int64) error {
 	if mySessionSQL.db == nil {
 		return ErrDBNotSet

@@ -1,6 +1,5 @@
 package db
 
-// Count holds all data about a count
 type Count struct {
 	Time      *string
 	SessionID *int64
@@ -8,7 +7,6 @@ type Count struct {
 	Count     *int64
 }
 
-// NewCount makes a new Count with default values
 func NewCount() Count {
 	return Count{
 		Time:      StringPtr(""),
@@ -18,7 +16,6 @@ func NewCount() Count {
 	}
 }
 
-// CountBySpeakerResponse response struct for phase 3
 type CountBySpeakerResponse struct {
 	SessionName      *string `json:"time" example:"Microservices"`
 	SpeakerFirstName *string `json:"speakerFirstName" example:"Kenny"`
@@ -29,7 +26,6 @@ type CountBySpeakerResponse struct {
 	Count            *int64  `json:"count" example:"30"`
 }
 
-// NewCountBySpeaker makes a new Count with default values
 func NewCountBySpeaker() CountBySpeakerResponse {
 	return CountBySpeakerResponse{
 		SpeakerFirstName: StringPtr(""),
@@ -42,7 +38,6 @@ func NewCountBySpeaker() CountBySpeakerResponse {
 	}
 }
 
-// CountReaderWriterUpdaterDeleter implements everything that a facade for a Count would need
 type CountReaderWriterUpdaterDeleter interface {
 	CountReader
 	CountWriter
@@ -50,24 +45,20 @@ type CountReaderWriterUpdaterDeleter interface {
 	CountDeleter
 }
 
-// CountReader implements all read related methods
 type CountReader interface {
 	ReadCountsOfSession(sessionID int64) ([]Count, error)
 	ReadAllCountsBySpeaker() ([]CountBySpeakerResponse, error)
 	ReadAllCounts() ([]Count, error)
 }
 
-// CountWriter implements all write related methods
 type CountWriter interface {
 	WriteACount(time *string, sessionID *int64, userName *string, count *int64) (int64, error)
 }
 
-// CountUpdater implements all update related methods
 type CountUpdater interface {
 	UpdateACount(time *string, sessionID *int64, userName *string, count *int64) error
 }
 
-// CountDeleter implements all delete related methods
 type CountDeleter interface {
 	DeleteACount(sessionID int64) error
 }

@@ -8,26 +8,21 @@ import (
 )
 
 const (
-	// MySQLTimeFormat format used to write to the mysql db
 	MySQLTimeFormat = "2006-01-02 15:04:05"
 )
 
-// TimeslotMySQL implements TimeslotReaderWriterUpdaterDeleter
 type TimeslotMySQL struct {
 	db *sql.DB
 }
 
-// NewTimeslotMySQL makes a new TimeslotMySQL object given a db
 func NewTimeslotMySQL(db *sql.DB) TimeslotMySQL {
 	return TimeslotMySQL{db}
 }
 
-// scanATimeslot takes in a timeslot pointer and scans a row into it
 func scanATimeslot(timeslot *db.Timeslot, row rowScanner) error {
 	return row.Scan(&timeslot.ID, &timeslot.StartTime, &timeslot.EndTime)
 }
 
-// ReadATimeslot reads a timeslot from the db given an id
 func (myTimeslotSQL TimeslotMySQL) ReadATimeslot(id int64) (db.Timeslot, error) {
 	if myTimeslotSQL.db == nil {
 		return db.Timeslot{}, ErrDBNotSet
@@ -47,7 +42,6 @@ func (myTimeslotSQL TimeslotMySQL) ReadATimeslot(id int64) (db.Timeslot, error) 
 	return timeslot, err
 }
 
-// ReadAllTimeslots reads all timeslots from the db
 func (myTimeslotSQL TimeslotMySQL) ReadAllTimeslots() ([]db.Timeslot, error) {
 	if myTimeslotSQL.db == nil {
 		return nil, ErrDBNotSet
@@ -76,7 +70,6 @@ func (myTimeslotSQL TimeslotMySQL) ReadAllTimeslots() ([]db.Timeslot, error) {
 	return timeslots, nil
 }
 
-// WriteATimeslot writes a timeslot to the db
 func (myTimeslotSQL TimeslotMySQL) WriteATimeslot(startTime, endTime time.Time) (int64, error) {
 	if myTimeslotSQL.db == nil {
 		return 0, ErrDBNotSet
@@ -96,7 +89,6 @@ func (myTimeslotSQL TimeslotMySQL) WriteATimeslot(startTime, endTime time.Time) 
 	return result.LastInsertId()
 }
 
-// UpdateATimeslot updates a timeslot in the db given an id and the updated timeslot
 func (myTimeslotSQL TimeslotMySQL) UpdateATimeslot(id int64, startTime, endTime time.Time) error {
 	if myTimeslotSQL.db == nil {
 		return ErrDBNotSet
@@ -122,7 +114,6 @@ func (myTimeslotSQL TimeslotMySQL) UpdateATimeslot(id int64, startTime, endTime 
 	return nil
 }
 
-// DeleteATimeslot deletes a timeslot given an id
 func (myTimeslotSQL TimeslotMySQL) DeleteATimeslot(id int64) error {
 	if myTimeslotSQL.db == nil {
 		return ErrDBNotSet

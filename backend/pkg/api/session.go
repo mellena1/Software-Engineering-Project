@@ -9,7 +9,6 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
-// sessionAPI holds all of the api functions related to Sessions and all of the variables needed to access the backend
 type sessionAPI struct {
 	sessionReader  db.SessionReader
 	sessionWriter  db.SessionWriter
@@ -17,7 +16,6 @@ type sessionAPI struct {
 	sessionDeleter db.SessionDeleter
 }
 
-// CreateSessionRoutes makes all of the routes for session related calls
 func CreateSessionRoutes(sessionDBFacade db.SessionReaderWriterUpdaterDeleter) []Route {
 	mySessionAPI := sessionAPI{
 		sessionReader:  sessionDBFacade,
@@ -91,7 +89,6 @@ func (mySessionAPI sessionAPI) getAllSessions(writer http.ResponseWriter, reques
 	writer.Write(responseJSON)
 }
 
-// WriteASessionRequest request for writeASession
 type WriteASessionRequest struct {
 	SpeakerID   *int64  `json:"speakerID" example:"1"`
 	RoomID      *int64  `json:"roomID" example:"1"`
@@ -99,7 +96,6 @@ type WriteASessionRequest struct {
 	SessionName *string `json:"sessionName" example:"Microservices"`
 }
 
-// Validate validates a WriteASessionRequest
 func (request WriteASessionRequest) Validate() error {
 	if request.SpeakerID == nil && request.RoomID == nil && request.TimeslotID == nil && request.SessionName == nil {
 		return ErrInvalidRequest
@@ -202,7 +198,6 @@ func (mySessionAPI sessionAPI) writeASession(writer http.ResponseWriter, request
 	writeIDToClient(writer, id)
 }
 
-// UpdateASessionRequest request for updateASession
 type UpdateASessionRequest struct {
 	SessionID   *int64  `json:"sessionID" example:"1"`
 	SpeakerID   *int64  `json:"speakerID" example:"1"`
@@ -211,7 +206,6 @@ type UpdateASessionRequest struct {
 	SessionName *string `json:"sessionName" example:"Microservices"`
 }
 
-// Validate validates a UpdateASessionRequest
 func (request UpdateASessionRequest) Validate() error {
 	if request.SessionID == nil {
 		return ErrInvalidRequest

@@ -6,17 +6,14 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
-// CountMySQL implements CountReaderWriterUpdaterDeleter
 type CountMySQL struct {
 	db *sql.DB
 }
 
-// NewCountMySQL makes a new CountMySQL object given a db
 func NewCountMySQL(db *sql.DB) CountMySQL {
 	return CountMySQL{db}
 }
 
-// scanACount takes in a count pointer and scans a row into it
 func scanACount(count *db.Count, row rowScanner) error {
 	return row.Scan(&count.Time, &count.SessionID, &count.UserName, &count.Count)
 }
@@ -41,7 +38,6 @@ func scanACountBySpeaker(session *db.CountBySpeakerResponse, row rowScanner) err
 	return err
 }
 
-// ReadCountsOfSession reads a count from the db given a sessionID
 func (myCountSQL CountMySQL) ReadCountsOfSession(sessionID int64) ([]db.Count, error) {
 	if myCountSQL.db == nil {
 		return nil, ErrDBNotSet
@@ -74,7 +70,6 @@ func (myCountSQL CountMySQL) ReadCountsOfSession(sessionID int64) ([]db.Count, e
 	return counts, nil
 }
 
-// ReadAllCounts reads all counts from the db
 func (myCountSQL CountMySQL) ReadAllCounts() ([]db.Count, error) {
 	if myCountSQL.db == nil {
 		return nil, ErrDBNotSet
@@ -103,7 +98,6 @@ func (myCountSQL CountMySQL) ReadAllCounts() ([]db.Count, error) {
 	return counts, nil
 }
 
-// ReadAllCountsBySpeaker reads all counts from the db and sorts them by speaker and session
 func (myCountSQL CountMySQL) ReadAllCountsBySpeaker() ([]db.CountBySpeakerResponse, error) {
 	if myCountSQL.db == nil {
 		return nil, ErrDBNotSet
@@ -136,7 +130,6 @@ func (myCountSQL CountMySQL) ReadAllCountsBySpeaker() ([]db.CountBySpeakerRespon
 	return countsBySpeaker, nil
 }
 
-// WriteACount writes a count to the db
 func (myCountSQL CountMySQL) WriteACount(time *string, sessionID *int64, userName *string, count *int64) (int64, error) {
 	if myCountSQL.db == nil {
 		return 0, ErrDBNotSet
@@ -155,7 +148,6 @@ func (myCountSQL CountMySQL) WriteACount(time *string, sessionID *int64, userNam
 	return result.LastInsertId()
 }
 
-// UpdateACount updates a count in the db given the session Id and the updated time of session
 func (myCountSQL CountMySQL) UpdateACount(time *string, sessionID *int64, userName *string, count *int64) error {
 	if myCountSQL.db == nil {
 		return ErrDBNotSet
@@ -181,7 +173,6 @@ func (myCountSQL CountMySQL) UpdateACount(time *string, sessionID *int64, userNa
 	return nil
 }
 
-// DeleteACount deletes a count given an id
 func (myCountSQL CountMySQL) DeleteACount(sessionID int64) error {
 	if myCountSQL.db == nil {
 		return ErrDBNotSet

@@ -10,7 +10,6 @@ import (
 	"github.com/mellena1/Software-Engineering-Project/backend/pkg/db"
 )
 
-// speakerAPI holds all of the api functions related to Speaker and all of the variables needed to access the backend
 type speakerAPI struct {
 	speakerReader  db.SpeakerReader
 	speakerWriter  db.SpeakerWriter
@@ -18,7 +17,6 @@ type speakerAPI struct {
 	speakerDeleter db.SpeakerDeleter
 }
 
-// CreateSpeakerRoutes makes all of the routes for speaker related calls
 func CreateSpeakerRoutes(speakerDBFacade db.SpeakerReaderWriterUpdaterDeleter) []Route {
 	mySpeakerAPI := speakerAPI{
 		speakerReader:  speakerDBFacade,
@@ -91,7 +89,6 @@ func (mySpeakerAPI speakerAPI) getASpeaker(writer http.ResponseWriter, request *
 	writer.Write(responseJSON)
 }
 
-// WriteASpeakerRequest request for writeASpeaker
 type WriteASpeakerRequest struct {
 	Email     *string `json:"email" example:"person@gmail.com"`
 	FirstName *string `json:"firstName" example:"Bob"`
@@ -101,7 +98,6 @@ type WriteASpeakerRequest struct {
 var validateEmail, _ = regexp.Compile(`[a-zA-Z0-9\.\-\_]+@[a-zA-Z0-9\.\-\_]+`)
 var validateName, _ = regexp.Compile(`[a-zA-Z\.\-]+`)
 
-// Validate validates a writeASpeakerRequest
 func (request WriteASpeakerRequest) Validate() error {
 	atLeastOneField := false
 
@@ -170,7 +166,6 @@ func (mySpeakerAPI speakerAPI) writeASpeaker(writer http.ResponseWriter, request
 	writeIDToClient(writer, id)
 }
 
-// UpdateASpeakerRequest request for updateASpeaker
 type UpdateASpeakerRequest struct {
 	ID        *int64  `json:"id" example:"1"`
 	Email     *string `json:"email" example:"person@gmail.com"`
@@ -178,7 +173,6 @@ type UpdateASpeakerRequest struct {
 	LastName  *string `json:"lastName" example:"Smith"`
 }
 
-// Validate validates a UpdateASpeakerRequest
 func (request UpdateASpeakerRequest) Validate() error {
 	if request.ID == nil {
 		return ErrInvalidRequest
