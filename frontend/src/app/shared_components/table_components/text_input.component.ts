@@ -10,6 +10,6 @@ import { DefaultEditor } from "ng2-smart-table";
 })
 export class TextInputComponent extends DefaultEditor implements OnInit {
   ngOnInit() {
-      this.cell.newValue = this.cell.getValue();
+    this.cell.newValue = this.cell.getValue();
   }
 }

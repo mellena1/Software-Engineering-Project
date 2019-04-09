@@ -14,13 +14,13 @@ export class Speaker {
   static getFullName(speaker: Speaker): string {
     var name = "";
     var needSpace = false;
-    if ('firstName' in speaker && speaker.firstName !== null) {
+    if ("firstName" in speaker && speaker.firstName !== null) {
       name += speaker.firstName;
       needSpace = true;
     }
-    if ('lastName' in speaker && speaker.lastName !== null) {
+    if ("lastName" in speaker && speaker.lastName !== null) {
       if (needSpace) {
-        name += ' ';
+        name += " ";
       }
       name += speaker.lastName;
     }

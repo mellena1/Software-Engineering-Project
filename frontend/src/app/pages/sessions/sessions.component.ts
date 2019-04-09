@@ -63,10 +63,10 @@ export class SessionsComponent implements OnInit {
     speaker: {
       title: "Speaker Name",
       valuePrepareFunction: (speaker: Speaker) => {
-        if (speaker != null && typeof speaker === 'object') {
+        if (speaker != null && typeof speaker === "object") {
           return Speaker.getFullName(speaker);
         } else {
-          return '';
+          return "";
         }
       },
       type: "custom",
@@ -105,7 +105,7 @@ export class SessionsComponent implements OnInit {
     private sessionService: SessionService,
     private roomService: RoomService,
     private speakerService: SpeakerService,
-    private timeslotService: TimeslotService,
+    private timeslotService: TimeslotService
   ) {
     this.tableDataSource = new LocalDataSource();
 

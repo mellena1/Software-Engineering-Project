@@ -9,7 +9,9 @@ import { TimeslotRenderHelpers } from "./timeslot_render.helpers";
 @Component({
   selector: "timeslot",
   template: `
-    <div class="table-text">{{ formatTimeForCell(this.value, this.timeslotGlobals) }}</div>
+    <div class="table-text">
+      {{ formatTimeForCell(this.value, this.timeslotGlobals) }}
+    </div>
   `,
   styleUrls: ["./table.components.css"]
 })
