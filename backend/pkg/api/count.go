@@ -28,7 +28,7 @@ func CreateCountRoutes(countDBFacade db.CountReaderWriterUpdaterDeleter) []Route
 	routes := []Route{
 		NewRoute("/api/v1/counts", myCountAPI.getAllCounts, "GET"),
 		NewRoute("/api/v1/count", myCountAPI.getCountsOfSession, "GET"),
-    NewRoute("/api/v1/countsBySpeaker", myCountAPI.getCountsBySpeaker, "GET"),
+		NewRoute("/api/v1/countsBySpeaker", myCountAPI.getCountsBySpeaker, "GET"),
 		NewRoute("/api/v1/count", myCountAPI.writeACount, "POST"),
 		NewRoute("/api/v1/count", myCountAPI.updateACount, "PUT"),
 		NewRoute("/api/v1/count", myCountAPI.deleteACount, "DELETE"),
@@ -119,9 +119,7 @@ func (myCountAPI countAPI) getCountsBySpeaker(writer http.ResponseWriter, reques
 			countsBySessionBySpeaker[speakerKey] = countsBySession
 		} else {
 			countsBySessionBySpeaker[speakerKey][sessionKey] = append(countsBySessionBySpeaker[speakerKey][sessionKey], count)
-
 		}
-
 	}
 
 	responseJSON, _ := json.Marshal(countsBySessionBySpeaker)
