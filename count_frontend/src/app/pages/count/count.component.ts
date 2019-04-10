@@ -1,17 +1,16 @@
 import { Component, OnInit } from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
 
-import { Count, time, timeMapping } from "../../data_models/count";
+import { Count, timeMapping } from "../../data_models/count";
 import { CountService } from "../../services/count.service";
 import { SessionService } from "../../services/session.service";
 import { Session } from "src/app/data_models/session";
 
 @Component({
   selector: "app-counts",
-  templateUrl: "./counts.component.html",
-  styleUrls: ["./counts.component.css"]
+  templateUrl: "./count.component.html",
+  styleUrls: ["./count.component.css"]
 })
-export class CountsComponent implements OnInit {
+export class CountComponent implements OnInit {
   constructor(
     private countService: CountService,
     private sessionService: SessionService
