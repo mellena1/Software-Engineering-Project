@@ -30,6 +30,7 @@
         type="submit"
         class="btn btn-success btn-sm"
         (click)="toggle()"
+        (click)="pressSpeaker()"
       >
       Submit
       </button>
@@ -44,13 +45,14 @@
             type="submit"
             class="btn btn-success btn-sm"
             (click)="toggle()"
+            (click)="pressSession()"
           >
           Submit
           </button>
+          <br />
           </div>
 
           <div class="table-responsive" ng-app = counts  *ngIf= "buttonPressed">
-              <form [formGroup]="sessionForm">
                 <table class="table table-bordered table-striped">
                   <thead>
                     <tr *ngIf="sessionSelected">
@@ -67,48 +69,49 @@
                       <th>End Count</th>
                   </tr>
                   </thead>
-                  <tbody>
+                  <tbody *ngIf="sessionSelected">
 
-                    <tr *ngIf="sessionSelected">
-                      <td *ngFor="let speaker of speakers">
-                        <span>{{ speaker.firstName }} {{ speaker.lastName }}</span>
+                    <tr>
+                      <td>
+                        <span></span>
                       </td>
       
-                      <td *ngFor="let count of counts">
-                        <span>{{ count.time.beginning }}</span>
+                      <td>
+                        <span></span>
                       </td>
       
-                      <td *ngFor="let count of counts">
-                        <span>{{ count.time.middle }}</span>
+                      <td>
+                        <span></span>
                       </td>
       
-                      <td *ngFor="let count of counts">
-                        <span>{{ count.time.end }}</span>
+                      <td>
+                        <span></span>
                       </td>
                     </tr> 
+                  </tbody>
 
+                  <tbody *ngIf="speakerSelected">
 
-                    <tr *ngIf="speakerSelected">
-                      <td *ngFor="let session of sessions">
-                        <span>{{ session.name }}</span>
+                    <!----tr *ngFor="let sessionBySpeaker of sessionsBySpeakers"-->
+                    <tr>
+                      <td>
+                        <span></span>
                       </td>
       
-                      <td *ngFor="let count of counts">
-                        <span>{{ count.time.beginning }}</span>
+                      <td>
+                        <span></span>
                       </td>
       
-                      <td *ngFor="let count of counts">
-                        <span>{{ count.time.middle }}</span>
+                      <td>
+                        <span></span>
                       </td>
       
-                      <td *ngFor="let count of counts">
-                        <span>{{ count.time.end }}</span>
+                      <td>
+                        <span></span>
                       </td>
                     </tr> 
-
                   </tbody>
                 </table>
-              </form>
             </div>
     </body>
 </html>
