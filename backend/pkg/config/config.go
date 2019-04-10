@@ -66,9 +66,9 @@ func init() {
 }
 
 func getFileWriter(fileName string) *os.File {
-	f, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	myFile, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
 		panic(err)
 	}
-	return f
+	return myFile
 }

@@ -18,7 +18,7 @@ type countAPI struct {
 
 // CreateCountRoutes makes all of the routes for room related calls
 func CreateCountRoutes(countDBFacade db.CountReaderWriterUpdaterDeleter) []Route {
-	cAPI := countAPI{
+	myCountAPI := countAPI{
 		countReader:  countDBFacade,
 		countWriter:  countDBFacade,
 		countUpdater: countDBFacade,
@@ -26,11 +26,12 @@ func CreateCountRoutes(countDBFacade db.CountReaderWriterUpdaterDeleter) []Route
 	}
 
 	routes := []Route{
-		NewRoute("/api/v1/counts", cAPI.getAllCounts, "GET"),
-		NewRoute("/api/v1/count", cAPI.getCountsOfSession, "GET"),
-		NewRoute("/api/v1/count", cAPI.writeACount, "POST"),
-		NewRoute("/api/v1/count", cAPI.updateACount, "PUT"),
-		NewRoute("/api/v1/count", cAPI.deleteACount, "DELETE"),
+		NewRoute("/api/v1/counts", myCountAPI.getAllCounts, "GET"),
+		NewRoute("/api/v1/count", myCountAPI.getCountsOfSession, "GET"),
+		NewRoute("/api/v1/countsBySpeaker", myCountAPI.getCountsBySpeaker, "GET"),
+		NewRoute("/api/v1/count", myCountAPI.writeACount, "POST"),
+		NewRoute("/api/v1/count", myCountAPI.updateACount, "PUT"),
+		NewRoute("/api/v1/count", myCountAPI.deleteACount, "DELETE"),
 	}
 
 	return routes
@@ -44,48 +45,85 @@ func CreateCountRoutes(countDBFacade db.CountReaderWriterUpdaterDeleter) []Route
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/counts [get]
-func (c countAPI) getAllCounts(w http.ResponseWriter, r *http.Request) {
-	counts, err := c.countReader.ReadAllCounts()
+func (myCountAPI countAPI) getAllCounts(writer http.ResponseWriter, request *http.Request) {
+	counts, err := myCountAPI.countReader.ReadAllCounts()
 	if err != nil {
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 
 	responseJSON, _ := json.Marshal(counts)
-	w.Write(responseJSON)
+	writer.Write(responseJSON)
 }
 
-// getACount Get a count from the db
-// @Summary Get a count from the db
-// @Description Get a count from the db
+// getACount Get the beginning, middle, and end counts for a specified session from the db
+// @Summary Get the beginning, middle, and end counts for a specified session from the db
+// @Description Get the beginning, middle, and end counts for a specified session from the db
 // @produce json
 // @param id query int true "the session of the count to retrieve"
 // @Success 200 {array} db.Count "the requested count (beginning/middle/end)"
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/count [get]
-func (c countAPI) getCountsOfSession(w http.ResponseWriter, r *http.Request) {
-	requestedID, err := getIDFromQueries(r)
+func (myCountAPI countAPI) getCountsOfSession(writer http.ResponseWriter, request *http.Request) {
+	requestedID, err := getIDFromQueries(request)
 	switch err {
 	case ErrQueryNotSet:
-		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, w)
+		ReportError(ErrQueryNotSet, "the \"id\" param was not set", http.StatusBadRequest, writer)
 		return
 	case ErrBadQuery:
-		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		ReportError(ErrBadQuery, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, writer)
 		return
 	case ErrBadQueryType:
-		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, w)
+		ReportError(ErrBadQueryType, "the \"id\" param is not a number", http.StatusBadRequest, writer)
 		return
 	}
 
-	count, err := c.countReader.ReadCountsOfSession(requestedID)
+	count, err := myCountAPI.countReader.ReadCountsOfSession(requestedID)
 	if err != nil {
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 
 	responseJSON, _ := json.Marshal(count)
-	w.Write(responseJSON)
+	writer.Write(responseJSON)
+}
+
+// getAllCounts Get all counts from the db, sorted by speaker
+// @Summary Get all counts from the db, sorted by speaker
+// @Description Get all counts from the db, sorted by speaker
+// @produce json
+// @Success 200 {array} db.Count "all counts in the db"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
+// @Router /api/v1/countsBySpeaker [get]
+func (myCountAPI countAPI) getCountsBySpeaker(writer http.ResponseWriter, request *http.Request) {
+	countsBySpeakerData, err := myCountAPI.countReader.ReadAllCountsBySpeaker()
+	if err != nil {
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
+		return
+	}
+
+	countsBySessionBySpeaker := make(map[string](map[string][]db.Count))
+	for _, data := range countsBySpeakerData {
+		countsBySession := make(map[string][]db.Count)
+
+		speakerKey := *data.SpeakerFirstName + " " + *data.SpeakerLastName
+		sessionKey := *data.SessionName
+
+		count := db.NewCount()
+		count.Time, count.SessionID, count.UserName, count.Count = data.Time, data.SessionID, data.UserName, data.Count
+
+		if countsBySessionBySpeaker[speakerKey] == nil {
+			countsBySession[sessionKey] = append(countsBySession[sessionKey], count)
+			countsBySessionBySpeaker[speakerKey] = countsBySession
+		} else {
+			countsBySessionBySpeaker[speakerKey][sessionKey] = append(countsBySessionBySpeaker[speakerKey][sessionKey], count)
+		}
+	}
+
+	responseJSON, _ := json.Marshal(countsBySessionBySpeaker)
+	writer.Write(responseJSON)
 }
 
 // writeACountRequest request for writeACount
@@ -96,16 +134,15 @@ type writeACountRequest struct {
 	Count     *int64  `json:"count" example:"30"`
 }
 
-// Validate validates a writeACountRequest
-func (r writeACountRequest) Validate() error {
-	if r.SessionID == nil || r.Time == nil {
+func (request writeACountRequest) Validate() error {
+	if request.SessionID == nil || request.Time == nil {
 		return ErrInvalidRequest
 	}
 	return nil
 }
 
 // writeACount Add a count to the db
-// @Summary Add a count
+// @Summary Add a count to the db
 // @Description Add a count to the db
 // @accept json
 // @produce json
@@ -114,35 +151,34 @@ func (r writeACountRequest) Validate() error {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/count [post]
-func (c countAPI) writeACount(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
+func (myCountAPI countAPI) writeACount(writer http.ResponseWriter, request *http.Request) {
+	body, err := ioutil.ReadAll(request.Body)
 	if err != nil {
-		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+		ReportError(err, "unable to read body", http.StatusBadRequest, writer)
 		return
 	}
 
 	countRequest := writeACountRequest{}
 	err = json.Unmarshal(body, &countRequest)
 	if err != nil {
-		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, w)
+		ReportError(err, "json is unable to be unmarshaled", http.StatusBadRequest, writer)
 		return
 	}
 
 	if err = countRequest.Validate(); err != nil {
-		ReportError(err, "time and session must be set", http.StatusBadRequest, w)
+		ReportError(err, "time and session must be set", http.StatusBadRequest, writer)
 		return
 	}
 
-	id, err := c.countWriter.WriteACount(countRequest.Time, countRequest.SessionID, countRequest.UserName, countRequest.Count)
+	id, err := myCountAPI.countWriter.WriteACount(countRequest.Time, countRequest.SessionID, countRequest.UserName, countRequest.Count)
 	if err != nil {
-		ReportError(err, "failed to write a count", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to write a count", http.StatusServiceUnavailable, writer)
 		return
 	}
 
-	writeIDToClient(w, id)
+	writeIDToClient(writer, id)
 }
 
-// updateACountRequest request for updateACount
 type updateACountRequest struct {
 	Time      *string `json:"time" example:"beginning"`
 	SessionID *int64  `json:"sessionID" example:"2"`
@@ -150,9 +186,8 @@ type updateACountRequest struct {
 	Count     *int64  `json:"count" example:"30"`
 }
 
-// Validate validates a updateACountRequest
-func (r updateACountRequest) Validate() error {
-	if r.SessionID == nil || r.Time == nil {
+func (request updateACountRequest) Validate() error {
+	if request.SessionID == nil || request.Time == nil {
 		return ErrInvalidRequest
 	}
 	return nil
@@ -168,42 +203,42 @@ func (r updateACountRequest) Validate() error {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/count [put]
-func (c countAPI) updateACount(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
+func (myCountAPI countAPI) updateACount(writer http.ResponseWriter, request *http.Request) {
+	body, err := ioutil.ReadAll(request.Body)
 	if err != nil {
-		ReportError(err, "unable to read body", http.StatusBadRequest, w)
+		ReportError(err, "unable to read body", http.StatusBadRequest, writer)
 		return
 	}
 
 	updateRequest := updateACountRequest{}
 	err = json.Unmarshal(body, &updateRequest)
 	if err != nil {
-		ReportError(err, "failed to unmarshal json", http.StatusBadRequest, w)
+		ReportError(err, "failed to unmarshal json", http.StatusBadRequest, writer)
 		return
 	}
 
 	if err = updateRequest.Validate(); err != nil {
-		ReportError(err, "must set time and session for count you wish to update", http.StatusBadRequest, w)
+		ReportError(err, "must set time and session for count you wish to update", http.StatusBadRequest, writer)
 		return
 	}
 
-	err = c.countUpdater.UpdateACount(updateRequest.Time, updateRequest.SessionID, updateRequest.UserName, updateRequest.Count)
+	err = myCountAPI.countUpdater.UpdateACount(updateRequest.Time, updateRequest.SessionID, updateRequest.UserName, updateRequest.Count)
 	switch err {
 	case nil:
-		w.Write(nil)
+		writer.Write(nil)
 		return
 	case db.ErrNothingChanged:
-		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, writer)
 		return
 	default:
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 }
 
-// deleteACount Delete an existing count in the db
-// @Summary Delete an existing count in the db
-// @Description Delete an existing session's counts in the db
+// deleteACount Delete a sessions existing counts from the db given a sessionID
+// @Summary Delete a sessions existing counts from the db given a sessionID
+// @Description Delete a sessions existing counts from the db given a sessionID
 // @accept json
 // @produce json
 // @param id query int true "the session of counts to delete"
@@ -211,30 +246,30 @@ func (c countAPI) updateACount(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {} _ "the request was bad"
 // @Failure 503 {} _ "failed to access the db"
 // @Router /api/v1/count [delete]
-func (c countAPI) deleteACount(w http.ResponseWriter, r *http.Request) {
-	requestedID, err := getIDFromQueries(r)
+func (myCountAPI countAPI) deleteACount(writer http.ResponseWriter, request *http.Request) {
+	requestedID, err := getIDFromQueries(request)
 	switch err {
 	case ErrQueryNotSet:
-		ReportError(err, "the \"sessionID\" param was not set", http.StatusBadRequest, w)
+		ReportError(err, "the \"sessionID\" param was not set", http.StatusBadRequest, writer)
 		return
 	case ErrBadQuery:
-		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, w)
+		ReportError(err, "you are only allowed to specify 1 id at a time", http.StatusBadRequest, writer)
 		return
 	case ErrBadQueryType:
-		ReportError(err, "the \"sessionID\" param is not a number", http.StatusBadRequest, w)
+		ReportError(err, "the \"sessionID\" param is not a number", http.StatusBadRequest, writer)
 		return
 	}
 
-	err = c.countDeleter.DeleteACount(requestedID)
+	err = myCountAPI.countDeleter.DeleteACount(requestedID)
 	switch err {
 	case nil:
-		w.Write(nil)
+		writer.Write(nil)
 		return
 	case db.ErrNothingChanged:
-		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, w)
+		ReportError(err, "nothing in the db was changed. id probably does not exist", http.StatusBadRequest, writer)
 		return
 	default:
-		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, w)
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
 		return
 	}
 }

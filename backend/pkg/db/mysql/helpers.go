@@ -10,45 +10,45 @@ type rowScanner interface {
 }
 
 // StringToNullString takes in a string pointer and returns a sql.NullString
-func StringToNullString(s *string) sql.NullString {
-	if s == nil {
+func StringToNullString(myString *string) sql.NullString {
+	if myString == nil {
 		return sql.NullString{
 			String: "",
 			Valid:  false,
 		}
 	}
 	return sql.NullString{
-		String: *s,
+		String: *myString,
 		Valid:  true,
 	}
 }
 
 // NullStringToString takes in a sql.NullString and returns a string pointer
-func NullStringToString(s sql.NullString) *string {
-	if s.Valid {
-		return &s.String
+func NullStringToString(myString sql.NullString) *string {
+	if myString.Valid {
+		return &myString.String
 	}
 	return nil
 }
 
 // IntToNullInt takes in an int64 pointer and returns a sql.NullInt64
-func IntToNullInt(i *int64) sql.NullInt64 {
-	if i == nil {
+func IntToNullInt(myInt *int64) sql.NullInt64 {
+	if myInt == nil {
 		return sql.NullInt64{
 			Int64: 0,
 			Valid: false,
 		}
 	}
 	return sql.NullInt64{
-		Int64: *i,
+		Int64: *myInt,
 		Valid: true,
 	}
 }
 
 // NullIntToInt takes in a sql.NullInt64 and returns an int pointer
-func NullIntToInt(i sql.NullInt64) *int64 {
-	if i.Valid {
-		return &i.Int64
+func NullIntToInt(myInt sql.NullInt64) *int64 {
+	if myInt.Valid {
+		return &myInt.Int64
 	}
 	return nil
 }

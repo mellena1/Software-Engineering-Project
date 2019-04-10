@@ -7,7 +7,7 @@ import (
 // Route holds all needed fields to make a route
 type Route struct {
 	Path    string
-	Handler func(w http.ResponseWriter, r *http.Request)
+	Handler func(writer http.ResponseWriter, request *http.Request)
 	Methods []string
 }
 
@@ -19,7 +19,7 @@ type PrefixedRoute struct {
 }
 
 // NewRoute returns a new Route struct. methods are zero-to-many
-func NewRoute(path string, handler func(w http.ResponseWriter, r *http.Request), methods ...string) Route {
+func NewRoute(path string, handler func(writer http.ResponseWriter, request *http.Request), methods ...string) Route {
 	return Route{Path: path, Handler: handler, Methods: methods}
 }
 

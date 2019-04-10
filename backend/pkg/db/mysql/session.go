@@ -53,11 +53,11 @@ func scanASession(session *db.Session, row rowScanner) error {
 		session.Timeslot.ID = NullIntToInt(timeslotID)
 
 		// I think the time vals are in RFC3339 because we set ParseTime = true on the mysql-driver
-		sTime := NullStringToString(timeslotStartTime)                   // should never be null
-		session.Timeslot.StartTime, _ = time.Parse(time.RFC3339, *sTime) // mysql time will always be in this format
+		startTime := NullStringToString(timeslotStartTime)                   // should never be null
+		session.Timeslot.StartTime, _ = time.Parse(time.RFC3339, *startTime) // mysql time will always be in this format
 
-		eTime := NullStringToString(timeslotEndTime)                   // should never be null
-		session.Timeslot.EndTime, _ = time.Parse(time.RFC3339, *eTime) // mysql time will always be in this format
+		endTime := NullStringToString(timeslotEndTime)                   // should never be null
+		session.Timeslot.EndTime, _ = time.Parse(time.RFC3339, *endTime) // mysql time will always be in this format
 	} else {
 		session.Timeslot = nil
 	}
@@ -68,12 +68,12 @@ func scanASession(session *db.Session, row rowScanner) error {
 }
 
 // ReadASession reads a session from the db given sessionID
-func (s SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
-	if s.db == nil {
+func (mySessionSQL SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
+	if mySessionSQL.db == nil {
 		return db.Session{}, ErrDBNotSet
 	}
 
-	stmt, err := s.db.Prepare(`
+	statement, err := mySessionSQL.db.Prepare(`
 		SELECT session.sessionID, speaker.speakerID, speaker.email, 
 			speaker.firstName, speaker.lastName, room.roomID, room.roomName, room.capacity, 
 			timeslot.timeslotID, timeslot.startTime, timeslot.endTime, session.sessionName 
@@ -85,22 +85,22 @@ func (s SessionMySQL) ReadASession(sessionID int64) (db.Session, error) {
 	if err != nil {
 		return db.Session{}, err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
 	session := db.NewSession()
-	row := stmt.QueryRow(sessionID)
+	row := statement.QueryRow(sessionID)
 	err = scanASession(&session, row)
 
 	return session, err
 }
 
 // ReadAllSessions reads all sessions from the db
-func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
-	if s.db == nil {
+func (mySessionSQL SessionMySQL) ReadAllSessions() ([]db.Session, error) {
+	if mySessionSQL.db == nil {
 		return nil, ErrDBNotSet
 	}
 
-	q := `
+	query := `
 		SELECT session.sessionID, speaker.speakerID, speaker.email, 
 			speaker.firstName, speaker.lastName, room.roomID, room.roomName, room.capacity, 
 			timeslot.timeslotID, timeslot.startTime, timeslot.endTime, session.sessionName 
@@ -109,7 +109,7 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 		LEFT JOIN room ON session.roomID = room.roomID
 		LEFT JOIN timeslot ON session.timeslotID = timeslot.timeslotID;`
 
-	rows, err := s.db.Query(q)
+	rows, err := mySessionSQL.db.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -131,18 +131,18 @@ func (s SessionMySQL) ReadAllSessions() ([]db.Session, error) {
 }
 
 // WriteASession writes a session to the db
-func (s SessionMySQL) WriteASession(speakerID *int64, roomID *int64, timeslotID *int64, name *string) (int64, error) {
-	if s.db == nil {
+func (mySessionSQL SessionMySQL) WriteASession(speakerID *int64, roomID *int64, timeslotID *int64, name *string) (int64, error) {
+	if mySessionSQL.db == nil {
 		return 0, ErrDBNotSet
 	}
 
-	stmt, err := s.db.Prepare("INSERT INTO session (`speakerID`, `roomID`, `timeslotID`, `sessionName`) VALUES (?, ?, ?, ?);")
+	statement, err := mySessionSQL.db.Prepare("INSERT INTO session (`speakerID`, `roomID`, `timeslotID`, `sessionName`) VALUES (?, ?, ?, ?);")
 	if err != nil {
 		return 0, err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	result, err := stmt.Exec(IntToNullInt(speakerID), IntToNullInt(roomID), IntToNullInt(timeslotID), StringToNullString(name))
+	result, err := statement.Exec(IntToNullInt(speakerID), IntToNullInt(roomID), IntToNullInt(timeslotID), StringToNullString(name))
 	if err != nil {
 		return 0, err
 	}
@@ -151,18 +151,18 @@ func (s SessionMySQL) WriteASession(speakerID *int64, roomID *int64, timeslotID 
 }
 
 // UpdateASession updates a session in the db given a sessionID and the updated session
-func (s SessionMySQL) UpdateASession(sessionID int64, speakerID *int64, roomID *int64, timeslotID *int64, name *string) error {
-	if s.db == nil {
+func (mySessionSQL SessionMySQL) UpdateASession(sessionID int64, speakerID *int64, roomID *int64, timeslotID *int64, name *string) error {
+	if mySessionSQL.db == nil {
 		return ErrDBNotSet
 	}
 
-	stmt, err := s.db.Prepare("UPDATE session SET speakerID = ?, roomID = ?, timeslotID = ?, sessionName = ? WHERE sessionID = ?;")
+	statement, err := mySessionSQL.db.Prepare("UPDATE session SET speakerID = ?, roomID = ?, timeslotID = ?, sessionName = ? WHERE sessionID = ?;")
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	result, err := stmt.Exec(IntToNullInt(speakerID), IntToNullInt(roomID), IntToNullInt(timeslotID), StringToNullString(name), sessionID)
+	result, err := statement.Exec(IntToNullInt(speakerID), IntToNullInt(roomID), IntToNullInt(timeslotID), StringToNullString(name), sessionID)
 	if err != nil {
 		return err
 	}
@@ -177,18 +177,18 @@ func (s SessionMySQL) UpdateASession(sessionID int64, speakerID *int64, roomID *
 }
 
 // DeleteASession deletes a room given a sessionID
-func (s SessionMySQL) DeleteASession(sessionID int64) error {
-	if s.db == nil {
+func (mySessionSQL SessionMySQL) DeleteASession(sessionID int64) error {
+	if mySessionSQL.db == nil {
 		return ErrDBNotSet
 	}
 
-	stmt, err := s.db.Prepare("DELETE FROM session WHERE sessionID = ?;")
+	statement, err := mySessionSQL.db.Prepare("DELETE FROM session WHERE sessionID = ?;")
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	result, err := stmt.Exec(sessionID)
+	result, err := statement.Exec(sessionID)
 	if err != nil {
 		return err
 	}
