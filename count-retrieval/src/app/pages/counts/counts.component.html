@@ -53,15 +53,42 @@
               <form [formGroup]="sessionForm">
                 <table class="table table-bordered table-striped">
                   <thead>
-                    <tr>
-                        <th>Presentation Name</th>
-                        <th>Start Count</th>
-                        <th>Mid Count</th>
-                        <th>End Count</th>
+                    <tr *ngIf="sessionSelected">
+                      <th>Speaker Name</th>
+                      <th>Start Count</th>
+                      <th>Mid Count</th>
+                      <th>End Count</th>
                     </tr>
+
+                    <tr *ngIf="speakerSelected">
+                      <th>Presentation Name</th>
+                      <th>Start Count</th>
+                      <th>Mid Count</th>
+                      <th>End Count</th>
+                  </tr>
                   </thead>
                   <tbody>
-                    <tr>
+
+                    <tr *ngIf="sessionSelected">
+                      <td *ngFor="let speaker of speakers">
+                        <span>{{ speaker.firstName }} {{ speaker.lastName }}</span>
+                      </td>
+      
+                      <td *ngFor="let count of counts">
+                        <span>{{ count.time.beginning }}</span>
+                      </td>
+      
+                      <td *ngFor="let count of counts">
+                        <span>{{ count.time.middle }}</span>
+                      </td>
+      
+                      <td *ngFor="let count of counts">
+                        <span>{{ count.time.end }}</span>
+                      </td>
+                    </tr> 
+
+                    
+                    <tr *ngIf="speakerSelected">
                       <td *ngFor="let session of sessions">
                         <span>{{ session.name }}</span>
                       </td>
@@ -78,6 +105,7 @@
                         <span>{{ count.time.end }}</span>
                       </td>
                     </tr> 
+
                   </tbody>
                 </table>
               </form>
