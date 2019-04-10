@@ -28,6 +28,8 @@ export class CountsComponent implements OnInit {
   speakerSessionMap: Map<String, Map<String, Count[]>>;
   error: any;
   buttonPressed: boolean = false;
+  speakerSelected: boolean = false;
+  sessionSelected: boolean = false;
   
 ngOnInit() {
   this.getAllSpeakers();
@@ -68,6 +70,16 @@ toggle(): void{
   } else {
     this.buttonPressed = true;
   }
+}
+
+pressSession(): void {
+  this.sessionSelected = true;
+  this.speakerSelected = false;
+}
+
+pressSpeaker(): void {
+  this.speakerSelected = true;
+  this.sessionSelected = false;
 }
 
 }
