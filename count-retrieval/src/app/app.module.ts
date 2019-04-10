@@ -18,10 +18,7 @@ import { CountsComponent } from "./pages/counts/counts.component";
     ReactiveFormsModule,
     HttpClientModule
   ],
-  declarations: [
-    AppComponent,
-    CountsComponent
-  ],
+  declarations: [AppComponent, CountsComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

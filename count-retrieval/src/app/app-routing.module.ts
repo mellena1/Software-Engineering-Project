@@ -3,7 +3,6 @@ import { RouterModule, Routes } from "@angular/router";
 
 import { CountsComponent } from "./pages/counts/counts.component";
 
-
 const routes: Routes = [
   { path: "", redirectTo: "/counts", pathMatch: "full" },
   { path: "counts", component: CountsComponent }

@@ -4,16 +4,16 @@ export enum time {
   "end"
 }
 export class Count {
-  count: number;
-  sessionID: number;
-  time: time;
-  userName: string;
+  Count: number;
+  SessionID: number;
+  Time: time;
+  UserName: string;
 
   constructor(count: number, time: time, userName: string) {
-    this.sessionID = -1;
-    this.count = count;
-    this.userName = userName;
-    this.time = time;
+    this.SessionID = -1;
+    this.Count = count;
+    this.UserName = userName;
+    this.Time = time;
   }
 }
 
