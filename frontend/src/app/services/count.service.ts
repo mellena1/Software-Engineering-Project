@@ -32,10 +32,6 @@ export class CountService {
     });
   }
 
-  getCountsBySpeaker(){
-    return this.http.get<Map<String, Map<String, Count[]>>>(this.apiUrl + "/countsBySpeaker");
-  }
-
   writeACount(count: Count) {
     return this.http.post<WriteResponse>(this.apiUrl + "/count", count);
   }
