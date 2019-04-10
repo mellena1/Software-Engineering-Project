@@ -1,7 +1,7 @@
 import { Component, OnInit, NgModule } from "@angular/core";
 
 
-import {Count} from '../../data_models/count';
+import {Count, /*SpeakerCount, SessionCount*/} from '../../data_models/count';
 import {CountService} from '../../services/count.service';
 import {SpeakerService} from '../../services/speaker.service';
 import {Speaker} from "../../data_models/speaker";
@@ -34,14 +34,21 @@ export class CountsComponent implements OnInit {
   speakerSelected: boolean = false;
   sessionSelected: boolean = false;
 
-  /*sessionBySpeaker = new SpeakerCount(this.speakerSessionMap.getKey(),"0","0","0");
-  countBySession = new SessionCount("","0","0","0");*/
+  //sessionBySpeaker = new SpeakerCount("",0,0,0);
+  //countBySession = new SessionCount("",0,0,0);
+
+  
 
   
 ngOnInit() {
   this.getAllSpeakers();
   this.getAllSessions();
+  //this.getAllCounts();
   this.getSessionsBySpeaker();
+  //console.log("Here is sessionsBySpeakers: " + this.sesssionsBySpeakers);
+  //console.log("Here is speakerSessionMap: " + this.speakerSessionMap);
+  //var test = this.speakerSessionMap.keys();
+  //console.log("Here are the keys: " + test);
 }
 
 getAllSessions(): void {
@@ -62,6 +69,15 @@ getAllSpeakers(): void {
       );
 }
 
+/*getAllCounts(): void {
+  this.countService
+      .getAllCounts()
+      .subscribe(
+        counts => (this.counts = counts),
+        error => (this.error = error)
+      );
+}*/
+
 getSessionsBySpeaker(): void{
   this.countService
     .getCountsBySpeaker()
@@ -71,9 +87,7 @@ getSessionsBySpeaker(): void{
     );
 }
 
-
-
-toggle(): void{
+createTable(): void{
   if(this.buttonPressed){
     this.buttonPressed = false;
   } else {
@@ -81,14 +95,18 @@ toggle(): void{
   }
 }
 
-pressSession(): void {
+submitSession(): void {
   this.sessionSelected = true;
   this.speakerSelected = false;
+  //var newCountBySession = new SessionCount (this.speakerSessionMap.getKey(), 0,0,0);
+  //console.log("Check it: " + newCountBySession);
 }
 
-pressSpeaker(): void {
+submitSpeaker(): void {
   this.speakerSelected = true;
   this.sessionSelected = false;
+  //console.log("Here is speakerSessionMap: " + this.speakerSessionMap);
+  //console.log("Here is sessionsBySpeakers: " + this.sesssionsBySpeakers);
 }
 
 }

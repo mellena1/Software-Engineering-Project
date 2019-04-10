@@ -29,12 +29,13 @@
        <button
         type="submit"
         class="btn btn-success btn-sm"
-        (click)="toggle()"
-        (click)="pressSpeaker()"
+        (click)="submitSpeaker()"
+        (click)="createTable()"
       >
       Submit
       </button>
       <h3>Or Select Session</h3>
+
         <select>
             <option value="" disabled selected>--Select Sessions--</option>
             <option *ngFor="let session of sessions" [ngValue]="session">{{
@@ -44,8 +45,8 @@
           <button
             type="submit"
             class="btn btn-success btn-sm"
-            (click)="toggle()"
-            (click)="pressSession()"
+            (click)="submitSession()"
+            (click)="createTable()"
           >
           Submit
           </button>
@@ -71,44 +72,51 @@
                   </thead>
                   <tbody *ngIf="sessionSelected">
 
-                    <tr>
+                    <!--not actually using let speaker of speakers, just placeholder;
+                       same for sessions below-->
+                    <tr *ngFor="let speaker of speakers">
                       <td>
-                        <span></span>
+                        <span> {{speaker.firstName}} {{speaker.lastName}} </span>
                       </td>
-      
-                      <td>
-                        <span></span>
-                      </td>
-      
-                      <td>
-                        <span></span>
-                      </td>
-      
-                      <td>
-                        <span></span>
-                      </td>
+
+                      <!-->ng-container *ngFor="let "-->
+                        <td>
+                          <span></span>
+                        </td>
+        
+                        <td>
+                          <span></span>
+                        </td>
+        
+                        <td>
+                          <span></span>
+                        </td>
+                      <!-->/ng-container-->
+
                     </tr> 
                   </tbody>
 
                   <tbody *ngIf="speakerSelected">
 
-                    <!----tr *ngFor="let sessionBySpeaker of sessionsBySpeakers"-->
-                    <tr>
-                      <td>
-                        <span></span>
-                      </td>
-      
-                      <td>
-                        <span></span>
-                      </td>
-      
-                      <td>
-                        <span></span>
-                      </td>
-      
-                      <td>
-                        <span></span>
-                      </td>
+                    <tr *ngFor="let session of sessions">
+
+                      
+                        <td>
+                          <span> {{session.name}} </span>
+                        </td>
+                      <!-->ng-container *ngFor="let "-->
+                        <td>
+                          <span></span>
+                        </td>
+        
+                        <td>
+                          <span></span>
+                        </td>
+        
+                        <td>
+                          <span></span>
+                        </td>
+                      <!-->/ng-container-->
                     </tr> 
                   </tbody>
                 </table>
