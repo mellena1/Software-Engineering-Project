@@ -41,6 +41,13 @@
   </button>
   <br />
 </div>
+<br />
+<br />
+
+<div>
+  <h1 *ngIf="sessionSelected && selectedSession"> Counts from "{{selectedSession.name}}" </h1>
+  <h1 *ngIf="speakerSelected && selectedSpeaker"> Presentation Stats for "{{selectedSpeaker}}" </h1>
+</div>
 
 <div class="table-responsive table-spaced" ng-app="counts" *ngIf="showTable">
   <table class="table table-bordered table-striped">
