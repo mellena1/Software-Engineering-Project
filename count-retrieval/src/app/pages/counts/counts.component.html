@@ -9,34 +9,39 @@
 </head>
 
 <body>
-    <div class="container-fluid">
+    <div class="container">
         <br />
-        <h2 style="text-align:center">Count Retrieval</h2>
+        <h1 class="display-4" align=center>Count Retrieval</h1>
         <br />
 
         <h3>Select Speaker</h3>
-        <select [(ngModel)]="selectedSpeaker">
+
+        <select class="custom-select" [(ngModel)]="selectedSpeaker">
             <option value="" disabled selected> -- Select Speaker-- </option>
             <option *ngFor="let speaker of speakers" [ngValue]="speaker.firstName + ' ' + speaker.lastName">
                 {{ speaker.firstName }} {{ speaker.lastName }}
             </option>
         </select>
-
-        <button type="submit" class="btn btn-primary btn-sm btn-spaced" (click)="submitSpeaker()">
+        <br>
+        <br>
+        <button type="submit" class="btn btn-outline-primary btn-sm btn-spaced" (click)="submitSpeaker()">
             Filter By Speaker
         </button>
 
         <br>
         <br>
         <br>
+        
         <h3>Or Select Session</h3>
 
-        <select [(ngModel)]="selectedSession" (ngModelChange)="getCountBySessionID(selectedSession.id)">
+        <select class="custom-select" [(ngModel)]="selectedSession" (ngModelChange)="getCountBySessionID(selectedSession.id)">
             <option value="" disabled selected>--Select Sessions--</option>
             <option *ngFor="let session of sessions" [ngValue]="session">{{ session.name }}
             </option>
         </select>
-        <button type="submit" class="btn btn-success btn-sm btn-spaced" (click)="submitSession()">
+        <br>
+        <br>
+        <button type="submit" class="btn btn-outline-success btn-sm btn-spaced" (click)="submitSession()">
             Filter By Session
         </button>
         <br />
@@ -45,12 +50,12 @@
     <br />
 
     <div>
-        <h1 *ngIf="sessionSelected && selectedSession">
+        <h2  align = center *ngIf="sessionSelected && selectedSession">
         Counts from "{{ selectedSession.name }}"
-      </h1>
-        <h1 *ngIf="speakerSelected && selectedSpeaker">
+      </h2>
+        <h2  align = center *ngIf="speakerSelected && selectedSpeaker">
         Presentation Stats for "{{ selectedSpeaker }}"
-      </h1>
+      </h2>
     </div>
 
     <div class="table-responsive table-spaced" ng-app="counts" *ngIf="showTable">
