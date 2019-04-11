@@ -1,11 +1,11 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { CountsComponent } from "./pages/counts/counts.component";
+import { CountComponent } from "./pages/count/count.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/count", pathMatch: "full" },
-  { path: "count", component: CountsComponent }
+  { path: "count", component: CountComponent }
 ];
 
 @NgModule({
