@@ -20,8 +20,14 @@ export class TimeslotGlobals {
 
   static sortTime(timeA: string, timeB: string): number {
     // Ignore date
-    var a = moment(timeA, "YYYY-MM-DDTHH:mm:ss").month(0).date(0).year(0);
-    var b = moment(timeB, "YYYY-MM-DDTHH:mm:ss").month(0).date(0).year(0);
+    var a = moment(timeA, "YYYY-MM-DDTHH:mm:ss")
+      .month(0)
+      .date(0)
+      .year(0);
+    var b = moment(timeB, "YYYY-MM-DDTHH:mm:ss")
+      .month(0)
+      .date(0)
+      .year(0);
     return a.isBefore(b) ? -1 : 1;
   }
 
