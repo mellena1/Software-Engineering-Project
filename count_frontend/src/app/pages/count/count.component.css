@@ -3,8 +3,11 @@ th, td {
   padding-right: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
-  border: .5px solid gray;
+  border: .5px solid black;
 }
 ul {
   list-style-type:none; padding:0
+}
+li {
+  color: black
 }

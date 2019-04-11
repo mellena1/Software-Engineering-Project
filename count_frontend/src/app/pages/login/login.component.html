@@ -1,0 +1,19 @@
+<div class="container">
+  <h2>Login</h2>
+  <form (ngSubmit)="onSubmit()" #countForm="ngForm">
+    <div class="form-group">
+      <label for="name">Username</label>
+      <input type="string" class="form-control" id="username" required [(ngModel)]="model.username" name="username" />
+    </div>
+    <div class="form-group">
+      <label for="name">Daily Password</label>
+      <div *ngIf="showWarning" class="warning">
+        Incorrect Password
+
+      </div>
+      <p></p>
+      <input type="password" class="form-control" id="password" required [(ngModel)]="model.password" name="password" />
+    </div>
+    <button type="submit" class="btn btn-success">Submit</button>
+  </form>
+</div>
