@@ -56,14 +56,7 @@ export class SpeakersComponent implements OnInit {
   ) {
     this.tableDataSource = new LocalDataSource();
 
-    this.speakerService.getAllSpeakers().subscribe(
-      data => {
-        this.tableDataSource.load(data);
-      },
-      error => {
-        console.log(error);
-      }
-    );
+    this.getAllSpeakers();
   }
 
   ngOnInit() {
@@ -76,6 +69,20 @@ export class SpeakersComponent implements OnInit {
     this.tableDataSource.onChanged().subscribe(() => {
       this.table.grid.createFormShown = true;
     });
+  }
+
+  getAllSpeakers() {
+    this.speakerService.getAllSpeakers().subscribe(
+      data => {
+        data.sort((a, b) => {
+          return a.firstName < b.firstName ? -1 : 1;
+        });
+        this.tableDataSource.load(data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   addASpeaker(event): void {

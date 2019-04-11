@@ -18,6 +18,13 @@ export class TimeslotGlobals {
     return moment(time, "YYYY-MM-DDTHH:mm:ss").isValid();
   }
 
+  static sortTime(timeA: string, timeB: string): number {
+    return (
+      moment(timeA, "YYYY-MM-DDTHH:mm:ss").valueOf() -
+      moment(timeB, "YYYY-MM-DDTHH:mm:ss").valueOf()
+    );
+  }
+
   static format12Hour(time: string): string {
     return moment(time, "YYYY-MM-DDTHH:mm:ss").format("h:mm a");
   }

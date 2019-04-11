@@ -49,14 +49,7 @@ export class RoomsComponent implements OnInit {
   ) {
     this.tableDataSource = new LocalDataSource();
 
-    this.roomService.getAllRooms().subscribe(
-      data => {
-        this.tableDataSource.load(data);
-      },
-      error => {
-        console.log(error);
-      }
-    );
+    this.getAllRooms();
   }
 
   ngOnInit() {
@@ -69,6 +62,20 @@ export class RoomsComponent implements OnInit {
     this.tableDataSource.onChanged().subscribe(() => {
       this.table.grid.createFormShown = true;
     });
+  }
+
+  getAllRooms() {
+    this.roomService.getAllRooms().subscribe(
+      data => {
+        data.sort((a, b) => {
+          return a.name < b.name ? -1 : 1;
+        });
+        this.tableDataSource.load(data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   addARoom(event): void {

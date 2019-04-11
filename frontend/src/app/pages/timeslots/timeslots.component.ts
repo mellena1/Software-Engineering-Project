@@ -49,14 +49,7 @@ export class TimeslotsComponent implements OnInit {
   ) {
     this.tableDataSource = new LocalDataSource();
 
-    this.timeslotService.getAllTimeslots().subscribe(
-      data => {
-        this.tableDataSource.load(data);
-      },
-      error => {
-        console.log(error);
-      }
-    );
+    this.getAllTimeslots();
   }
 
   ngOnInit() {
@@ -69,6 +62,20 @@ export class TimeslotsComponent implements OnInit {
     this.tableDataSource.onChanged().subscribe(() => {
       this.table.grid.createFormShown = true;
     });
+  }
+
+  getAllTimeslots() {
+    this.timeslotService.getAllTimeslots().subscribe(
+      data => {
+        data.sort((a, b) => {
+          return TimeslotGlobals.sortTime(a.startTime, b.startTime);
+        });
+        this.tableDataSource.load(data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   addATimeslot(event): void {
