@@ -2,12 +2,10 @@ import { Injectable } from "@angular/core";
 import {
   HttpClient,
   HttpHeaders,
-  HttpErrorResponse,
   HttpParams
 } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { Observable, throwError as observableThrowError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 import { Timeslot } from "../data_models/timeslot";
 import { WriteResponse } from "./writeResponse";
@@ -21,10 +19,7 @@ export class TimeslotService {
   jsonHeaders = new HttpHeaders().set("Content-Type", "application/json");
 
   getAllTimeslots(): Observable<Timeslot[]> {
-    return this.http.get<Timeslot[]>(this.apiUrl + "/timeslots").pipe(
-      map(timeslots => timeslots),
-      catchError(this.handleError)
-    );
+    return this.http.get<Timeslot[]>(this.apiUrl + "/timeslots");
   }
 
   getTimeslot(id: number): Observable<Timeslot> {
@@ -53,10 +48,5 @@ export class TimeslotService {
     return this.http.delete(this.apiUrl + "/timeslot", {
       params: params
     });
-  }
-
-  private handleError(res: HttpErrorResponse | any) {
-    console.error(res.error || res.body.error);
-    return observableThrowError(res.error || "Server error");
   }
 }

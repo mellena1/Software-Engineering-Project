@@ -19,6 +19,7 @@ import { Timeslot } from "src/app/data_models/timeslot";
 import { RoomService } from "src/app/services/room.service";
 import { SpeakerService } from "src/app/services/speaker.service";
 import { TimeslotService } from "src/app/services/timeslot.service";
+import { ErrorGlobals } from "src/app/globals/errors.global";
 
 @Component({
   selector: "app-sessions",
@@ -105,7 +106,8 @@ export class SessionsComponent implements OnInit {
     private sessionService: SessionService,
     private roomService: RoomService,
     private speakerService: SpeakerService,
-    private timeslotService: TimeslotService
+    private timeslotService: TimeslotService,
+    private errorGlobals: ErrorGlobals
   ) {
     this.tableDataSource = new LocalDataSource();
 
@@ -205,6 +207,11 @@ export class SessionsComponent implements OnInit {
         },
         error => {
           console.log(error);
+          if (error.status === 503) {
+            this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+          } else {
+            this.errorGlobals.newError("You must set one of the fields to add a session");
+          }
           event.confirm.reject();
         }
       );
@@ -218,6 +225,11 @@ export class SessionsComponent implements OnInit {
       },
       error => {
         console.log(error);
+        if (error.status === 503) {
+          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+        } else {
+          this.errorGlobals.newError("You must change one of the values and set at least of the fields");
+        }
         event.confirm.reject();
       }
     );
@@ -228,6 +240,12 @@ export class SessionsComponent implements OnInit {
       () => {},
       error => {
         console.log(error);
+        if (error.status === 503) {
+          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+        } else {
+          this.errorGlobals.newError("Delete failed");
+        }
+        event.confirm.reject();
       }
     );
     event.confirm.resolve();

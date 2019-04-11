@@ -1,6 +1,9 @@
 export {
   TwelveTwentyfourHourRadioComponent
 } from "./twelve_twentyfour_hour_radio.component";
+export {
+  ErrorComponent
+} from "./error.component";
 
 export {
   NumberInputComponent

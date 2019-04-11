@@ -9,6 +9,7 @@ import {
   TextInputComponent
 } from "../../shared_components";
 import { LocalDataSource } from "ng2-smart-table";
+import { ErrorGlobals } from "src/app/globals/errors.global";
 
 @Component({
   selector: "app-speakers",
@@ -49,7 +50,7 @@ export class SpeakersComponent implements OnInit {
   };
   tableSettings = new TableSetting(this.columns);
 
-  constructor(private speakerService: SpeakerService) {
+  constructor(private speakerService: SpeakerService, private errorGlobals: ErrorGlobals) {
     this.tableDataSource = new LocalDataSource();
 
     this.speakerService.getAllSpeakers().subscribe(
@@ -85,6 +86,11 @@ export class SpeakersComponent implements OnInit {
         },
         error => {
           console.log(error);
+          if (error.status === 503) {
+            this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+          } else {
+            this.errorGlobals.newError("You must set one of the fields to add a speaker. The email address and names must also be valid");
+          }
           event.confirm.reject();
         }
       );
@@ -98,6 +104,11 @@ export class SpeakersComponent implements OnInit {
       },
       error => {
         console.log(error);
+        if (error.status === 503) {
+          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+        } else {
+          this.errorGlobals.newError("You must change one of the values and the email address and names must be valid");
+        }
         event.confirm.reject();
       }
     );
@@ -108,6 +119,12 @@ export class SpeakersComponent implements OnInit {
       () => {},
       error => {
         console.log(error);
+        if (error.status === 503) {
+          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+        } else {
+          this.errorGlobals.newError("Delete failed");
+        }
+        event.confirm.reject();
       }
     );
     event.confirm.resolve();

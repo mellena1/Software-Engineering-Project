@@ -10,6 +10,8 @@ import {
   TextInputComponent
 } from "../../shared_components";
 import { LocalDataSource } from "ng2-smart-table";
+import { ErrorGlobals } from "../../globals/errors.global";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
   selector: "app-rooms",
@@ -41,7 +43,7 @@ export class RoomsComponent implements OnInit {
   };
   tableSettings = new TableSetting(this.columns);
 
-  constructor(private roomService: RoomService) {
+  constructor(private roomService: RoomService, private errorGlobals: ErrorGlobals) {
     this.tableDataSource = new LocalDataSource();
 
     this.roomService.getAllRooms().subscribe(
@@ -73,7 +75,12 @@ export class RoomsComponent implements OnInit {
         room.id = response.id;
         event.confirm.resolve(room);
       },
-      error => {
+      (error: HttpErrorResponse) => {
+        if (error.status === 503) {
+          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+        } else {
+          this.errorGlobals.newError("Must provide a room name");
+        }
         console.log(error);
         event.confirm.reject();
       }
@@ -87,6 +94,11 @@ export class RoomsComponent implements OnInit {
         event.confirm.resolve(room);
       },
       error => {
+        if (error.status === 503) {
+          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+        } else {
+          this.errorGlobals.newError("Must change a value and room name must be set");
+        }
         console.log(error);
         event.confirm.reject();
       }
@@ -99,6 +111,11 @@ export class RoomsComponent implements OnInit {
         event.confirm.resolve();
       },
       error => {
+        if (error.status === 503) {
+          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+        } else {
+          this.errorGlobals.newError("Delete failed");
+        }
         console.log(error);
         event.confirm.reject();
       }

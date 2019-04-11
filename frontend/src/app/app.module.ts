@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 
 import { Ng2SmartTableModule } from "ng2-smart-table";
-import { NgbTimepickerModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbTimepickerModule, NgbAlertModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppRoutingModule } from "./app-routing.module";
 
@@ -16,6 +16,7 @@ import { TimeslotsComponent } from "./pages/timeslots/timeslots.component";
 
 import {
   TwelveTwentyfourHourRadioComponent,
+  ErrorComponent,
   NumberInputComponent,
   TextRenderComponent,
   TextInputComponent,
@@ -25,6 +26,7 @@ import {
   TimeslotListInputComponent
 } from "./shared_components";
 import { TimeslotGlobals } from "./globals/timeslot.global";
+import { ErrorGlobals } from "./globals/errors.global";
 
 @NgModule({
   imports: [
@@ -34,7 +36,8 @@ import { TimeslotGlobals } from "./globals/timeslot.global";
     ReactiveFormsModule,
     HttpClientModule,
     Ng2SmartTableModule,
-    NgbTimepickerModule
+    NgbTimepickerModule,
+    NgbAlertModule
   ],
   declarations: [
     AppComponent,
@@ -49,7 +52,8 @@ import { TimeslotGlobals } from "./globals/timeslot.global";
     TimeslotRenderComponent,
     TimeslotInputComponent,
     TimeslotListInputComponent,
-    TwelveTwentyfourHourRadioComponent
+    TwelveTwentyfourHourRadioComponent,
+    ErrorComponent
   ],
   entryComponents: [
     NumberInputComponent,
@@ -59,9 +63,10 @@ import { TimeslotGlobals } from "./globals/timeslot.global";
     TimeslotRenderComponent,
     TimeslotInputComponent,
     TimeslotListInputComponent,
-    TwelveTwentyfourHourRadioComponent
+    TwelveTwentyfourHourRadioComponent,
+    ErrorComponent
   ],
-  providers: [TimeslotGlobals],
+  providers: [TimeslotGlobals, ErrorGlobals],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -1,13 +1,10 @@
 import { Injectable } from "@angular/core";
 import {
   HttpClient,
-  HttpHeaders,
-  HttpErrorResponse,
   HttpParams
 } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { throwError as observableThrowError, Observable } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 import { Room } from "../data_models/room";
 import { WriteResponse } from "./writeResponse";
@@ -21,8 +18,7 @@ export class RoomService {
 
   getAllRooms(): Observable<Room[]> {
     return this.http
-      .get<Room[]>(this.apiUrl + "/rooms")
-      .pipe(catchError(this.handleError));
+      .get<Room[]>(this.apiUrl + "/rooms");
   }
 
   getARoom(id: number): Observable<Room> {
@@ -46,10 +42,5 @@ export class RoomService {
     return this.http.delete(this.apiUrl + "/room", {
       params: params
     });
-  }
-
-  private handleError(res: HttpErrorResponse | any) {
-    console.error(res.error || res.body.error);
-    return observableThrowError(res.error || "Server error");
   }
 }

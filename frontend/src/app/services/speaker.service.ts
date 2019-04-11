@@ -2,12 +2,10 @@ import { Injectable } from "@angular/core";
 import {
   HttpClient,
   HttpHeaders,
-  HttpErrorResponse,
   HttpParams
 } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { Observable, throwError as observableThrowError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 import { Speaker } from "../data_models/speaker";
 import { WriteResponse } from "./writeResponse";
@@ -21,10 +19,7 @@ export class SpeakerService {
   jsonHeaders = new HttpHeaders().set("Content-Type", "application/json");
 
   getAllSpeakers(): Observable<Speaker[]> {
-    return this.http.get<Speaker[]>(this.apiUrl + "/speakers").pipe(
-      map(data => data),
-      catchError(this.handleError)
-    );
+    return this.http.get<Speaker[]>(this.apiUrl + "/speakers");
   }
 
   getSpeaker(id: number): Observable<Speaker> {
@@ -52,10 +47,5 @@ export class SpeakerService {
     return this.http.delete(this.apiUrl + "/speaker", {
       params: params
     });
-  }
-
-  private handleError(res: HttpErrorResponse | any) {
-    console.error(res.error || res.body.error);
-    return observableThrowError(res.error || "Server error");
   }
 }
