@@ -4,7 +4,10 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 
 import { Ng2SmartTableModule } from "ng2-smart-table";
-import { NgbTimepickerModule, NgbAlertModule } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbTimepickerModule,
+  NgbAlertModule
+} from "@ng-bootstrap/ng-bootstrap";
 
 import { AppRoutingModule } from "./app-routing.module";
 

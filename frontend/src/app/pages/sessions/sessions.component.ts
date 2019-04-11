@@ -208,9 +208,13 @@ export class SessionsComponent implements OnInit {
         error => {
           console.log(error);
           if (error.status === 503) {
-            this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+            this.errorGlobals.newError(
+              "The server is unavailable, please wait a minute and try again"
+            );
           } else {
-            this.errorGlobals.newError("You must set one of the fields to add a session");
+            this.errorGlobals.newError(
+              "You must set one of the fields to add a session"
+            );
           }
           event.confirm.reject();
         }
@@ -226,9 +230,13 @@ export class SessionsComponent implements OnInit {
       error => {
         console.log(error);
         if (error.status === 503) {
-          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+          this.errorGlobals.newError(
+            "The server is unavailable, please wait a minute and try again"
+          );
         } else {
-          this.errorGlobals.newError("You must change one of the values and set at least of the fields");
+          this.errorGlobals.newError(
+            "You must change one of the values and set at least of the fields"
+          );
         }
         event.confirm.reject();
       }
@@ -241,7 +249,9 @@ export class SessionsComponent implements OnInit {
       error => {
         console.log(error);
         if (error.status === 503) {
-          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+          this.errorGlobals.newError(
+            "The server is unavailable, please wait a minute and try again"
+          );
         } else {
           this.errorGlobals.newError("Delete failed");
         }

@@ -84,9 +84,13 @@ export class TimeslotsComponent implements OnInit {
         error => {
           console.log(error);
           if (error.status === 503) {
-            this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+            this.errorGlobals.newError(
+              "The server is unavailable, please wait a minute and try again"
+            );
           } else {
-            this.errorGlobals.newError("You must set both times to add a timeslot");
+            this.errorGlobals.newError(
+              "You must set both times to add a timeslot"
+            );
           }
           event.confirm.reject();
         }
@@ -102,9 +106,13 @@ export class TimeslotsComponent implements OnInit {
       error => {
         console.log(error);
         if (error.status === 503) {
-          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+          this.errorGlobals.newError(
+            "The server is unavailable, please wait a minute and try again"
+          );
         } else {
-          this.errorGlobals.newError("You must change a field and set both times");
+          this.errorGlobals.newError(
+            "You must change a field and set both times"
+          );
         }
         event.confirm.reject();
       }
@@ -119,7 +127,9 @@ export class TimeslotsComponent implements OnInit {
       error => {
         console.log(error);
         if (error.status === 503) {
-          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+          this.errorGlobals.newError(
+            "The server is unavailable, please wait a minute and try again"
+          );
         } else {
           this.errorGlobals.newError("Delete failed");
         }

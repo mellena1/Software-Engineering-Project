@@ -1,8 +1,5 @@
 import { Injectable } from "@angular/core";
-import {
-  HttpClient,
-  HttpParams
-} from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { Observable } from "rxjs";
 
@@ -17,8 +14,7 @@ export class RoomService {
   private apiUrl = environment.apiUrl;
 
   getAllRooms(): Observable<Room[]> {
-    return this.http
-      .get<Room[]>(this.apiUrl + "/rooms");
+    return this.http.get<Room[]>(this.apiUrl + "/rooms");
   }
 
   getARoom(id: number): Observable<Room> {

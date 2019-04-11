@@ -43,7 +43,10 @@ export class RoomsComponent implements OnInit {
   };
   tableSettings = new TableSetting(this.columns);
 
-  constructor(private roomService: RoomService, private errorGlobals: ErrorGlobals) {
+  constructor(
+    private roomService: RoomService,
+    private errorGlobals: ErrorGlobals
+  ) {
     this.tableDataSource = new LocalDataSource();
 
     this.roomService.getAllRooms().subscribe(
@@ -77,7 +80,9 @@ export class RoomsComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         if (error.status === 503) {
-          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+          this.errorGlobals.newError(
+            "The server is unavailable, please wait a minute and try again"
+          );
         } else {
           this.errorGlobals.newError("Must provide a room name");
         }
@@ -95,9 +100,13 @@ export class RoomsComponent implements OnInit {
       },
       error => {
         if (error.status === 503) {
-          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+          this.errorGlobals.newError(
+            "The server is unavailable, please wait a minute and try again"
+          );
         } else {
-          this.errorGlobals.newError("Must change a value and room name must be set");
+          this.errorGlobals.newError(
+            "Must change a value and room name must be set"
+          );
         }
         console.log(error);
         event.confirm.reject();
@@ -112,7 +121,9 @@ export class RoomsComponent implements OnInit {
       },
       error => {
         if (error.status === 503) {
-          this.errorGlobals.newError("The server is unavailable, please wait a minute and try again")
+          this.errorGlobals.newError(
+            "The server is unavailable, please wait a minute and try again"
+          );
         } else {
           this.errorGlobals.newError("Delete failed");
         }
