@@ -18,9 +18,15 @@ export class NumberInputComponent extends DefaultEditor implements OnInit {
 
   ngOnInit() {
     this.stringNumber = this.cell.getValue();
+    this.parseToInt();
   }
 
   parseToInt() {
-    this.cell.newValue = parseInt(this.stringNumber);
+    var asInt = parseInt(this.stringNumber);
+    if (Number.isNaN(asInt)) {
+      this.cell.newValue = null;
+    } else {
+      this.cell.newValue = asInt;
+    }
   }
 }
