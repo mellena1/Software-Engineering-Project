@@ -10,6 +10,7 @@ import {
   TimeslotRenderComponent
 } from "../../shared_components";
 import { LocalDataSource } from "ng2-smart-table";
+import { ErrorGlobals } from "src/app/globals/errors.global";
 
 @Component({
   selector: "app-timeslots",
@@ -43,18 +44,12 @@ export class TimeslotsComponent implements OnInit {
 
   constructor(
     private timeslotService: TimeslotService,
-    private timeslotGlobals: TimeslotGlobals
+    private timeslotGlobals: TimeslotGlobals,
+    private errorGlobals: ErrorGlobals
   ) {
     this.tableDataSource = new LocalDataSource();
 
-    this.timeslotService.getAllTimeslots().subscribe(
-      data => {
-        this.tableDataSource.load(data);
-      },
-      error => {
-        console.log(error);
-      }
-    );
+    this.getAllTimeslots();
   }
 
   ngOnInit() {
@@ -69,6 +64,20 @@ export class TimeslotsComponent implements OnInit {
     });
   }
 
+  getAllTimeslots() {
+    this.timeslotService.getAllTimeslots().subscribe(
+      data => {
+        data.sort((a, b) => {
+          return TimeslotGlobals.sortTime(a.startTime, b.startTime);
+        });
+        this.tableDataSource.load(data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
   addATimeslot(event): void {
     var timeslot = event.newData;
 
@@ -81,6 +90,15 @@ export class TimeslotsComponent implements OnInit {
         },
         error => {
           console.log(error);
+          if (error.status === 503) {
+            this.errorGlobals.newError(
+              "The server is unavailable, please wait a minute and try again"
+            );
+          } else {
+            this.errorGlobals.newError(
+              "You must set both times to add a timeslot"
+            );
+          }
           event.confirm.reject();
         }
       );
@@ -94,6 +112,15 @@ export class TimeslotsComponent implements OnInit {
       },
       error => {
         console.log(error);
+        if (error.status === 503) {
+          this.errorGlobals.newError(
+            "The server is unavailable, please wait a minute and try again"
+          );
+        } else {
+          this.errorGlobals.newError(
+            "You must change a field and set both times"
+          );
+        }
         event.confirm.reject();
       }
     );
@@ -106,6 +133,13 @@ export class TimeslotsComponent implements OnInit {
       },
       error => {
         console.log(error);
+        if (error.status === 503) {
+          this.errorGlobals.newError(
+            "The server is unavailable, please wait a minute and try again"
+          );
+        } else {
+          this.errorGlobals.newError("Delete failed");
+        }
         event.confirm.reject();
       }
     );
