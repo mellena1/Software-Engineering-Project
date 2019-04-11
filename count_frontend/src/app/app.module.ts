@@ -7,6 +7,7 @@ import { AppRoutingModule } from "./app-routing.module";
 
 import { AppComponent } from "./app.component";
 import { CountComponent } from "./pages/count/count.component";
+import { LoginComponent } from "./pages/login/login.component";
 
 @NgModule({
   imports: [
@@ -16,7 +17,7 @@ import { CountComponent } from "./pages/count/count.component";
     ReactiveFormsModule,
     HttpClientModule
   ],
-  declarations: [AppComponent, CountComponent],
+  declarations: [AppComponent, CountComponent, LoginComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
