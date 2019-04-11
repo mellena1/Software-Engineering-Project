@@ -80,10 +80,10 @@ export class CountsComponent implements OnInit {
     for (var i = 0; i < countList.length; i++) {
       var count = countList[i];
       if (time[count.Time] === time[timeWanted]) {
-        return count.Count.toString();
+        return `${count.Count.toString()} (${count.UserName})`;
       }
     }
-    return "";
+    return "-";
   }
 
   submitSession(): void {
