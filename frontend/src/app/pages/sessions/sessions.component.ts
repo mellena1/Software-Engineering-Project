@@ -207,6 +207,7 @@ export class SessionsComponent implements OnInit {
 
   addASession(event): void {
     var session = event.newData;
+    console.log(session);
     this.sessionService
       .writeSession(
         session.name,

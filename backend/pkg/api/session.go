@@ -101,7 +101,7 @@ type WriteASessionRequest struct {
 
 // Validate validates a WriteASessionRequest
 func (request WriteASessionRequest) Validate() error {
-	if request.SpeakerID == nil && request.RoomID == nil && request.TimeslotID == nil && request.SessionName == nil {
+	if request.SpeakerID == nil && request.RoomID == nil && request.TimeslotID == nil && (request.SessionName == nil || *request.SessionName == "") {
 		return ErrInvalidRequest
 	}
 	return nil
