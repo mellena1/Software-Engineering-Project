@@ -8,6 +8,10 @@ services:
     build: count_frontend/.
     ports:
       - "82:8080"
+  count_retrieval:
+    build: count_retrieval/.
+    ports:
+      - "83:8080"
   backend:
     build: backend/.
     environment:
@@ -24,4 +28,4 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: codecamp
     ports:
-      - "3306"
+      - "3306:3306"
