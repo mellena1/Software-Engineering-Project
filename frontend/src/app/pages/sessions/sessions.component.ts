@@ -19,6 +19,8 @@ import { Timeslot } from "src/app/data_models/timeslot";
 import { RoomService } from "src/app/services/room.service";
 import { SpeakerService } from "src/app/services/speaker.service";
 import { TimeslotService } from "src/app/services/timeslot.service";
+import { ErrorGlobals } from "src/app/globals/errors.global";
+import { TimeslotGlobals } from "src/app/globals/timeslot.global";
 
 @Component({
   selector: "app-sessions",
@@ -105,7 +107,9 @@ export class SessionsComponent implements OnInit {
     private sessionService: SessionService,
     private roomService: RoomService,
     private speakerService: SpeakerService,
-    private timeslotService: TimeslotService
+    private timeslotService: TimeslotService,
+    private timeslotGlobals: TimeslotGlobals,
+    private errorGlobals: ErrorGlobals
   ) {
     this.tableDataSource = new LocalDataSource();
 
@@ -130,6 +134,9 @@ export class SessionsComponent implements OnInit {
   getAllSessions() {
     this.sessionService.getAllSessions().subscribe(
       (data: Session[]) => {
+        data.sort((a, b) => {
+          return a.name < b.name ? -1 : 1;
+        });
         this.tableDataSource.load(data);
       },
       error => {
@@ -141,6 +148,9 @@ export class SessionsComponent implements OnInit {
   getAllRooms() {
     this.roomService.getAllRooms().subscribe(
       (data: Room[]) => {
+        data.sort((a, b) => {
+          return a.name < b.name ? -1 : 1;
+        });
         data.forEach(room => {
           this.roomsListForTable.push({
             value: room,
@@ -158,6 +168,9 @@ export class SessionsComponent implements OnInit {
   getAllSpeakers() {
     this.speakerService.getAllSpeakers().subscribe(
       (data: Speaker[]) => {
+        data.sort((a, b) => {
+          return a.firstName < b.firstName ? -1 : 1;
+        });
         data.forEach(speaker => {
           this.speakersListForTable.push({
             value: speaker,
@@ -175,6 +188,9 @@ export class SessionsComponent implements OnInit {
   getAllTimeslots() {
     this.timeslotService.getAllTimeslots().subscribe(
       (data: Timeslot[]) => {
+        data.sort((a, b) => {
+          return TimeslotGlobals.sortTime(a.startTime, b.startTime);
+        });
         data.forEach(timeslot => {
           this.timeslotsListForTable.push({
             value: timeslot,
@@ -191,6 +207,7 @@ export class SessionsComponent implements OnInit {
 
   addASession(event): void {
     var session = event.newData;
+    console.log(session);
     this.sessionService
       .writeSession(
         session.name,
@@ -205,6 +222,15 @@ export class SessionsComponent implements OnInit {
         },
         error => {
           console.log(error);
+          if (error.status === 503) {
+            this.errorGlobals.newError(
+              "The server is unavailable, please wait a minute and try again"
+            );
+          } else {
+            this.errorGlobals.newError(
+              "You must set one of the fields to add a session"
+            );
+          }
           event.confirm.reject();
         }
       );
@@ -218,6 +244,15 @@ export class SessionsComponent implements OnInit {
       },
       error => {
         console.log(error);
+        if (error.status === 503) {
+          this.errorGlobals.newError(
+            "The server is unavailable, please wait a minute and try again"
+          );
+        } else {
+          this.errorGlobals.newError(
+            "You must change one of the values and set at least of the fields"
+          );
+        }
         event.confirm.reject();
       }
     );
@@ -228,6 +263,14 @@ export class SessionsComponent implements OnInit {
       () => {},
       error => {
         console.log(error);
+        if (error.status === 503) {
+          this.errorGlobals.newError(
+            "The server is unavailable, please wait a minute and try again"
+          );
+        } else {
+          this.errorGlobals.newError("Delete failed");
+        }
+        event.confirm.reject();
       }
     );
     event.confirm.resolve();

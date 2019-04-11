@@ -1,13 +1,7 @@
 import { Injectable } from "@angular/core";
-import {
-  HttpClient,
-  HttpHeaders,
-  HttpErrorResponse,
-  HttpParams
-} from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { environment } from "../../environments/environment";
-import { Observable, throwError as observableThrowError } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 import { Session } from "../data_models/session";
 import { WriteResponse } from "./writeResponse";
@@ -21,10 +15,7 @@ export class SessionService {
   jsonHeaders = new HttpHeaders().set("Content-Type", "application/json");
 
   getAllSessions(): Observable<Session[]> {
-    return this.http.get<Session[]>(this.apiUrl + "/sessions").pipe(
-      map(data => data),
-      catchError(this.handleError)
-    );
+    return this.http.get<Session[]>(this.apiUrl + "/sessions");
   }
 
   getSession(id: number): Observable<Session> {
@@ -65,10 +56,5 @@ export class SessionService {
     return this.http.delete(this.apiUrl + "/session", {
       params: params
     });
-  }
-
-  private handleError(res: HttpErrorResponse | any) {
-    console.error(res.error || res.body.error);
-    return observableThrowError(res.error || "Server error");
   }
 }

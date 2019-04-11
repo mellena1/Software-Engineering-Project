@@ -28,6 +28,7 @@ func CreateCountRoutes(countDBFacade db.CountReaderWriterUpdaterDeleter) []Route
 	routes := []Route{
 		NewRoute("/api/v1/counts", myCountAPI.getAllCounts, "GET"),
 		NewRoute("/api/v1/count", myCountAPI.getCountsOfSession, "GET"),
+		NewRoute("/api/v1/countsBySpeaker", myCountAPI.getCountsBySpeaker, "GET"),
 		NewRoute("/api/v1/count", myCountAPI.writeACount, "POST"),
 		NewRoute("/api/v1/count", myCountAPI.updateACount, "PUT"),
 		NewRoute("/api/v1/count", myCountAPI.deleteACount, "DELETE"),
@@ -88,6 +89,44 @@ func (myCountAPI countAPI) getCountsOfSession(writer http.ResponseWriter, reques
 	writer.Write(responseJSON)
 }
 
+// getAllCounts Get all counts from the db, sorted by speaker
+// @Summary Get all counts from the db, sorted by speaker
+// @Description Get all counts from the db, sorted by speaker
+// @produce json
+// @Success 200 {array} db.Count "all counts in the db"
+// @Failure 400 {} _ "the request was bad"
+// @Failure 503 {} _ "failed to access the db"
+// @Router /api/v1/countsBySpeaker [get]
+func (myCountAPI countAPI) getCountsBySpeaker(writer http.ResponseWriter, request *http.Request) {
+	countsBySpeakerData, err := myCountAPI.countReader.ReadAllCountsBySpeaker()
+	if err != nil {
+		ReportError(err, "failed to access the db", http.StatusServiceUnavailable, writer)
+		return
+	}
+
+	countsBySessionBySpeaker := make(map[string](map[string][]db.Count))
+	for _, data := range countsBySpeakerData {
+		countsBySession := make(map[string][]db.Count)
+
+		speakerKey := *data.SpeakerFirstName + " " + *data.SpeakerLastName
+		sessionKey := *data.SessionName
+
+		count := db.NewCount()
+		count.Time, count.SessionID, count.UserName, count.Count = data.Time, data.SessionID, data.UserName, data.Count
+
+		if countsBySessionBySpeaker[speakerKey] == nil {
+			countsBySession[sessionKey] = append(countsBySession[sessionKey], count)
+			countsBySessionBySpeaker[speakerKey] = countsBySession
+		} else {
+			countsBySessionBySpeaker[speakerKey][sessionKey] = append(countsBySessionBySpeaker[speakerKey][sessionKey], count)
+		}
+	}
+
+	responseJSON, _ := json.Marshal(countsBySessionBySpeaker)
+	writer.Write(responseJSON)
+}
+
+// writeACountRequest request for writeACount
 type writeACountRequest struct {
 	Time      *string `json:"time" example:"beginning"`
 	SessionID *int64  `json:"sessionID" example:"2"`

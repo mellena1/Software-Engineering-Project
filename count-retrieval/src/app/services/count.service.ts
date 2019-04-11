@@ -19,7 +19,7 @@ export class CountService {
   private apiUrl = environment.apiUrl;
 
   getAllCounts() {
-    return this.http.get<Count>(this.apiUrl + "/counts").pipe(
+    return this.http.get<Count[]>(this.apiUrl + "/counts").pipe(
       map(data => data),
       catchError(this.handleError)
     );
@@ -45,6 +45,12 @@ export class CountService {
     return this.http.delete(this.apiUrl + "/count", {
       params: params
     });
+  }
+
+  getCountsBySpeaker() {
+    return this.http.get<Map<String, Map<String, Count[]>>>(
+      this.apiUrl + "/countsBySpeaker"
+    );
   }
 
   private handleError(res: HttpErrorResponse | any) {
