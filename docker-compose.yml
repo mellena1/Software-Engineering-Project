@@ -8,8 +8,8 @@ services:
     build: count_frontend/.
     ports:
       - "82:8080"
-  count_frontend:
-    build: count_frontend/.
+  count_retrieval:
+    build: count_retrieval/.
     ports:
       - "83:8080"
   backend:
