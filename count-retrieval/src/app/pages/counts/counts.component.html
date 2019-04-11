@@ -77,32 +77,16 @@
             <tbody *ngIf="sessionSelected">
                 <tr>
                     <td>
-                        <span>{{ selectedSession.speaker.firstName }}
-                {{ selectedSession.speaker.lastName }}</span
-              >
-            </td>
-            <td>
-              <span>{{
-                findCountFromList(selectedSessionCounts, "beginning")
-                  ? findCountFromList(selectedSessionCounts, "beginning")
-                  : "-"
-              }}</span>
+                        <span>{{ selectedSession.speaker.firstName }}{{ selectedSession.speaker.lastName }}</span>
                     </td>
-
                     <td>
-                        <span>{{
-                findCountFromList(selectedSessionCounts, "middle")
-                  ? findCountFromList(selectedSessionCounts, "middle")
-                  : "-"
-              }}</span>
+                        <span>{{findCountFromList(selectedSessionCounts, "beginning")? findCountFromList(selectedSessionCounts, "beginning"): "-"}}</span>
                     </td>
-
                     <td>
-                        <span>{{
-                findCountFromList(selectedSessionCounts, "end")
-                  ? findCountFromList(selectedSessionCounts, "end")
-                  : "-"
-              }}</span>
+                        <span>{{findCountFromList(selectedSessionCounts, "middle") ? findCountFromList(selectedSessionCounts, "middle") : "-"}}</span>
+                    </td>
+                    <td>
+                        <span>{{ findCountFromList(selectedSessionCounts, "end") ? findCountFromList(selectedSessionCounts, "end") : "-"}}</span>
                     </td>
                 </tr>
             </tbody>
