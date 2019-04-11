@@ -69,22 +69,25 @@
         </td>
         <td>
           <span>{{
-            findCountFromList(selectedSessionCounts, "beginning") ?
-            findCountFromList(selectedSessionCounts, "beginning") : "-"
+            findCountFromList(selectedSessionCounts, "beginning")
+              ? findCountFromList(selectedSessionCounts, "beginning")
+              : "-"
           }}</span>
         </td>
 
         <td>
-          <span>{{ 
-            findCountFromList(selectedSessionCounts, "middle") ?
-            findCountFromList(selectedSessionCounts, "middle") : "-"
+          <span>{{
+            findCountFromList(selectedSessionCounts, "middle")
+              ? findCountFromList(selectedSessionCounts, "middle")
+              : "-"
           }}</span>
         </td>
 
         <td>
-          <span>{{ 
-            findCountFromList(selectedSessionCounts, "end") ?
-            findCountFromList(selectedSessionCounts, "end") : "-"
+          <span>{{
+            findCountFromList(selectedSessionCounts, "end")
+              ? findCountFromList(selectedSessionCounts, "end")
+              : "-"
           }}</span>
         </td>
       </tr>
@@ -98,23 +101,26 @@
           <span> {{ session.key }} </span>
         </td>
         <td>
-          <span>{{ 
-            findCountFromList(session.value, "beginning") ?
-            findCountFromList(session.value, "beginning") : "-"
+          <span>{{
+            findCountFromList(session.value, "beginning")
+              ? findCountFromList(session.value, "beginning")
+              : "-"
           }}</span>
         </td>
 
         <td>
-          <span>{{ 
-            findCountFromList(session.value, "middle") ?
-            findCountFromList(session.value, "middle") : "-"
+          <span>{{
+            findCountFromList(session.value, "middle")
+              ? findCountFromList(session.value, "middle")
+              : "-"
           }}</span>
         </td>
 
         <td>
-          <span>{{ 
-            findCountFromList(session.value, "end") ?
-            findCountFromList(session.value, "end") : "-"
+          <span>{{
+            findCountFromList(session.value, "end")
+              ? findCountFromList(session.value, "end")
+              : "-"
           }}</span>
         </td>
       </tr>
