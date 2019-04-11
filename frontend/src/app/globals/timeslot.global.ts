@@ -19,10 +19,10 @@ export class TimeslotGlobals {
   }
 
   static sortTime(timeA: string, timeB: string): number {
-    return (
-      moment(timeA, "YYYY-MM-DDTHH:mm:ss").valueOf() -
-      moment(timeB, "YYYY-MM-DDTHH:mm:ss").valueOf()
-    );
+    // Ignore date
+    var a = moment(timeA, "YYYY-MM-DDTHH:mm:ss").month(0).date(0).year(0);
+    var b = moment(timeB, "YYYY-MM-DDTHH:mm:ss").month(0).date(0).year(0);
+    return a.isBefore(b) ? -1 : 1;
   }
 
   static format12Hour(time: string): string {
