@@ -22,9 +22,13 @@
             </option>
         </select>
 
-        <button type="submit" class="btn btn-success btn-sm btn-spaced" (click)="submitSpeaker()">
+        <button type="submit" class="btn btn-primary btn-sm btn-spaced" (click)="submitSpeaker()">
             Filter By Speaker
         </button>
+
+        <br>
+        <br>
+        <br>
         <h3>Or Select Session</h3>
 
         <select [(ngModel)]="selectedSession" (ngModelChange)="getCountBySessionID(selectedSession.id)">
