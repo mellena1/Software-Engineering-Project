@@ -77,16 +77,16 @@
             <tbody *ngIf="sessionSelected">
                 <tr>
                     <td>
-                        <span>{{ selectedSession.speaker.firstName }}{{ selectedSession.speaker.lastName }}</span>
+                        <span>{{ selectedSession.speaker.firstName }} {{ selectedSession.speaker.lastName }}</span>
                     </td>
                     <td>
-                        <span>{{findCountFromList(selectedSessionCounts, "beginning")? findCountFromList(selectedSessionCounts, "beginning"): "-"}}</span>
+                        <span>{{findCountFromList(selectedSessionCounts, "beginning")}}</span>
                     </td>
                     <td>
-                        <span>{{findCountFromList(selectedSessionCounts, "middle") ? findCountFromList(selectedSessionCounts, "middle") : "-"}}</span>
+                        <span>{{findCountFromList(selectedSessionCounts, "middle")}}</span>
                     </td>
                     <td>
-                        <span>{{ findCountFromList(selectedSessionCounts, "end") ? findCountFromList(selectedSessionCounts, "end") : "-"}}</span>
+                        <span>{{findCountFromList(selectedSessionCounts, "end")}}</span>
                     </td>
                 </tr>
             </tbody>
@@ -97,14 +97,14 @@
                         <span> {{ session.key }} </span>
                     </td>
                     <td>
-                        <span>{{findCountFromList(session.value, "beginning")? findCountFromList(session.value, "beginning"): "-"}}</span>
+                        <span>{{findCountFromList(session.value, "beginning")}}</span>
                     </td>
 
                     <td>
-                        <span>{{findCountFromList(session.value, "middle")? findCountFromList(session.value, "middle"): "-"}}</span>
+                        <span>{{findCountFromList(session.value, "middle")}}</span>
                     </td>
                     <td>
-                        <span>{{findCountFromList(session.value, "end")? findCountFromList(session.value, "end"): "-"}}</span>
+                        <span>{{findCountFromList(session.value, "end")}}</span>
                     </td>
                 </tr>
             </tbody>
