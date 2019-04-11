@@ -1,69 +1,63 @@
-<div class="container">
-  <br />
-  <h2 style="text-align:center">Count Retrieval</h2>
-  <br />
+<!DOCTYPE html>
+<html lang="en">
 
-  <h3>Select Speaker</h3>
-  <select [(ngModel)]="selectedSpeaker">
-    <option value="" disabled selected> -- Select Speaker-- </option>
-    <option
-      *ngFor="let speaker of speakers"
-      [ngValue]="speaker.firstName + ' ' + speaker.lastName"
-    >
-      {{ speaker.firstName }} {{ speaker.lastName }}
-    </option>
-  </select>
+<head>
+    <meta charset="utf-8" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <title>Count Retrieval</title>>
+</head>
 
-  <button
-    type="submit"
-    class="btn btn-success btn-sm btn-spaced"
-    (click)="submitSpeaker()"
-  >
-    Filter By Speaker
-  </button>
-  <h3>Or Select Session</h3>
+<body>
+    <div class="container">
+        <br />
+        <h2 style="text-align:center">Count Retrieval</h2>
+        <br />
 
-  <select
-    [(ngModel)]="selectedSession"
-    (ngModelChange)="getCountBySessionID(selectedSession.id)"
-  >
-    <option value="" disabled selected>--Select Sessions--</option>
-    <option *ngFor="let session of sessions" [ngValue]="session">{{
-      session.name
-    }}</option>
-  </select>
-  <button
-    type="submit"
-    class="btn btn-success btn-sm btn-spaced"
-    (click)="submitSession()"
-  >
-    Filter By Session
-  </button>
-  <br />
-</div>
+        <h3>Select Speaker</h3>
+        <select [(ngModel)]="selectedSpeaker">
+            <option value="" disabled selected> -- Select Speaker-- </option>
+            <option *ngFor="let speaker of speakers" [ngValue]="speaker.firstName + ' ' + speaker.lastName">
+                {{ speaker.firstName }} {{ speaker.lastName }}
+            </option>
+        </select>
 
-<div class="table-responsive table-spaced" ng-app="counts" *ngIf="showTable">
-  <table class="table table-bordered table-striped">
-    <thead>
-      <tr *ngIf="sessionSelected">
-        <th>Speaker Name</th>
-        <th>Start Count</th>
-        <th>Mid Count</th>
-        <th>End Count</th>
-      </tr>
+        <button type="submit" class="btn btn-success btn-sm btn-spaced" (click)="submitSpeaker()">
+            Filter By Speaker
+        </button>
+        <h3>Or Select Session</h3>
 
-      <tr *ngIf="speakerSelected">
-        <th>Presentation Name</th>
-        <th>Start Count</th>
-        <th>Mid Count</th>
-        <th>End Count</th>
-      </tr>
-    </thead>
-    <tbody *ngIf="sessionSelected">
-      <tr>
-        <td>
-          <span
-            >{{ selectedSession.speaker.firstName }}
+        <select [(ngModel)]="selectedSession" (ngModelChange)="getCountBySessionID(selectedSession.id)">
+            <option value="" disabled selected>--Select Sessions--</option>
+            <option *ngFor="let session of sessions" [ngValue]="session">{{ session.name }}
+            </option>
+        </select>
+        <button type="submit" class="btn btn-success btn-sm btn-spaced" (click)="submitSession()">
+            Filter By Session
+        </button>
+        <br />
+    </div>
+
+    <div class="table-responsive table-spaced" ng-app="counts" *ngIf="showTable">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr *ngIf="sessionSelected">
+                    <th>Speaker Name</th>
+                    <th>Start Count</th>
+                    <th>Mid Count</th>
+                    <th>End Count</th>
+                </tr>
+
+                <tr *ngIf="speakerSelected">
+                    <th>Presentation Name</th>
+                    <th>Start Count</th>
+                    <th>Mid Count</th>
+                    <th>End Count</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="sessionSelected">
+                <tr>
+                    <td>
+                        <span>{{ selectedSession.speaker.firstName }}
             {{ selectedSession.speaker.lastName }}</span
           >
         </td>
@@ -73,57 +67,57 @@
               ? findCountFromList(selectedSessionCounts, "beginning")
               : "-"
           }}</span>
-        </td>
+                    </td>
 
-        <td>
-          <span>{{
+                    <td>
+                        <span>{{
             findCountFromList(selectedSessionCounts, "middle")
               ? findCountFromList(selectedSessionCounts, "middle")
               : "-"
           }}</span>
-        </td>
+                    </td>
 
-        <td>
-          <span>{{
+                    <td>
+                        <span>{{
             findCountFromList(selectedSessionCounts, "end")
               ? findCountFromList(selectedSessionCounts, "end")
               : "-"
           }}</span>
-        </td>
-      </tr>
-    </tbody>
+                    </td>
+                </tr>
+            </tbody>
 
-    <tbody *ngIf="speakerSelected">
-      <tr
-        *ngFor="let session of (speakerSessionMap[selectedSpeaker] | keyvalue)"
-      >
-        <td>
-          <span> {{ session.key }} </span>
-        </td>
-        <td>
-          <span>{{
+            <tbody *ngIf="speakerSelected">
+                <tr *ngFor="let session of (speakerSessionMap[selectedSpeaker] | keyvalue)">
+                    <td>
+                        <span> {{ session.key }} </span>
+                    </td>
+                    <td>
+                        <span>{{
             findCountFromList(session.value, "beginning")
               ? findCountFromList(session.value, "beginning")
               : "-"
           }}</span>
-        </td>
+                    </td>
 
-        <td>
-          <span>{{
+                    <td>
+                        <span>{{
             findCountFromList(session.value, "middle")
               ? findCountFromList(session.value, "middle")
               : "-"
           }}</span>
-        </td>
+                    </td>
 
-        <td>
-          <span>{{
+                    <td>
+                        <span>{{
             findCountFromList(session.value, "end")
               ? findCountFromList(session.value, "end")
               : "-"
           }}</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
